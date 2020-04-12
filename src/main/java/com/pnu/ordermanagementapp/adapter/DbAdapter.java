@@ -4,14 +4,14 @@ import java.util.List;
 
 public interface DbAdapter<T> { // added only to meet task requirements
 
-    T findById(String id);
-
     List<T> findAll();
+
+    T findById(Long id);
 
     void create(T obj);
 
     void update(T obj);
 
-    void delete(String id);
+    void delete(Long id);
 
 }

@@ -1,5 +1,6 @@
 package com.pnu.ordermanagementapp.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -7,6 +8,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 @Builder
 @Entity
 @Table(name = "products")
@@ -25,4 +27,13 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<Order> orders;
 
+    public Product() {
+    }
+
+    public Product(long id, String name, int amount, int price) {
+        this.id = id;
+        this.name = name;
+        this.amount = amount;
+        this.price = price;
+    }
 }

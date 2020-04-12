@@ -3,11 +3,11 @@ package com.pnu.ordermanagementapp.client;
 import com.pnu.ordermanagementapp.adapter.DbAdapter;
 import com.pnu.ordermanagementapp.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Service
+@Component
 public class ClientDbAdapter implements DbAdapter<Client> {
     private ClientRepository repository;
 

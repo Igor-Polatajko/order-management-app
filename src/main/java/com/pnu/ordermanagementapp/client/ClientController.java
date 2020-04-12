@@ -47,7 +47,7 @@ public class ClientController {
 
     @PostMapping("/update")
     public void updateClient(@ModelAttribute Client client) {
-        adapter.create(client);
+        adapter.update(client);
     }
 
     @PostMapping("/delete/{id}")

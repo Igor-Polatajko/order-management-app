@@ -22,6 +22,8 @@ public class Order {
     @ManyToOne
     private Client client;
 
+    private int amount;
+
     private LocalDateTime createdDate;
 
 }

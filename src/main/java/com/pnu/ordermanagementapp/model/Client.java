@@ -9,10 +9,11 @@ import java.util.List;
 @Data
 @Builder
 @Entity
+@Table(name = "clients")
 public class Client {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String firstName;

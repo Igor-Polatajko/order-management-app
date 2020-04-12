@@ -26,7 +26,7 @@ public class ClientController {
     @GetMapping("")
     public String getAll(Model model) {
         List<Client> list = adapter.findAll();
-        model.addAllAttributes(Collections.singletonMap("clientList", list));
+        model.addAllAttributes(Collections.singletonMap("clients", list));
         return "index_orders";
     }
 
@@ -46,7 +46,7 @@ public class ClientController {
     }
 
     @PostMapping("/update")
-    public void updateClient(@ModelAttribute Client client ) {
+    public void updateClient(@ModelAttribute Client client) {
         adapter.create(client);
     }
 

@@ -13,7 +13,13 @@
 </head>
 <body>
 
+
+<div>
+    <a href="/orders/new" class="btn btn-outline-primary m-4">New + </a>
+</div>
+
 <div class="container orders">
+
     <#list orders as order>
         <div class="row my-3 p-4 bg-light">
             <div class="col-md-10 row">
@@ -48,9 +54,9 @@
                         </div>
                     </div>
                     <div class="row">
-                        Total price
+                        Total price:
                         <div class="px-2 rounded bg-white mx-3">
-                            <strong>${order.totalPrice}:</strong>
+                            <strong>${order.totalPrice}</strong>
                         </div>
                     </div>
                     <div class="row">

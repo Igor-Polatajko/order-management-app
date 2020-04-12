@@ -1,5 +1,6 @@
 package com.pnu.ordermanagementapp.order;
 
+import com.pnu.ordermanagementapp.adapter.DbAdapter;
 import com.pnu.ordermanagementapp.model.Client;
 import com.pnu.ordermanagementapp.model.Order;
 import com.pnu.ordermanagementapp.model.Product;
@@ -9,9 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -21,9 +20,17 @@ public class OrderController {
 
     private OrderDbAdapter orderDbAdapter;
 
+    private DbAdapter<Client> clientDbAdapter;
+
+    private DbAdapter<Product> productDbAdapter;
+
     @Autowired
-    public OrderController(OrderDbAdapter orderDbAdapter) {
+    public OrderController(OrderDbAdapter orderDbAdapter,
+                           DbAdapter<Client> clientDbAdapter,
+                           DbAdapter<Product> productDbAdapter) {
         this.orderDbAdapter = orderDbAdapter;
+        this.clientDbAdapter = clientDbAdapter;
+        this.productDbAdapter = productDbAdapter;
     }
 
     public List<Order> setup() { // ToDo delete later
@@ -72,7 +79,16 @@ public class OrderController {
     }
 
     @GetMapping("/new")
-    public String createNew() {
+    public String createNew(Model model) {
+
+        List<Client> clients = clientDbAdapter.findAll();
+        List<Product> products = productDbAdapter.findAll();
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("clients", clients);
+        params.put("products", products);
+        model.addAllAttributes(params);
+
         return "new_order";
     }
 

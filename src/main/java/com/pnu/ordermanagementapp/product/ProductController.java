@@ -26,13 +26,13 @@ public class ProductController {
 
     @GetMapping("/new")
     public String createNew() {
-        return "create_product";
+        return "form_product";
     }
 
     @GetMapping("/update/{id}")
     public String update(@PathVariable("id") Long id, Model model) {
         model.addAttribute("product", productDbAdapter.findById(id));
-        return "update_product";
+        return "form_product";
     }
 
     @PostMapping("/new")
@@ -42,13 +42,13 @@ public class ProductController {
     }
 
     @PostMapping("/update")
-    public String  updateProduct(@ModelAttribute("product") Product product) {
+    public String updateProduct(@ModelAttribute("product") Product product) {
         productDbAdapter.update(product);
         return "redirect:/products";
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable("id") Long id){
+    public String deleteProduct(@PathVariable("id") Long id) {
         productDbAdapter.delete(id);
         return "redirect:/products";
     }

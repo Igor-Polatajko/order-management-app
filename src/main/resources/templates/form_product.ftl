@@ -5,6 +5,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <style type="text/css">
         @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,600,400italic);
+
         * {
             margin: 0;
             padding: 0;
@@ -24,7 +25,12 @@
             font-size: 12px;
             line-height: 30px;
             color: #777;
-            background: silver;
+            background-image: linear-gradient(#c5c7cb, #f8f9fa);
+        }
+
+        .backButton {
+            position: absolute;
+            margin-left: 30px;
         }
 
         .container {
@@ -39,7 +45,6 @@
         #product input[type="price"],
         #product textarea,
         #product button[type="submit"] {
-
             font: 400 12px/16px "Roboto", Helvetica, Arial, sans-serif;
         }
 
@@ -58,19 +63,12 @@
             margin-bottom: 10px;
         }
 
-        #product h4 {
-            margin: 5px 0 15px;
-            display: block;
-            font-size: 13px;
-            font-weight: 400;
-        }
 
         input {
             width: 100%;
         }
 
         fieldset {
-
             border: medium none !important;
             margin: 0 0 10px;
             min-width: 100%;
@@ -93,7 +91,6 @@
         #product input[type="amount"],
         #product input[type="price"],
         #product textarea:hover {
-
             -webkit-transition: border-color 0.3s ease-in-out;
             -moz-transition: border-color 0.3s ease-in-out;
             transition: border-color 0.3s ease-in-out;
@@ -106,18 +103,16 @@
             resize: none;
         }
 
-        #product button[type="submit"] {
+        #product .submitBtn[type="submit"] {
             cursor: pointer;
             width: 100%;
             border: none;
-            background: #4CAF50;
-            color: #FFF;
             margin: 0 0 5px;
             padding: 10px;
             font-size: 15px;
         }
 
-        #product button[type="submit"]:hover {
+        #product .submitBtn[type="submit"]:hover {
             background: #43A047;
             -webkit-transition: background 0.3s ease-in-out;
             -moz-transition: background 0.3s ease-in-out;
@@ -152,27 +147,34 @@
     </style>
 </head>
 <body>
+<form action="/products " class="backButton">
+    <button type="submit" style="width: 100px" class="btn btn-dark">Back</button>
+</form>
 <div class="container">
-    <form id="product" action="/products/new" method="post">
+    <form id="product" action="/products/update" method="post">
         <h3>Product info</h3>
         <fieldset>
             Name:
-            <input name="name" placeholder="Product name" type="text" tabindex="1" required autofocus/>
+            <input name="name" placeholder="Product name" value="<#if product??>${product.name}<#else></#if>"
+                   type="text" tabindex="1" required autofocus/>
         </fieldset>
         <fieldset>
             Amount:
-            <input name="amount" placeholder="Amount" type="number" tabindex="2" required>
+            <input name="amount" placeholder="Amount" value="<#if product??>${product.amount}<#else></#if>"
+                   type="number" tabindex="2" required>
         </fieldset>
         <fieldset>
             Price:
-            <input name="price" placeholder="Price $" type="number" tabindex="3" required>
+            <input name="price" placeholder="Price" value="<#if product??>${product.price?c}<#else></#if>" type="number"
+                   tabindex="3" required>
         </fieldset>
         <fieldset>
-            <button name="Submit" type="submit" id="contact-submit" data-submit="...Sending">Done!</button>
+            <button name="Submit" type="submit" class="btn btn-secondary submitBtn" data-submit="...Sending">Done!
+            </button>
         </fieldset>
-    </form>
-    <form style="position: absolute" action=/products>
-        <button  type="submit" class="btn btn-warning">Back</button>
+        <#if product??>
+            <input type="text" name="id" value="${product.id}" style="visibility: hidden">
+        </#if>
     </form>
 </div>
 </body>

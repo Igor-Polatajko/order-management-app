@@ -1,15 +1,20 @@
 package com.pnu.ordermanagementapp.model;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.List;
 
 @Data
-@Builder
 @Entity
 @Table(name = "clients")
+@NoArgsConstructor
 public class Client {
 
     @Id

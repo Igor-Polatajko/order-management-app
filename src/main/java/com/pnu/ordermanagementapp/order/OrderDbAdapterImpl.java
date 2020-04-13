@@ -23,6 +23,11 @@ public class OrderDbAdapterImpl implements OrderDbAdapter { // added only to mee
     }
 
     @Override
+    public Order findById(Long id) {
+        return orderDao.findById(id).orElse(null);
+    }
+
+    @Override
     public void create(Order order) {
         orderDao.save(order);
     }

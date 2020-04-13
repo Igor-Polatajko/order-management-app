@@ -4,6 +4,8 @@ import com.pnu.ordermanagementapp.adapter.DbAdapter;
 import com.pnu.ordermanagementapp.model.Client;
 import com.pnu.ordermanagementapp.model.Order;
 import com.pnu.ordermanagementapp.model.Product;
+import com.pnu.ordermanagementapp.order.dto.OrderFormSubmitDto;
+import com.pnu.ordermanagementapp.order.dto.OrderFtlDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,7 +57,7 @@ public class OrderController {
     @GetMapping
     public String getAll(Model model) {
 
-        List<OrderDto> orders = mapToOrderDto(
+        List<OrderFtlDto> orders = mapToOrderDto(
                 sortedByCreatedDate(orderDbAdapter.findAll()));
 
         orders = mapToOrderDto(setup()); // ToDo remove later
@@ -68,7 +70,7 @@ public class OrderController {
     @GetMapping("/client/{clientId}")
     public String getAllForClient(@PathVariable("clientId") Long clientId, Model model) {
 
-        List<OrderDto> orders = mapToOrderDto(
+        List<OrderFtlDto> orders = mapToOrderDto(
                 sortedByCreatedDate(orderDbAdapter.findByClientId(clientId)));
 
         orders = mapToOrderDto(setup()); // ToDo remove later
@@ -93,7 +95,18 @@ public class OrderController {
     }
 
     @PostMapping("/new")
-    public String create(@ModelAttribute Order order) {
+    public String create(@ModelAttribute OrderFormSubmitDto orderDto) {
+
+        Client client = clientDbAdapter.findById(orderDto.getClientId());
+        Product product = productDbAdapter.findById(orderDto.getProductId());
+
+        Order order = Order.builder()
+                .product(product)
+                .client(client)
+                .amount(orderDto.getAmount())
+                .createdDate(LocalDateTime.now())
+                .build();
+
         orderDbAdapter.create(order);
         return "redirect:/orders";
     }
@@ -110,9 +123,9 @@ public class OrderController {
                 .collect(Collectors.toList());
     }
 
-    private List<OrderDto> mapToOrderDto(List<Order> orders) {
+    private List<OrderFtlDto> mapToOrderDto(List<Order> orders) {
         return orders.stream()
-                .map(order -> OrderDto.builder()
+                .map(order -> OrderFtlDto.builder()
                         .orderId(order.getId())
                         .productName(order.getProduct().getName())
                         .clientFirstName(order.getClient().getFirstName())

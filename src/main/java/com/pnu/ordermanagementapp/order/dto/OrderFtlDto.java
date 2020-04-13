@@ -1,11 +1,11 @@
-package com.pnu.ordermanagementapp.order;
+package com.pnu.ordermanagementapp.order.dto;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class OrderDto {
+public class OrderFtlDto {
 
     private long orderId;
 

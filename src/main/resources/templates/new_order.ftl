@@ -24,18 +24,21 @@
         <form method="POST">
             <div class="col-lg-12">
                 <div class="form-group">
-                    <label for="exampleDropdown">Choose the product</label>
-                    <select data-live-search="true" title="Product" class="form-control selectpicker">
+                    <label for="ch_c">Choose the client</label>
+                    <select data-live-search="true" title="Client" class="form-control selectpicker" name="clientId"
+                            id="ch_c">
                         <#list clients as client>
-                            <option>Water Melon</option>
+                            <option value="${client.id}">${client.firstName} ${client.lastName} [ ${client.email}]
+                            </option>
                         </#list>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="exampleDropdown">Choose the client</label>
-                    <select data-live-search="true" title="Client" class="form-control selectpicker">
+                    <label for="ch_p">Choose the product</label>
+                    <select data-live-search="true" title="Product" class="form-control selectpicker" name="productId"
+                            id="ch_p">
                         <#list products as product>
-                            <option>Mango</option>
+                            <option value="${product.id}">${product.name}</option>
                         </#list>
                     </select>
                 </div>
@@ -44,7 +47,7 @@
             <div class="form-group">
                 <label for="example-number-input">Amount</label>
                 <div>
-                    <input class="form-control" type="number" value="1" id="example-number-input">
+                    <input class="form-control" name="amount" type="number" value="1" id="example-number-input">
                 </div>
             </div>
 

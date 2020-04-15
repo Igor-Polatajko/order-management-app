@@ -13,6 +13,9 @@
             align-items: center;
             padding-top: 30px;
         }
+        th, td {
+            border-bottom: 1px solid darkblue;
+        }
     </style>
 </head>
 <body>
@@ -22,8 +25,8 @@
 <form action="/clients/new" style="margin:auto; width: 50%; display: block; padding-bottom:10px ">
     <button type="submit" style="margin:auto; width: 50%; display: block" class="btn btn-info">Add new client</button>
 </form>
-<table border="2" class="table table-striped" style="width: 90%; margin: auto;">
-    <thead>
+<table border="2" class="table table-striped" style="width: 80%; margin: auto;">
+    <thead class="thead-dark">
     <tr>
         <th scope="col" style="width: 10%">ID</th>
         <th scope="col" style="width: 30%">First Name</th>
@@ -35,13 +38,13 @@
     <tbody>
     <#list clients as client>
         <tr>
-            <th scope="row" type="number">${client.id}</th>
+            <th scope="row">${client.id}</th>
             <td>${client.firstName}</td>
             <td>${client.lastName}</td>
             <td>${client.email}</td>
             <th scope="col">
             <span style="margin-left: 27%;">
-            <form style='display:inline; width: 50px' action="/clients/update/${client.id}" method="get">
+            <form style='display:inline; width: 50px ' action="/clients/update/${client.id}" method="get">
                 <button class="btn btn-outline-success" type="submit">Edit</button>
             </form>
             <form style='display:inline; width: 50px' action="/clients/delete/${client.id}" method="post" >

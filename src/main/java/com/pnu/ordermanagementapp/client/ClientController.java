@@ -1,10 +1,12 @@
 package com.pnu.ordermanagementapp.client;
 
 import com.pnu.ordermanagementapp.adapter.DbAdapter;
+import com.pnu.ordermanagementapp.exception.ClientNotFoundException;
 import com.pnu.ordermanagementapp.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,18 +26,18 @@ public class ClientController {
     @GetMapping("")
     public String getAll(Model model) {
         model.addAttribute("clients", adapter.findAll());
-        return "show_clients";
+        return "client/show_clients";
     }
 
     @GetMapping("/new")
     public String create() {
-        return "client_form";
+        return "client/create_form";
     }
 
     @GetMapping("/update/{id}")
     public String update(@PathVariable Long id, Model model) {
         model.addAttribute("client", adapter.findById(id));
-        return "client_form";
+        return "client/update_form";
     }
 
     @PostMapping("/new")
@@ -53,6 +55,11 @@ public class ClientController {
     @PostMapping("/delete/{id}")
     public String deleteClient(@PathVariable Long id) {
         adapter.delete(id);
-        return "redirect:/clients";
+        return "redirect:clients";
+    }
+
+    @ExceptionHandler(ClientNotFoundException.class)
+    public String handleError(ClientNotFoundException e) {
+        return "client/showError";
     }
 }

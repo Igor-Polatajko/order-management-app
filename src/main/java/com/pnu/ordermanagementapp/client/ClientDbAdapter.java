@@ -1,6 +1,7 @@
 package com.pnu.ordermanagementapp.client;
 
 import com.pnu.ordermanagementapp.adapter.DbAdapter;
+import com.pnu.ordermanagementapp.exception.ClientNotFoundException;
 import com.pnu.ordermanagementapp.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,6 +46,6 @@ public class ClientDbAdapter implements DbAdapter<Client> {
 
     private Client findClientByIdOrThrowException(Long id){
         return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Client not found!"));
+                .orElseThrow(() -> new ClientNotFoundException("Client not found!"));
     }
 }

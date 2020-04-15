@@ -35,20 +35,13 @@
             margin: 0 auto;
             position: relative;
         }
-        #product input[type="name"],
-        #product input[type="amount"],
-        #product input[type="price"],
-        #product textarea,
-        #product button[type="submit"] {
-            font: 400 12px/16px "Roboto", Helvetica, Arial, sans-serif;
-        }
-        #product {
+        #client {
             background: #F9F9F9;
             padding: 25px;
             margin: 150px 0;
             box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
         }
-        #product h3 {
+        #client h3 {
             text-align: center;
             display: block;
             font-size: 30px;
@@ -65,31 +58,12 @@
             padding: 0;
             width: 100%;
         }
-        #product input[type="name"],
-        #product input[type="amount"],
-        #product input[type="price"],
-        #product textarea {
-            width: 100%;
-            border: 1px solid #ccc;
-            background: #FFF;
-            margin: 0 0 5px;
-            padding: 10px;
-        }
-        #product input[type="name"],
-        #product input[type="amount"],
-        #product input[type="price"],
-        #p textarea:hover {
-            -webkit-transition: border-color 0.3s ease-in-out;
-            -moz-transition: border-color 0.3s ease-in-out;
-            transition: border-color 0.3s ease-in-out;
-            border: 1px solid #aaa;
-        }
-        #product textarea {
+        #client textarea {
             height: 100px;
             max-width: 100%;
             resize: none;
         }
-        #product .submitBtn[type="submit"] {
+        #client .submitBtn[type="submit"] {
             cursor: pointer;
             width: 100%;
             border: none;
@@ -97,31 +71,11 @@
             padding: 10px;
             font-size: 15px;
         }
-        #product .submitBtn[type="submit"]:hover {
+        #client .submitBtn[type="submit"]:hover {
             background: #43A047;
             -webkit-transition: background 0.3s ease-in-out;
             -moz-transition: background 0.3s ease-in-out;
             transition: background-color 0.3s ease-in-out;
-        }
-        #product button[type="submit"]:active {
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
-        }
-        #product input:focus,
-        #product textarea:focus {
-            outline: 0;
-            border: 1px solid #aaa;
-        }
-        ::-webkit-input-placeholder {
-            color: #888;
-        }
-        :-moz-placeholder {
-            color: #888;
-        }
-        ::-moz-placeholder {
-            color: #888;
-        }
-        :-ms-input-placeholder {
-            color: #888;
         }
     </style>
 </head>
@@ -130,8 +84,8 @@
     <button type="submit" style="width: 100px" class="btn btn-primary">Back</button>
 </form>
 <div class="container">
-    <form id="product" action="/clients/update" method="post">
-        <h3>Client info</h3>
+    <form id="client" action="/clients/new" method="post">
+        <h3>Create client</h3>
         <fieldset>
             First Name:
             <input name="firstName" placeholder="First Name" value="<#if client??>${client.firstName}<#else></#if>"
@@ -148,7 +102,7 @@
                    type="text" tabindex="3" required>
         </fieldset>
         <fieldset>
-            <button name="Submit" type="submit" class="btn btn-secondary submitBtn" data-submit="...Sending">Done!
+            <button name="Submit" type="submit" class="btn btn-secondary submitBtn" data-submit="...Sending">Save!
             </button>
         </fieldset>
         <#if client??>

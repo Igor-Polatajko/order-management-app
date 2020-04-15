@@ -151,7 +151,7 @@
     <button type="submit" style="width: 100px" class="btn btn-dark">Back</button>
 </form>
 <div class="container">
-    <form id="product" action="/products/update" method="post">
+    <form id="product" action="<#if product??>/products/update<#else>/products/new</#if>" method="post">
         <h3>Product info</h3>
         <fieldset>
             Name:

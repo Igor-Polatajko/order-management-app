@@ -28,9 +28,9 @@
     <tr>
         <th scope="col" style="width: 10%">ID</th>
         <th scope="col" style="width: 30%">Name</th>
-        <th scope="col" style="width: 20%">Amount</th>
+        <th scope="col" style="width: 10%">Amount</th>
         <th scope="col" style="width: 20%">Price</th>
-        <th style="width: 20%"></th>
+        <th style="width: 30%"></th>
     </tr>
     </thead>
     <tbody>
@@ -42,12 +42,15 @@
             <td>${product.price}</td>
             <th scope="col">
             <span style="margin-left: 27%;">
-            <form style='display:inline; width: 50px' action="/products/update/${product.id}" method="get">
+                <form style='display:inline; width: 50px' action="/orders/product/${product.id}" method="get">
+                    <button class="btn btn-warning" type="submit">Orders</button>
+                </form>
+                <form style='display:inline; width: 50px' action="/products/update/${product.id}" method="get">
                 <button class="btn btn-light" type="submit">Edit</button>
-            </form>
-            <form style='display:inline; width: 50px' action="/products/delete/${product.id}" method="post">
-                <button class="btn btn-dark" type="submit">Delete</button>
-            </form>
+                </form>
+                <form style='display:inline; width: 50px' action="/products/delete/${product.id}" method="post">
+                    <button class="btn btn-dark" type="submit">Delete</button>
+                </form>
             </span>
             </th>
         </tr>

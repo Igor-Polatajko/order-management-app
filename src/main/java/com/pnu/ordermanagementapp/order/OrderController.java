@@ -44,7 +44,7 @@ public class OrderController {
         model.addAttribute("orders", orders);
         model.addAttribute("headline", "The most recent orders");
 
-        return "show_orders";
+        return "orders/show_orders";
     }
 
     @GetMapping("/client/{clientId}")
@@ -60,7 +60,7 @@ public class OrderController {
                 client.getFirstName(), client.getLastName()
         ));
 
-        return "show_orders";
+        return "orders/show_orders";
     }
 
     @GetMapping("/product/{productId}")
@@ -76,7 +76,7 @@ public class OrderController {
                 product.getName(), product.getId()
         ));
 
-        return "show_orders";
+        return "orders/show_orders";
     }
 
     @GetMapping("/new")
@@ -88,7 +88,7 @@ public class OrderController {
         model.addAttribute("clients", clients);
         model.addAttribute("products", products);
 
-        return "new_order";
+        return "orders/new_order";
     }
 
     @PostMapping("/new")
@@ -116,7 +116,7 @@ public class OrderController {
 
     private List<Order> sortedByCreatedDate(List<Order> orders) {
         return orders.stream()
-                .sorted(Comparator.comparing(Order::getCreatedDate))
+                .sorted(Comparator.comparing(Order::getCreatedDate).reversed())
                 .collect(Collectors.toList());
     }
 

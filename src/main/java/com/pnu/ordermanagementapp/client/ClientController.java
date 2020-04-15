@@ -7,13 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/clients")
@@ -27,24 +23,19 @@ public class ClientController {
 
     @GetMapping("")
     public String getAll(Model model) {
-        List<Client> list = adapter.findAll();
-        model.addAllAttributes(Collections.singletonMap("clients", list));
+        model.addAttribute("clients", adapter.findAll());
         return "show_clients";
     }
 
     @GetMapping("/new")
     public String create() {
-        return "new_client";
+        return "client_form";
     }
 
-    @GetMapping("/update")
-    public String update(Model model) {
-        List<Client> clients = adapter.findAll();
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("clients", clients);
-        model.addAllAttributes(params);
-        return "update_client";
+    @GetMapping("/update/{id}")
+    public String update(@PathVariable Long id, Model model) {
+        model.addAttribute("client", adapter.findById(id));
+        return "client_form";
     }
 
     @PostMapping("/new")
@@ -60,8 +51,8 @@ public class ClientController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteClient(@ModelAttribute Client client ) {
-        adapter.delete(client.getId());
+    public String deleteClient(@PathVariable Long id) {
+        adapter.delete(id);
         return "redirect:/clients";
     }
 }

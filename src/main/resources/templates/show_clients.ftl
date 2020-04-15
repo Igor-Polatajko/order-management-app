@@ -3,58 +3,55 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-
-    <style>
-        .clients {
-            font-size: large;
-            overflow-x: scroll;
+    <style type="text/css">
+        .backButton {
+            position: absolute;
+            margin-left: 30px;
+        }
+        body {
+            background-image: linear-gradient(#c5c7cb, #f8f9fa);
+            align-items: center;
+            padding-top: 30px;
         }
     </style>
 </head>
 <body>
-
-
-<div>
-    <a href="/client/new" class="btn btn-outline-primary m-4">New + </a>
-</div>
-
-<div class="container clients">
-
+<form action="/" class="backButton">
+    <button type="submit" style="width: 100px" class=" btn btn-primary">Back</button>
+</form>
+<form action="/clients/new" style="margin:auto; width: 50%; display: block; padding-bottom:10px ">
+    <button type="submit" style="margin:auto; width: 50%; display: block" class="btn btn-info">Add new client</button>
+</form>
+<table border="2" class="table table-striped" style="width: 90%; margin: auto;">
+    <thead>
+    <tr>
+        <th scope="col" style="width: 10%">ID</th>
+        <th scope="col" style="width: 30%">First Name</th>
+        <th scope="col" style="width: 20%">Last Name</th>
+        <th scope="col" style="width: 20%">Email</th>
+        <th style="width: 20%"></th>
+    </tr>
+    </thead>
+    <tbody>
     <#list clients as client>
-        <div class="row my-3 p-4 bg-light">
-            <div class="col-md-10 row">
-                <div class="col-md-4">
-                    <div class="p-4 rounded bg-white">
-                        <strong>ID: ${client.id}</strong>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="row">
-                        Client:
-                        <div class="px-2 rounded bg-white mx-3">
-                            <strong>${client.firstName} ${client.lastName}</strong>
-                        </div>
-                    </div>
-                    <div class="row">
-                        Client email:
-                        <div class="px-2 rounded bg-white mx-3">
-                            <strong>${client.email}</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-                <div class="col-md-2 d-flex justify-content-center">
-                    <div class="align-self-center">
-                            <button class="btn btn-danger" href="new_order">Create order</button>
-                            <form method="POST" action="/clients/delete/${client.id}">
-                                <button class="btn btn-danger">Delete</button>
-                            </form>
-                    </div>
-                </div>
-        </div>
+        <tr>
+            <th scope="row" type="number">${client.id}</th>
+            <td>${client.firstName}</td>
+            <td>${client.lastName}</td>
+            <td>${client.email}</td>
+            <th scope="col">
+            <span style="margin-left: 27%;">
+            <form style='display:inline; width: 50px' action="/clients/update/${client.id}" method="get">
+                <button class="btn btn-outline-success" type="submit">Edit</button>
+            </form>
+            <form style='display:inline; width: 50px' action="/clients/delete/${client.id}" method="post" >
+                <button class="btn btn-outline-danger" type="submit">Delete</button>
+            </form>
+            </span>
+            </th>
+        </tr>
     </#list>
-</div>
-
-
+    </tbody>
+</table>
 </body>
 </html>

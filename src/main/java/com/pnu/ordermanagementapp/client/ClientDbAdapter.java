@@ -38,6 +38,11 @@ public class ClientDbAdapter implements DbAdapter<Client> {
         repository.delete(client);
     }
 
+    @Override
+    public Client findById(Long id) {
+        return findClientByIdOrThrowException(id);
+    }
+
     private Client findClientByIdOrThrowException(Long id){
         return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Client not found!"));

@@ -9,4 +9,6 @@ public interface OrderDbAdapter extends DbAdapter<Order> {
 
     List<Order> findByClientId(Long id);
 
+    List<Order> findByProductId(Long id);
+
 }

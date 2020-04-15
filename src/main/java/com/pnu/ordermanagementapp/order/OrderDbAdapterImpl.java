@@ -48,4 +48,9 @@ public class OrderDbAdapterImpl implements OrderDbAdapter { // added only to mee
     public List<Order> findByClientId(Long id) {
         return orderDao.findByClientId(id);
     }
+
+    @Override
+    public List<Order> findByProductId(Long id) {
+        return orderDao.findByProductId(id);
+    }
 }

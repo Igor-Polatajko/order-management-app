@@ -9,4 +9,6 @@ public interface OrderDao extends JpaRepository<Order, Long> {
 
     List<Order> findByClientId(Long clintId);
 
+    List<Order> findByProductId(Long productId);
+
 }

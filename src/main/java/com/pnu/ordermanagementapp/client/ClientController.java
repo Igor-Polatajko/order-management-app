@@ -1,12 +1,10 @@
 package com.pnu.ordermanagementapp.client;
 
 import com.pnu.ordermanagementapp.adapter.DbAdapter;
-import com.pnu.ordermanagementapp.exception.ClientNotFoundException;
 import com.pnu.ordermanagementapp.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,8 +56,4 @@ public class ClientController {
         return "redirect:clients";
     }
 
-    @ExceptionHandler(ClientNotFoundException.class)
-    public String handleError(ClientNotFoundException e) {
-        return "client/showError";
-    }
 }

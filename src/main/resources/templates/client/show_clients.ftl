@@ -25,6 +25,9 @@
 <form action="/clients/new" style="margin:auto; width: 50%; display: block; padding-bottom:10px ">
     <button type="submit" style="margin:auto; width: 50%; display: block" class="btn btn-info">Add new client</button>
 </form>
+<form action="/orders/new" style="margin:auto; width: 50%; display: block; padding-bottom:10px ">
+    <button type="submit" style="margin:auto; width: 50%; display: block" class="btn btn-info">Make new order</button>
+</form>
 <table border="2" class="table table-striped" style="width: 80%; margin: auto;">
     <thead class="thead-dark">
     <tr>

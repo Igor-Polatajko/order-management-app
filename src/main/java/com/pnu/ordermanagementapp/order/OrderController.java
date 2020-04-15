@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -44,6 +42,7 @@ public class OrderController {
                 sortedByCreatedDate(orderDbAdapter.findAll()));
 
         model.addAttribute("orders", orders);
+        model.addAttribute("headline", "The most recent orders");
 
         return "show_orders";
     }
@@ -54,7 +53,12 @@ public class OrderController {
         List<OrderFtlDto> orders = mapToOrderDtos(
                 sortedByCreatedDate(orderDbAdapter.findByClientId(clientId)));
 
+        Client client = clientDbAdapter.findById(clientId);
+
         model.addAttribute("orders", orders);
+        model.addAttribute("headline", String.format("Orders made by %s %s",
+                client.getFirstName(), client.getLastName()
+        ));
 
         return "show_orders";
     }
@@ -63,9 +67,14 @@ public class OrderController {
     public String getAllForProduct(@PathVariable("productId") Long productId, Model model) {
 
         List<OrderFtlDto> orders = mapToOrderDtos(
-                sortedByCreatedDate(orderDbAdapter.findByClientId(productId)));
+                sortedByCreatedDate(orderDbAdapter.findByProductId(productId)));
+
+        Product product = productDbAdapter.findById(productId);
 
         model.addAttribute("orders", orders);
+        model.addAttribute("headline", String.format("Orders of %s (id: %s)",
+                product.getName(), product.getId()
+        ));
 
         return "show_orders";
     }
@@ -76,10 +85,8 @@ public class OrderController {
         List<Client> clients = clientDbAdapter.findAll();
         List<Product> products = productDbAdapter.findAll();
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("clients", clients);
-        params.put("products", products);
-        model.addAllAttributes(params);
+        model.addAttribute("clients", clients);
+        model.addAttribute("products", products);
 
         return "new_order";
     }
@@ -128,7 +135,6 @@ public class OrderController {
                         .build())
                 .collect(Collectors.toList());
     }
-
 
     private double calcTotalPrice(Order order) {
         return order.getProduct().getPrice() * order.getAmount();

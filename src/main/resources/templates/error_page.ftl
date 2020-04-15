@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="container m-a mt-5">
-    <h1 class="m-a">Internal service error!</h1>
+    <h1 class="m-a text-center">Internal service error!</h1>
     <a href="/" class="btn btn-outline-primary mt-3">Main page</a>
 </div>
 </body>

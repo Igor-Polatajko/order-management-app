@@ -21,7 +21,7 @@ public class ClientController {
         this.adapter = adapter;
     }
 
-    @GetMapping("")
+    @GetMapping
     public String getAll(Model model) {
         model.addAttribute("clients", adapter.findAll());
         return "client/show_clients";

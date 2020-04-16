@@ -5,18 +5,18 @@ import com.pnu.ordermanagementapp.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/products")
 public class ProductController {
 
+    private DbAdapter<Product> productDbAdapter;
+
     @Autowired
-    private DbAdapter productDbAdapter;
+    public ProductController(DbAdapter<Product> productDbAdapter) {
+        this.productDbAdapter = productDbAdapter;
+    }
 
     @GetMapping
     public String findAll(Model model) {

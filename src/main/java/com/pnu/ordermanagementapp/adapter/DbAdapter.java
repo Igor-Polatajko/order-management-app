@@ -13,6 +13,4 @@ public interface DbAdapter<T> { // added only to meet task requirements
     void update(T obj);
 
     void delete(Long id);
-
-    T findById(Long id);
 }

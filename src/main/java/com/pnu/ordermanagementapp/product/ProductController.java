@@ -21,18 +21,18 @@ public class ProductController {
     @GetMapping
     public String findAll(Model model) {
         model.addAttribute("products", productDbAdapter.findAll());
-        return "index_products";
+        return "/product/index_products";
     }
 
     @GetMapping("/new")
     public String createNew() {
-        return "form_product";
+        return "/product/form_product";
     }
 
     @GetMapping("/update/{id}")
     public String update(@PathVariable("id") Long id, Model model) {
         model.addAttribute("product", productDbAdapter.findById(id));
-        return "form_product";
+        return "/product/form_product";
     }
 
     @PostMapping("/new")

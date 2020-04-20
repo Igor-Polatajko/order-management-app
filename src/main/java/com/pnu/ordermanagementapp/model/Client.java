@@ -27,6 +27,8 @@ public class Client {
 
     private String email;
 
+    private boolean active;
+
     @OneToMany(mappedBy = "client")
     private List<Order> orders;
 

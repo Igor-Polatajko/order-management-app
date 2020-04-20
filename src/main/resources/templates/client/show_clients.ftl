@@ -25,9 +25,6 @@
 <form action="/clients/new" style="margin:auto; width: 50%; display: block; padding-bottom:10px ">
     <button type="submit" style="margin:auto; width: 50%; display: block" class="btn btn-info">Add new client</button>
 </form>
-<form action="/orders/new" style="margin:auto; width: 50%; display: block; padding-bottom:10px ">
-    <button type="submit" style="margin:auto; width: 50%; display: block" class="btn btn-info">Make new order</button>
-</form>
 <table border="2" class="table table-striped" style="width: 80%; margin: auto;">
     <thead class="thead-dark">
     <tr>
@@ -46,13 +43,16 @@
             <td>${client.lastName}</td>
             <td>${client.email}</td>
             <th scope="col">
-            <span style="margin-left: 27%;">
-            <form style='display:inline; width: 50px ' action="/clients/update/${client.id}" method="get">
-                <button class="btn btn-outline-success" type="submit">Edit</button>
-            </form>
-            <form style='display:inline; width: 50px' action="/clients/delete/${client.id}" method="post" >
-                <button class="btn btn-outline-danger" type="submit">Delete</button>
-            </form>
+            <span style="margin-left: 13%;">
+                <form style='display:inline; width: 50px' action="/orders/product/${client.id}" method="get">
+                    <button class="btn btn-outline-info" type="submit">Orders</button>
+                </form>
+                <form style='display:inline; width: 50px ' action="/clients/update/${client.id}" method="get">
+                    <button class="btn btn-outline-success" type="submit">Edit</button>
+                </form>
+                <form style='display:inline; width: 50px' action="/clients/delete/${client.id}" method="post" >
+                    <button class="btn btn-outline-danger" type="submit">Delete</button>
+                </form>
             </span>
             </th>
         </tr>

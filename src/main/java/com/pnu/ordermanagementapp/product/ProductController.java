@@ -1,11 +1,15 @@
 package com.pnu.ordermanagementapp.product;
 
-import com.pnu.ordermanagementapp.adapter.DbAdapter;
 import com.pnu.ordermanagementapp.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/products")
@@ -19,14 +23,16 @@ public class ProductController {
     }
 
     @GetMapping
-    public String findAll(Model model) {
-        model.addAttribute("products", productDbAdapter.findAll());
+    public String findAll(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page, Model model) {
+        model.addAttribute("products", productDbAdapter.findAll(page));
         return "/product/index_products";
     }
 
-    @GetMapping("/like")
-    public String findAllLike(String name, Model model) {
-        model.addAttribute("products", productDbAdapter.findAllLike(name));
+    @GetMapping("/find")
+    public String findAllByName(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+                              @ModelAttribute("name") String name, Model model) {
+        model.addAttribute("products", productDbAdapter.findAllByName(page, name));
+      //  model.addAttribute("findName", name);
         return "/product/index_products";
     }
 

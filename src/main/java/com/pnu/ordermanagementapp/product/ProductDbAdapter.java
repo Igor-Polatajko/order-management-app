@@ -2,47 +2,12 @@ package com.pnu.ordermanagementapp.product;
 
 import com.pnu.ordermanagementapp.adapter.DbAdapter;
 import com.pnu.ordermanagementapp.model.Product;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
+public interface ProductDbAdapter extends DbAdapter<Product> {
 
-@Component
-public class ProductDbAdapter implements DbAdapter<Product> {
+    Page<Product> findAll(Integer page);
 
-    private ProductDao productDao;
+    Page<Product> findAllByName(Integer page, String name);
 
-    @Autowired
-    public ProductDbAdapter(ProductDao productDao) {
-        this.productDao = productDao;
-    }
-
-    @Override
-    public List<Product> findAll() {
-        return productDao.findAll();
-    }
-
-    public List<Product> findAllLike(String name) {
-        return productDao.findByNameContainingIgnoreCase(name);
-
-    }
-    @Override
-    public void create(Product product) {
-        productDao.save(product);
-    }
-
-    @Override
-    public void update(Product product) {
-        productDao.save(product);
-    }
-
-    @Override
-    public Product findById(Long id) {
-        return productDao.findById(id).get();
-    }
-
-    @Override
-    public void delete(Long id) {
-        productDao.deleteById(id);
-    }
 }

@@ -22,6 +22,10 @@ public class ProductDbAdapter implements DbAdapter<Product> {
         return productDao.findAll();
     }
 
+    public List<Product> findAllLike(String name) {
+        return productDao.findByNameContainingIgnoreCase(name);
+
+    }
     @Override
     public void create(Product product) {
         productDao.save(product);

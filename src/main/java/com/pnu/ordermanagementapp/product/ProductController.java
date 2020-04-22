@@ -11,16 +11,22 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/products")
 public class ProductController {
 
-    private DbAdapter<Product> productDbAdapter;
+    private ProductDbAdapter productDbAdapter;
 
     @Autowired
-    public ProductController(DbAdapter<Product> productDbAdapter) {
+    public ProductController(ProductDbAdapter productDbAdapter) {
         this.productDbAdapter = productDbAdapter;
     }
 
     @GetMapping
     public String findAll(Model model) {
         model.addAttribute("products", productDbAdapter.findAll());
+        return "/product/index_products";
+    }
+
+    @GetMapping("/like")
+    public String findAllLike(String name, Model model) {
+        model.addAttribute("products", productDbAdapter.findAllLike(name));
         return "/product/index_products";
     }
 

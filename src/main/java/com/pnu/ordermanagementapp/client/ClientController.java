@@ -53,7 +53,7 @@ public class ClientController {
     @PostMapping("/delete/{id}")
     public String deleteClient(@PathVariable Long id) {
         adapter.delete(id);
-        return "redirect:clients";
+        return "redirect:/clients";
     }
 
 }

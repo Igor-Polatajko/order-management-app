@@ -44,13 +44,13 @@
             <td>${client.email}</td>
             <th scope="col">
             <span style="margin-left: 13%;">
-                <form style='display:inline; width: 50px' action="/orders/product/${client.id}" method="get">
+                <a style='display:inline; width: 50px' href="/orders/product/${client.id}" >
                     <button class="btn btn-outline-info" type="submit">Orders</button>
-                </form>
-                <form style='display:inline; width: 50px ' action="/clients/update/${client.id}" method="get">
+                </a>
+                <a style='display:inline; width: 50px ' href="/clients/update/${client.id}" >
                     <button class="btn btn-outline-success" type="submit">Edit</button>
-                </form>
-                <form style='display:inline; width: 50px' action="/clients/delete/${client.id}" method="post" >
+                </a>
+                <form style='display:inline; width: 50px' action="/clients/delete/${client.id}" method="post">
                     <button class="btn btn-outline-danger" type="submit">Delete</button>
                 </form>
             </span>

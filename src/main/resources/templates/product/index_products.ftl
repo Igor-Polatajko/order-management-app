@@ -4,9 +4,36 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <style type="text/css">
-        .backButton {
+        .backBtn {
+            position: relative;
+            left: 5%;
+            display: inline;
+            width: 100px;
+        }
+        .search-form {
+            display: inline;
             position: absolute;
-            margin-left: 30px;
+            left: 35%;
+            right: 35%;
+        }
+        .search-btn {
+            display: inline;
+
+        }
+        .search-field {
+            width: 200px;
+            display: inline;
+        }
+
+        .newBtn {
+            display: inline;
+            position: absolute;
+            right: 5%;
+            display: inline;
+        }
+
+        .pagination{
+            margin-left: 5%;
         }
 
         body {
@@ -17,12 +44,23 @@
     </style>
 </head>
 <body>
-<form action="/" class="backButton">
-    <button type="submit" style="width: 100px" class=" btn btn-dark">Back</button>
-</form>
-<form action="/products/new" style="margin:auto; width: 50%; display: block; padding-bottom:10px ">
-    <button type="submit" style="margin:auto; width: 50%; display: block" class="btn btn-info">Add new product</button>
-</form>
+<div style="width: 100%; margin-bottom: 15px">
+    <a href="/">
+        <button class="backBtn btn btn-dark">Back</button>
+    </a>
+
+
+    <form action="/products/find" class="search-form">
+        <input name="name" type="text" class="form-control search-field" <#if name??>value=${name}</#if> placeholder="Search product">
+        <button type="submit" class="btn btn-light search-btn">Search</button>
+        <a href="/products">Reset</a>
+    </form>
+
+    <a href="/products/new">
+        <button class="btn btn-info newBtn">Add new product</button>
+    </a>
+</div>
+
 <table border="2" class="table table-striped" style="width: 90%; margin: auto;">
     <thead>
     <tr>
@@ -34,7 +72,7 @@
     </tr>
     </thead>
     <tbody>
-    <#list products as product>
+    <#list products.content as product>
         <tr>
             <th scope="row">${product.id}</th>
             <td>${product.name}</td>
@@ -55,7 +93,17 @@
             </th>
         </tr>
     </#list>
+
     </tbody>
+
 </table>
+    <ul class="pagination">
+        <#list 1..products.totalPages as pageNumber>
+            <li class="page-item"><a <#if pageNumber - 1 == products.number>style="background-color: gray" </#if>
+                        class="page-link" href="<#if name??>/products/find?name=${name}&page=${pageNumber}
+                    <#else>/products?page=${pageNumber}</#if>">${pageNumber}</a></li>
+        </#list>
+    </ul>
+
 </body>
 </html>

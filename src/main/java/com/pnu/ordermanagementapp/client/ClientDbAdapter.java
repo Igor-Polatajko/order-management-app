@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ClientDbAdapter implements DbAdapter<Client> {
@@ -19,7 +20,7 @@ public class ClientDbAdapter implements DbAdapter<Client> {
 
     @Override
     public List<Client> findAll() {
-        return (List<Client>) repository.findAll();
+        return ((List<Client>)repository.findAll()).stream().filter(i->i.isActive()).collect(Collectors.toList());
     }
 
     @Override
@@ -36,7 +37,8 @@ public class ClientDbAdapter implements DbAdapter<Client> {
     @Override
     public void delete(Long id) {
         Client client = findClientByIdOrThrowException(id);
-        repository.delete(client);
+        client.setActive(false);
+        repository.save(client);
     }
 
     @Override

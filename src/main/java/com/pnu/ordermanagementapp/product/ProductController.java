@@ -25,14 +25,14 @@ public class ProductController {
     @GetMapping
     public String findAll(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page, Model model) {
         model.addAttribute("products", productDbAdapter.findAll(page));
-        return "show_products";
+        return "product/show_products";
     }
 
     @GetMapping("/find")
     public String findAllByName(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
                                 @ModelAttribute("name") String name, Model model) {
         model.addAttribute("products", productDbAdapter.findAllByName(page, name));
-        return "show_products";
+        return "product/show_products";
     }
 
     @GetMapping("/new")

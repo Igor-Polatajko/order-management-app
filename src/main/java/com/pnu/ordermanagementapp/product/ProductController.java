@@ -30,37 +30,37 @@ public class ProductController {
 
     @GetMapping("/find")
     public String findAllByName(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-                                @ModelAttribute("name") String name, Model model) {
+                                @ModelAttribute("name")String name, Model model) {
         model.addAttribute("products", productDbAdapter.findAllByName(page, name));
         return "product/show_products";
-    }
+        }
 
-    @GetMapping("/new")
-    public String createNew() {
-        return "/product/form_product";
-    }
+        @GetMapping("/new")
+        public String createNew () {
+            return "/product/form_product";
+        }
 
-    @GetMapping("/update/{id}")
-    public String update(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("product", productDbAdapter.findById(id));
-        return "/product/form_product";
-    }
+        @GetMapping("/update/{id}")
+        public String update (@PathVariable("id") Long id, Model model){
+            model.addAttribute("product", productDbAdapter.findById(id));
+            return "/product/form_product";
+        }
 
-    @PostMapping("/new")
-    public String create(@ModelAttribute("product") Product product) {
-        productDbAdapter.create(product);
-        return "redirect:/products";
-    }
+        @PostMapping("/new")
+        public String create (@ModelAttribute("product") Product product){
+            productDbAdapter.create(product);
+            return "redirect:/products";
+        }
 
-    @PostMapping("/update")
-    public String updateProduct(@ModelAttribute("product") Product product) {
-        productDbAdapter.update(product);
-        return "redirect:/products";
-    }
+        @PostMapping("/update")
+        public String updateProduct (@ModelAttribute("product") Product product){
+            productDbAdapter.update(product);
+            return "redirect:/products";
+        }
 
-    @PostMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable("id") Long id) {
-        productDbAdapter.delete(id);
-        return "redirect:/products";
+        @PostMapping("/delete/{id}")
+        public String deleteProduct (@PathVariable("id") Long id){
+            productDbAdapter.delete(id);
+            return "redirect:/products";
+        }
     }
-}

@@ -1,8 +1,7 @@
 package com.pnu.ordermanagementapp.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,8 +12,7 @@ import javax.persistence.Table;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor
 @Entity
 @Table(name = "products")
 public class Product {
@@ -29,16 +27,9 @@ public class Product {
 
     private double price;
 
+    private boolean active = true;
+
     @OneToMany(mappedBy = "product")
     private List<Order> orders;
 
-    public Product() {
-    }
-
-    public Product(long id, String name, int amount, int price) {
-        this.id = id;
-        this.name = name;
-        this.amount = amount;
-        this.price = price;
-    }
 }

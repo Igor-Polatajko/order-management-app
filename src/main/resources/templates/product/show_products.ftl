@@ -80,12 +80,12 @@
             <td>${product.price}</td>
             <th scope="col">
             <span style="margin-left: 27%;">
-                <form style='display:inline; width: 50px' action="/orders/product/${product.id}" method="get">
+                <a style='display:inline; width: 50px' href="/orders/product/${product.id}">
                     <button class="btn btn-warning" type="submit">Orders</button>
-                </form>
-                <form style='display:inline; width: 50px' action="/products/update/${product.id}" method="get">
+                </a>
+                <a style='display:inline; width: 50px' href="/products/update/${product.id}" method="get">
                 <button class="btn btn-light" type="submit">Edit</button>
-                </form>
+                </a>
                 <form style='display:inline; width: 50px' action="/products/delete/${product.id}" method="post">
                     <button class="btn btn-dark" type="submit">Delete</button>
                 </form>

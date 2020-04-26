@@ -147,9 +147,9 @@
     </style>
 </head>
 <body>
-<form action="/products " class="backButton">
-    <button type="submit" style="width: 100px" class="btn btn-dark">Back</button>
-</form>
+<a href="/products">
+    <button type="submit" style="width: 100px" class="backButton btn btn-dark">Back</button>
+</a>
 <div class="container">
     <form id="product" action="<#if product??>/products/update<#else>/products/new</#if>" method="post">
         <h3>Product info</h3>

@@ -17,6 +17,8 @@ public class ProductDbAdapterImpl implements ProductDbAdapter {
 
     private ProductDao productDao;
 
+    private static int pageSize = 10;
+
     @Autowired
     public ProductDbAdapterImpl(ProductDao productDao) {
         this.productDao = productDao;
@@ -29,13 +31,13 @@ public class ProductDbAdapterImpl implements ProductDbAdapter {
 
     @Override
     public Page<Product> findAll(Integer pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber-1, 10, Sort.Direction.ASC, "name");
+        Pageable pageable = PageRequest.of(pageNumber-1, pageSize, Sort.Direction.ASC, "name");
         return productDao.findAll(pageable);
     }
 
     @Override
     public Page<Product> findAllByName(Integer pageNumber, String name) {
-        Pageable pageable = PageRequest.of(pageNumber-1, 10, Sort.Direction.ASC, "name");
+        Pageable pageable = PageRequest.of(pageNumber-1, pageSize, Sort.Direction.ASC, "name");
         int total = productDao.countWithName(name);
         List<Product> products = productDao.findAllByName(name, pageable.getPageSize(), pageable.getOffset());
         Page<Product> page = new PageImpl(products, pageable, total);

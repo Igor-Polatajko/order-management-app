@@ -4,16 +4,11 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <style type="text/css">
-        .backForm {
+        .backBtn {
             position: relative;
             left: 5%;
             display: inline;
-        }
-
-        .new-form {
-            position: absolute;
-            right: 5%;
-            display: inline;
+            width: 100px;
         }
         .search-form {
             display: inline;
@@ -30,9 +25,11 @@
             display: inline;
         }
 
-        .new-btn {
+        .newBtn {
             display: inline;
-
+            position: absolute;
+            right: 5%;
+            display: inline;
         }
 
         .pagination{
@@ -48,19 +45,20 @@
 </head>
 <body>
 <div style="width: 100%; margin-bottom: 15px">
-    <form action="/" class="backForm">
-        <button type="submit" style="width: 100px" class="btn btn-dark">Back</button>
-    </form>
+    <a href="/">
+        <button class="backBtn btn btn-dark">Back</button>
+    </a>
+
 
     <form action="/products/find" class="search-form">
-        <input name="name" type="text" class="form-control search-field" <#if name??>value=""</#if> placeholder="Search product">
+        <input name="name" type="text" class="form-control search-field" <#if name??>value=${name}</#if> placeholder="Search product">
         <button type="submit" class="btn btn-light search-btn">Search</button>
         <a href="/products">Reset</a>
     </form>
 
-    <form action="/products/new"  class="new-form">
-        <button type="submit" class="btn btn-info new-btn">Add new product</button>
-    </form>
+    <a href="/products/new">
+        <button class="btn btn-info newBtn">Add new product</button>
+    </a>
 </div>
 
 <table border="2" class="table table-striped" style="width: 90%; margin: auto;">

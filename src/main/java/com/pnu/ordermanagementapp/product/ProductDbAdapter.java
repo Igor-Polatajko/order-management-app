@@ -6,8 +6,8 @@ import org.springframework.data.domain.Page;
 
 public interface ProductDbAdapter extends DbAdapter<Product> {
 
-    Page<Product> findAll(Integer page);
+    Page<Product> findAllByName(Integer pageNumber, String name);
 
-    Page<Product> findAllByName(Integer page, String name);
+    Page<Product> findAll(Integer pageNumber);
 
 }

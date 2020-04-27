@@ -1,14 +1,16 @@
 package com.pnu.ordermanagementapp.order;
 
 import com.pnu.ordermanagementapp.model.Order;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 public interface OrderDao extends JpaRepository<Order, Long> {
 
-    List<Order> findByClientId(Long clintId);
+    Page<Order> findAll(Pageable pageable);
 
-    List<Order> findByProductId(Long productId);
+    Page<Order> findByClientId(Long clintId, Pageable pageable);
+
+    Page<Order> findByProductId(Long productId, Pageable pageable);
 
 }

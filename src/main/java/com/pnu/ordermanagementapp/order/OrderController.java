@@ -5,16 +5,15 @@ import com.pnu.ordermanagementapp.model.Client;
 import com.pnu.ordermanagementapp.model.Order;
 import com.pnu.ordermanagementapp.model.Product;
 import com.pnu.ordermanagementapp.order.dto.OrderFormSubmitDto;
-import com.pnu.ordermanagementapp.order.dto.OrderFtlDto;
+import com.pnu.ordermanagementapp.order.dto.OrdersFtlPageDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/orders")
@@ -26,24 +25,25 @@ public class OrderController {
 
     private DbAdapter<Product> productDbAdapter;
 
-    private OrdersToOrderFtlDtosMapper ordersToOrderFtlDtosMapper;
+    private OrdersPageToOrdersFtlPageDtoMapper ordersPageToOrdersFtlPageDtoMapper;
 
     @Autowired
     public OrderController(OrderDbAdapter orderDbAdapter,
                            DbAdapter<Client> clientDbAdapter,
                            DbAdapter<Product> productDbAdapter,
-                           OrdersToOrderFtlDtosMapper ordersToOrderFtlDtosMapper) {
+                           OrdersPageToOrdersFtlPageDtoMapper ordersPageToOrdersFtlPageDtoMapper) {
         this.orderDbAdapter = orderDbAdapter;
         this.clientDbAdapter = clientDbAdapter;
         this.productDbAdapter = productDbAdapter;
-        this.ordersToOrderFtlDtosMapper = ordersToOrderFtlDtosMapper;
+        this.ordersPageToOrdersFtlPageDtoMapper = ordersPageToOrdersFtlPageDtoMapper;
     }
 
     @GetMapping
-    public String getAll(Model model) {
+    public String getAll(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
+                         Model model) {
 
-        List<OrderFtlDto> orders = ordersToOrderFtlDtosMapper.map(
-                sortedByCreatedDate(orderDbAdapter.findAll()));
+        Page<Order> ordersPage = orderDbAdapter.findAll(pageNumber);
+        OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper.map(ordersPage);
 
         model.addAttribute("orders", orders);
         model.addAttribute("headline", "The most recent orders");
@@ -52,10 +52,12 @@ public class OrderController {
     }
 
     @GetMapping("/client/{clientId}")
-    public String getAllForClient(@PathVariable("clientId") Long clientId, Model model) {
+    public String getAllForClient(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
+                                  @PathVariable("clientId") Long clientId, Model model) {
 
-        List<OrderFtlDto> orders = ordersToOrderFtlDtosMapper.map(
-                sortedByCreatedDate(orderDbAdapter.findByClientId(clientId)));
+        Page<Order> ordersPage = orderDbAdapter.findByClientId(clientId, pageNumber);
+        OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper
+                .map(ordersPage);
 
         Client client = clientDbAdapter.findById(clientId);
 
@@ -68,10 +70,12 @@ public class OrderController {
     }
 
     @GetMapping("/product/{productId}")
-    public String getAllForProduct(@PathVariable("productId") Long productId, Model model) {
+    public String getAllForProduct(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
+                                   @PathVariable("productId") Long productId, Model model) {
 
-        List<OrderFtlDto> orders = ordersToOrderFtlDtosMapper.map(
-                sortedByCreatedDate(orderDbAdapter.findByProductId(productId)));
+        Page<Order> ordersPage = orderDbAdapter.findByProductId(productId, pageNumber);
+        OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper
+                .map(ordersPage);
 
         Product product = productDbAdapter.findById(productId);
 
@@ -116,12 +120,6 @@ public class OrderController {
     public String delete(@PathVariable("id") Long id) {
         orderDbAdapter.delete(id);
         return "redirect:/orders";
-    }
-
-    private List<Order> sortedByCreatedDate(List<Order> orders) {
-        return orders.stream()
-                .sorted(Comparator.comparing(Order::getCreatedDate).reversed())
-                .collect(Collectors.toList());
     }
 
 }

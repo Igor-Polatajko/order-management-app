@@ -4,7 +4,9 @@ import com.pnu.ordermanagementapp.adapter.DbAdapter;
 import com.pnu.ordermanagementapp.exception.ServiceException;
 import com.pnu.ordermanagementapp.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +22,12 @@ public class ClientDbAdapter implements DbAdapter<Client> {
 
     @Override
     public List<Client> findAll() {
-        return ((List<Client>)repository.findAll()).stream().filter(i->i.isActive()).collect(Collectors.toList());
+        return ((List<Client>) repository.findAll()).stream().filter(i -> i.isActive()).collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<Client> findAll(int pageNumber) {
+        throw new NotImplementedException();
     }
 
     @Override
@@ -46,7 +53,7 @@ public class ClientDbAdapter implements DbAdapter<Client> {
         return findClientByIdOrThrowException(id);
     }
 
-    private Client findClientByIdOrThrowException(Long id){
+    private Client findClientByIdOrThrowException(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ServiceException("Client not found!"));
     }

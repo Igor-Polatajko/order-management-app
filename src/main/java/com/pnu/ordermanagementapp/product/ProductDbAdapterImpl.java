@@ -35,12 +35,11 @@ public class ProductDbAdapterImpl implements ProductDbAdapter {
 
 
     @Override
-    public Page<Product> findAll(Integer pageNumber) {
+    public Page<Product> findAll(int pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sortDirection, sortByAttribute);
         int total = productDao.countActive();
         List<Product> products = productDao.findAllActive(pageable.getPageSize(), pageable.getOffset());
-        Page<Product> page = new PageImpl(products, pageable, total);
-        return page;
+        return new PageImpl(products, pageable, total);
     }
 
     @Override

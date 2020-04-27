@@ -44,7 +44,7 @@
             <td>${client.email}</td>
             <th scope="col">
             <span style="margin-left: 13%;">
-                <a style='display:inline; width: 50px' href="/orders/product/${client.id}" >
+                <a style='display:inline; width: 50px' href="/orders/client/${client.id}" >
                     <button class="btn btn-outline-info" type="submit">Orders</button>
                 </a>
                 <a style='display:inline; width: 50px ' href="/clients/update/${client.id}" >

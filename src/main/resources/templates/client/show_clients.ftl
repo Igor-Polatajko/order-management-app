@@ -19,12 +19,12 @@
     </style>
 </head>
 <body>
-<form action="/" class="backButton">
+<a href="/" class="backButton">
     <button type="submit" style="width: 100px" class=" btn btn-primary">Back</button>
-</form>
-<form action="/clients/new" style="margin:auto; width: 50%; display: block; padding-bottom:10px ">
+</a>
+<a href="/clients/new" style="margin:auto; width: 50%; display: block; padding-bottom:10px ">
     <button type="submit" style="margin:auto; width: 50%; display: block" class="btn btn-info">Add new client</button>
-</form>
+</a>
 <table border="2" class="table table-striped" style="width: 80%; margin: auto;">
     <thead class="thead-dark">
     <tr>

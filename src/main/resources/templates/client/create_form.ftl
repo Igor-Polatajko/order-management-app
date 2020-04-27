@@ -80,9 +80,9 @@
     </style>
 </head>
 <body>
-<form action="/clients " class="backButton">
+<a href="/clients " class="backButton">
     <button type="submit" style="width: 100px" class="btn btn-primary">Back</button>
-</form>
+</a>
 <div class="container">
     <form id="client" action="/clients/new" method="post">
         <h3>Create client</h3>

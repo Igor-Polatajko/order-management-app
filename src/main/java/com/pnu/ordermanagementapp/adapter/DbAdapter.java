@@ -1,10 +1,14 @@
 package com.pnu.ordermanagementapp.adapter;
 
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 public interface DbAdapter<T> { // added only to meet task requirements
 
     List<T> findAll();
+
+    Page<T> findAll(int pageNumber);
 
     T findById(Long id);
 

@@ -2,13 +2,11 @@ package com.pnu.ordermanagementapp.order;
 
 import com.pnu.ordermanagementapp.adapter.DbAdapter;
 import com.pnu.ordermanagementapp.model.Order;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface OrderDbAdapter extends DbAdapter<Order> {
 
-    List<Order> findByClientId(Long id);
+    Page<Order> findByClientId(Long clintId, int pageNumber);
 
-    List<Order> findByProductId(Long id);
-
+    Page<Order> findByProductId(Long productId, int pageNumber);
 }

@@ -83,7 +83,7 @@
                 <a style='display:inline; width: 50px' href="/orders/product/${product.id}">
                     <button class="btn btn-warning" type="submit">Orders</button>
                 </a>
-                <a style='display:inline; width: 50px' href="/products/update/${product.id}" method="get">
+                <a style='display:inline; width: 50px' href="/products/update/${product.id}">
                 <button class="btn btn-light" type="submit">Edit</button>
                 </a>
                 <form style='display:inline; width: 50px' action="/products/delete/${product.id}" method="post">

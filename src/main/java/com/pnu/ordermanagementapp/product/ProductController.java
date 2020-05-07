@@ -25,7 +25,7 @@ public class ProductController {
     @GetMapping
     public String findAll(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page, Model model) {
         model.addAttribute("products", productDbAdapter.findAll(page));
-        return "product/show_products";
+        return "product/archive_products";
     }
 
     @GetMapping("/find")

@@ -21,8 +21,6 @@ import static java.util.Objects.nonNull;
 
 // ToDo make better error messages
 // ToDo add userId attribute to models
-// ToDo add header
-// ToDo add include to ftl templates to reduce boiler plate
 @Controller
 public class UserController {
 

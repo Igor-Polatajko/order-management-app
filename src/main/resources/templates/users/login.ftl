@@ -26,6 +26,7 @@
                 <button class="btn btn-primary float-right p-3" type="submit">Log In</button>
                 <h4 class="text-center"><a href="/registration">Create an account</a></h4>
             </div>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
     </div>
 </div>

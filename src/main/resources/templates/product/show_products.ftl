@@ -10,16 +10,19 @@
             display: inline;
             width: 100px;
         }
+
         .search-form {
             display: inline;
             position: absolute;
             left: 35%;
             right: 35%;
         }
+
         .search-btn {
             display: inline;
 
         }
+
         .search-field {
             width: 200px;
             display: inline;
@@ -32,7 +35,7 @@
             display: inline;
         }
 
-        .pagination{
+        .pagination {
             margin-left: 5%;
         }
 
@@ -51,9 +54,11 @@
 
 
     <form action="/products/find" class="search-form">
-        <input name="name" type="text" class="form-control search-field" <#if name??>value=${name}</#if> placeholder="Search product">
+        <input name="name" type="text" class="form-control search-field"
+               <#if name??>value=${name}</#if> placeholder="Search product">
         <button type="submit" class="btn btn-light search-btn">Search</button>
         <a href="/products">Reset</a>
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
 
     <a href="/products/new">
@@ -88,6 +93,7 @@
                 </a>
                 <form style='display:inline; width: 50px' action="/products/delete/${product.id}" method="post">
                     <button class="btn btn-dark" type="submit">Delete</button>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
             </span>
             </th>
@@ -97,13 +103,13 @@
     </tbody>
 
 </table>
-    <ul class="pagination">
-        <#list 1..products.totalPages as pageNumber>
-            <li class="page-item"><a <#if pageNumber - 1 == products.number>style="background-color: gray" </#if>
-                        class="page-link" href="<#if name??>/products/find?name=${name}&page=${pageNumber}
+<ul class="pagination">
+    <#list 1..products.totalPages as pageNumber>
+        <li class="page-item"><a <#if pageNumber - 1 == products.number>style="background-color: gray" </#if>
+                                 class="page-link" href="<#if name??>/products/find?name=${name}&page=${pageNumber}
                     <#else>/products?page=${pageNumber}</#if>">${pageNumber}</a></li>
-        </#list>
-    </ul>
+    </#list>
+</ul>
 
 </body>
 </html>

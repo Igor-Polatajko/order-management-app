@@ -86,6 +86,7 @@
                     <div class="align-self-center">
                         <form method="POST" action="/orders/delete/${order.orderId}">
                             <button class="btn btn-danger">Delete</button>
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         </form>
                     </div>
                 </div>

@@ -30,6 +30,7 @@
 
                 <button class="btn btn-primary float-right p-3" type="submit">Create account</button>
             </div>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
     </div>
 </div>

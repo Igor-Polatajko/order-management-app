@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/orders")
 public class OrderController {
 
-    private OrderDbAdapter orderDbAdapter;
+    private OrderService orderService;
 
     private DbAdapter<Client> clientDbAdapter;
 
@@ -28,11 +28,11 @@ public class OrderController {
     private OrdersPageToOrdersFtlPageDtoMapper ordersPageToOrdersFtlPageDtoMapper;
 
     @Autowired
-    public OrderController(OrderDbAdapter orderDbAdapter,
+    public OrderController(OrderService orderService,
                            DbAdapter<Client> clientDbAdapter,
                            DbAdapter<Product> productDbAdapter,
                            OrdersPageToOrdersFtlPageDtoMapper ordersPageToOrdersFtlPageDtoMapper) {
-        this.orderDbAdapter = orderDbAdapter;
+        this.orderService = orderService;
         this.clientDbAdapter = clientDbAdapter;
         this.productDbAdapter = productDbAdapter;
         this.ordersPageToOrdersFtlPageDtoMapper = ordersPageToOrdersFtlPageDtoMapper;
@@ -42,7 +42,7 @@ public class OrderController {
     public String getAll(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
                          Model model) {
 
-        Page<Order> ordersPage = orderDbAdapter.findAll(pageNumber);
+        Page<Order> ordersPage = orderService.findAll(pageNumber);
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper.map(ordersPage);
 
         model.addAttribute("orders", orders);
@@ -55,7 +55,7 @@ public class OrderController {
     public String getAllForClient(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
                                   @PathVariable("clientId") Long clientId, Model model) {
 
-        Page<Order> ordersPage = orderDbAdapter.findByClientId(clientId, pageNumber);
+        Page<Order> ordersPage = orderService.findByClientId(clientId, pageNumber);
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper
                 .map(ordersPage);
 
@@ -73,7 +73,7 @@ public class OrderController {
     public String getAllForProduct(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
                                    @PathVariable("productId") Long productId, Model model) {
 
-        Page<Order> ordersPage = orderDbAdapter.findByProductId(productId, pageNumber);
+        Page<Order> ordersPage = orderService.findByProductId(productId, pageNumber);
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper
                 .map(ordersPage);
 
@@ -112,13 +112,13 @@ public class OrderController {
                 .createdDate(LocalDateTime.now())
                 .build();
 
-        orderDbAdapter.create(order);
+        orderService.create(order);
         return "redirect:/orders";
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Long id) {
-        orderDbAdapter.delete(id);
+        orderService.delete(id);
         return "redirect:/orders";
     }
 

@@ -9,35 +9,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 @Component
-public class OrderDbAdapterImpl implements OrderDbAdapter {
+public class OrderServiceImpl implements OrderService {
 
     private static final int PAGE_SIZE = 10;
 
     private OrderDao orderDao;
 
     @Autowired
-    public OrderDbAdapterImpl(OrderDao orderDao) {
+    public OrderServiceImpl(OrderDao orderDao) {
         this.orderDao = orderDao;
-    }
-
-    @Override
-    public List<Order> findAll() {
-        return orderDao.findAll();
     }
 
     @Override
     public Page<Order> findAll(int pageNumber) {
         Pageable pageable = createPageable(pageNumber);
         return orderDao.findAll(pageable);
-    }
-
-    @Override
-    public Order findById(Long id) {
-        return orderDao.findById(id).orElse(null);
     }
 
     @Override

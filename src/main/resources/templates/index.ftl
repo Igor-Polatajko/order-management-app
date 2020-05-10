@@ -35,7 +35,6 @@
 <h2>-Management-</h2>
 <p>
     <a href="/products/" class=butt>Products</a>
-    <tab></tab>
     <a href="/orders/" class="butt">Orders</a>
     <a href="/clients/" class="butt">Clients</a>
 </p>

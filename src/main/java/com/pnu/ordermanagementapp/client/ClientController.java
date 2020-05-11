@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/clients")
 public class ClientController {
+
     private ClientService clientService;
 
     @Autowired
@@ -20,7 +21,7 @@ public class ClientController {
 
     @GetMapping
     public String getAll(Model model, @AuthenticationPrincipal User user) {
-        model.addAttribute("clients", clientService.findAll());
+        model.addAttribute("clients", clientService.findAll(user.getId()));
         return "client/show_clients";
     }
 
@@ -31,25 +32,25 @@ public class ClientController {
 
     @GetMapping("/update/{id}")
     public String update(@PathVariable Long id, Model model, @AuthenticationPrincipal User user) {
-        model.addAttribute("client", clientService.findById(id));
+        model.addAttribute("client", clientService.findById(id, user.getId()));
         return "client/update_form";
     }
 
     @PostMapping("/new")
     public String createClient(@ModelAttribute Client client, @AuthenticationPrincipal User user) {
-        clientService.create(client);
+        clientService.create(client, user.getId());
         return "redirect:/clients";
     }
 
     @PostMapping("/update")
     public String updateClient(@ModelAttribute Client client, @AuthenticationPrincipal User user) {
-        clientService.update(client);
+        clientService.update(client, user.getId());
         return "redirect:/clients";
     }
 
     @PostMapping("/delete/{id}")
     public String deleteClient(@PathVariable Long id, @AuthenticationPrincipal User user) {
-        clientService.delete(id);
+        clientService.delete(id, user.getId());
         return "redirect:/clients";
     }
 

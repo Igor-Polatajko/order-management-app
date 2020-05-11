@@ -65,7 +65,7 @@ public class OrderController {
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper
                 .map(ordersPage);
 
-        Client client = clientService.findById(clientId);
+        Client client = clientService.findById(clientId, user.getId());
 
         model.addAttribute("orders", orders);
         model.addAttribute("headline", String.format("Orders made by %s %s",
@@ -95,9 +95,9 @@ public class OrderController {
     }
 
     @GetMapping("/new")
-    public String createNew(Model model) {
+    public String createNew(Model model, @AuthenticationPrincipal User user) {
 
-        List<Client> clients = clientService.findAll();
+        List<Client> clients = clientService.findAll(user.getId());
         List<Product> products = productService.findAll();
 
         model.addAttribute("clients", clients);
@@ -109,7 +109,7 @@ public class OrderController {
     @PostMapping("/new")
     public String create(@ModelAttribute OrderFormSubmitDto orderDto, @AuthenticationPrincipal User user) {
 
-        Client client = clientService.findById(orderDto.getClientId());
+        Client client = clientService.findById(orderDto.getClientId(), user.getId());
         Product product = productService.findById(orderDto.getProductId());
 
         Order order = Order.builder()

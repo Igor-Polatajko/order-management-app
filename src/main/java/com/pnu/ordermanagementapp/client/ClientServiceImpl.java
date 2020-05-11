@@ -21,43 +21,47 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<Client> findAll() {
-        return repository.findAll().stream()
+    public List<Client> findAll(Long userId) {
+        return repository.findAllByUserId(userId).stream()
                 .filter(Client::isActive)
                 .collect(Collectors.toList());
     }
 
     // ToDo implement
     @Override
-    public Page<Client> findAll(int pageNumber) {
+    public Page<Client> findAll(int pageNumber, Long userId) {
         throw new NotImplementedException();
     }
 
     @Override
-    public void create(Client obj) {
-        repository.save(obj);
+    public void create(Client client, Long userId) {
+        Client clientWithUserId = client.toBuilder()
+                .userId(userId)
+                .build();
+
+        repository.save(clientWithUserId);
     }
 
     @Override
-    public void update(Client obj) {
-        findClientByIdOrThrowException(obj.getId());
-        repository.save(obj);
+    public void update(Client client, Long userId) {
+        findClientByIdOrThrowException(client.getId(), userId);
+        repository.save(client);
     }
 
     @Override
-    public void delete(Long id) {
-        Client client = findClientByIdOrThrowException(id);
+    public void delete(Long id, Long userId) {
+        Client client = findClientByIdOrThrowException(id, userId);
         client.setActive(false);
         repository.save(client);
     }
 
     @Override
-    public Client findById(Long id) {
-        return findClientByIdOrThrowException(id);
+    public Client findById(Long id, Long userId) {
+        return findClientByIdOrThrowException(id, userId);
     }
 
-    private Client findClientByIdOrThrowException(Long id) {
-        return repository.findById(id)
+    private Client findClientByIdOrThrowException(Long id, Long userId) {
+        return repository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ServiceException("Client not found!"));
     }
 }

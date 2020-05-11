@@ -1,5 +1,7 @@
 package com.pnu.ordermanagementapp.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,8 +14,10 @@ import javax.persistence.Table;
 import java.util.List;
 
 @Data
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "clients")
+@AllArgsConstructor
 @NoArgsConstructor
 public class Client {
 

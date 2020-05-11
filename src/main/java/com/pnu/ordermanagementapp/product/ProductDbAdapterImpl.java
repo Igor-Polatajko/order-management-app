@@ -34,47 +34,24 @@ public class ProductDbAdapterImpl implements ProductDbAdapter {
         return productDao.findAll();
     }
 
-
     @Override
     public Page<Product> findAll(int pageNumber) {
         return productDao.findAll(PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT));
     }
 
     @Override
-    public Page<Product> findAllByName(Integer pageNumber, String name) {
-        pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
-        int total = productDao.countByName(name);
-        List<Product> products = productDao.findAllByName(name, pageable.getPageSize(), pageable.getOffset());
-        return new PageImpl<>(products, pageable, total);
-    }
-
-    @Override
     public Page<Product> findAllByActivity(Integer pageNumber, boolean isActive) {
         pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
-        int total;
-        List<Product> products;
-        if (isActive) {
-            total = productDao.countActive();
-            products = productDao.findAllActive(pageable.getPageSize(), pageable.getOffset());
-        } else {
-            total = productDao.countArchived();
-            products = productDao.findAllArchived(pageable.getPageSize(), pageable.getOffset());
-        }
+        int total = productDao.countByActivity(isActive);
+        List<Product> products = productDao.findAllByActivity(isActive, pageable.getPageSize(), pageable.getOffset());
         return new PageImpl<>(products, pageable, total);
     }
 
     @Override
     public Page<Product> findAllByNameAndActivity(Integer pageNumber, String name, boolean isActive) {
         pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
-        int total;
-        List<Product> products;
-        if (isActive) {
-            total = productDao.countActiveByName(name);
-            products = productDao.findAllActiveByName(name, pageable.getPageSize(), pageable.getOffset());
-        } else {
-            total = productDao.countArchivedByName(name);
-            products = productDao.findAllArchivedByName(name, pageable.getPageSize(), pageable.getOffset());
-        }
+        int total = productDao.countByNameAndActivity(name, isActive);
+        List<Product> products = productDao.findAllByNameAndActivity(name, isActive, pageable.getPageSize(), pageable.getOffset());
         return new PageImpl<>(products, pageable, total);
     }
 
@@ -97,6 +74,13 @@ public class ProductDbAdapterImpl implements ProductDbAdapter {
     public void delete(Long id) {
         Product product = findProductByIdOrThrowException(id);
         product.setActive(false);
+        productDao.save(product);
+    }
+
+    @Override
+    public void activate(Long id) {
+        Product product = findProductByIdOrThrowException(id);
+        product.setActive(true);
         productDao.save(product);
     }
 

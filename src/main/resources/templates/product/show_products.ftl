@@ -10,16 +10,24 @@
             display: inline;
             width: 100px;
         }
+
+        .activePicker {
+            display: inline;
+            width: 120px;
+        }
+
         .search-form {
             display: inline;
             position: absolute;
             left: 35%;
             right: 35%;
         }
+
         .search-btn {
             display: inline;
 
         }
+
         .search-field {
             width: 200px;
             display: inline;
@@ -32,7 +40,9 @@
             display: inline;
         }
 
-        .pagination{
+
+
+        .pagination {
             margin-left: 5%;
         }
 
@@ -49,19 +59,26 @@
         <button class="backBtn btn btn-dark">Back</button>
     </a>
 
-
     <form action="/products/find" class="search-form">
-        <input name="name" type="text" class="form-control search-field" <#if name??>value=${name}</#if> placeholder="Search product">
-        <button type="submit" class="btn btn-light search-btn">Search</button>
+        <select class="form-control selectpicker activePicker" name="active"
+                id="ch_c">
+            <option <#if active?? && active=true> selected</#if> value="true">Active</option>
+            <option <#if active?? && active=false> selected </#if> value="false">Archived</option>
+
+        </select>
+        <input id="searchFieldInput" name="name" type="text" class="form-control search-field"
+               <#if name??>value=${name}</#if>>
+        <button id="searchBtn" type="submit" class="btn btn-light search-btn">Search</button>
         <a href="/products">Reset</a>
     </form>
+
 
     <a href="/products/new">
         <button class="btn btn-info newBtn">Add new product</button>
     </a>
 </div>
 
-<table border="2" class="table table-striped" style="width: 90%; margin: auto;">
+<table border="2" <#if active?? && active=false> class="table table-dark" <#else>  class="table table-striped" </#if> style="width: 90%; margin: auto;">
     <thead>
     <tr>
         <th scope="col" style="width: 10%">ID</th>
@@ -86,9 +103,16 @@
                 <a style='display:inline; width: 50px' href="/products/update/${product.id}">
                 <button class="btn btn-light" type="submit">Edit</button>
                 </a>
-                <form style='display:inline; width: 50px' action="/products/delete/${product.id}" method="post">
-                    <button class="btn btn-dark" type="submit">Delete</button>
-                </form>
+                <#if product.active==true>
+                    <form style='display:inline; width: 50px' action="/products/delete/${product.id}" method="post">
+                        <button class="btn btn-dark" type="submit">Delete</button>
+                    </form>
+                <#else>
+                    <form style='display:inline; width: 50px' action="/products/activate/${product.id}" method="post">
+                        <button class="btn btn-primary" type="submit">Activate</button>
+                    </form>
+                </#if>
+
             </span>
             </th>
         </tr>
@@ -97,13 +121,13 @@
     </tbody>
 
 </table>
-    <ul class="pagination">
-        <#list 1..products.totalPages as pageNumber>
-            <li class="page-item"><a <#if pageNumber - 1 == products.number>style="background-color: gray" </#if>
-                        class="page-link" href="<#if name??>/products/find?name=${name}&page=${pageNumber}
+<ul class="pagination">
+    <#list 1..products.totalPages as pageNumber>
+        <li class="page-item"><a <#if pageNumber - 1 == products.number>style="background-color: gray" </#if>
+                                 class="page-link" href="<#if name??>/products/find?name=${name}&page=${pageNumber}
                     <#else>/products?page=${pageNumber}</#if>">${pageNumber}</a></li>
-        </#list>
-    </ul>
+    </#list>
+</ul>
 
 </body>
 </html>

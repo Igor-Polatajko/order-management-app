@@ -1,22 +1,22 @@
 package com.pnu.ordermanagementapp.client;
 
-import com.pnu.ordermanagementapp.adapter.DbAdapter;
 import com.pnu.ordermanagementapp.exception.ServiceException;
 import com.pnu.ordermanagementapp.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
-public class ClientDbAdapter implements DbAdapter<Client> {
+@Service
+public class ClientServiceImpl implements ClientService {
+
     private ClientRepository repository;
 
     @Autowired
-    public ClientDbAdapter(ClientRepository repository) {
+    public ClientServiceImpl(ClientRepository repository) {
         this.repository = repository;
     }
 

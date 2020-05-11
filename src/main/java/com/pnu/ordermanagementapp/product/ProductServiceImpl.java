@@ -3,17 +3,13 @@ package com.pnu.ordermanagementapp.product;
 import com.pnu.ordermanagementapp.exception.ServiceException;
 import com.pnu.ordermanagementapp.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
+import org.springframework.data.domain.*;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
-public class ProductDbAdapterImpl implements ProductDbAdapter {
+@Service
+public class ProductServiceImpl implements ProductService {
 
     private ProductDao productDao;
 
@@ -24,7 +20,7 @@ public class ProductDbAdapterImpl implements ProductDbAdapter {
     private static Sort.Direction sortDirection = Sort.Direction.ASC;
 
     @Autowired
-    public ProductDbAdapterImpl(ProductDao productDao) {
+    public ProductServiceImpl(ProductDao productDao) {
         this.productDao = productDao;
     }
 

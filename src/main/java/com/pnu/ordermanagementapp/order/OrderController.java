@@ -1,12 +1,13 @@
 package com.pnu.ordermanagementapp.order;
 
-import com.pnu.ordermanagementapp.adapter.DbAdapter;
+import com.pnu.ordermanagementapp.client.ClientService;
 import com.pnu.ordermanagementapp.model.Client;
 import com.pnu.ordermanagementapp.model.Order;
 import com.pnu.ordermanagementapp.model.Product;
 import com.pnu.ordermanagementapp.model.User;
 import com.pnu.ordermanagementapp.order.dto.OrderFormSubmitDto;
 import com.pnu.ordermanagementapp.order.dto.OrdersFtlPageDto;
+import com.pnu.ordermanagementapp.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,20 +25,20 @@ public class OrderController {
 
     private OrderService orderService;
 
-    private DbAdapter<Client> clientDbAdapter;
+    private ClientService clientService;
 
-    private DbAdapter<Product> productDbAdapter;
+    private ProductService productService;
 
     private OrdersPageToOrdersFtlPageDtoMapper ordersPageToOrdersFtlPageDtoMapper;
 
     @Autowired
     public OrderController(OrderService orderService,
-                           DbAdapter<Client> clientDbAdapter,
-                           DbAdapter<Product> productDbAdapter,
+                           ClientService clientService,
+                           ProductService productService,
                            OrdersPageToOrdersFtlPageDtoMapper ordersPageToOrdersFtlPageDtoMapper) {
         this.orderService = orderService;
-        this.clientDbAdapter = clientDbAdapter;
-        this.productDbAdapter = productDbAdapter;
+        this.clientService = clientService;
+        this.productService = productService;
         this.ordersPageToOrdersFtlPageDtoMapper = ordersPageToOrdersFtlPageDtoMapper;
     }
 
@@ -64,7 +65,7 @@ public class OrderController {
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper
                 .map(ordersPage);
 
-        Client client = clientDbAdapter.findById(clientId);
+        Client client = clientService.findById(clientId);
 
         model.addAttribute("orders", orders);
         model.addAttribute("headline", String.format("Orders made by %s %s",
@@ -83,7 +84,7 @@ public class OrderController {
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper
                 .map(ordersPage);
 
-        Product product = productDbAdapter.findById(productId);
+        Product product = productService.findById(productId);
 
         model.addAttribute("orders", orders);
         model.addAttribute("headline", String.format("Orders of %s (id: %s)",
@@ -96,8 +97,8 @@ public class OrderController {
     @GetMapping("/new")
     public String createNew(Model model) {
 
-        List<Client> clients = clientDbAdapter.findAll();
-        List<Product> products = productDbAdapter.findAll();
+        List<Client> clients = clientService.findAll();
+        List<Product> products = productService.findAll();
 
         model.addAttribute("clients", clients);
         model.addAttribute("products", products);
@@ -108,8 +109,8 @@ public class OrderController {
     @PostMapping("/new")
     public String create(@ModelAttribute OrderFormSubmitDto orderDto, @AuthenticationPrincipal User user) {
 
-        Client client = clientDbAdapter.findById(orderDto.getClientId());
-        Product product = productDbAdapter.findById(orderDto.getProductId());
+        Client client = clientService.findById(orderDto.getClientId());
+        Product product = productService.findById(orderDto.getProductId());
 
         Order order = Order.builder()
                 .product(product)

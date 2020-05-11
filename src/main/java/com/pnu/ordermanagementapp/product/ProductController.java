@@ -23,7 +23,7 @@ public class ProductController {
     public String findAll(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
                           Model model,
                           @AuthenticationPrincipal User user) {
-        model.addAttribute("products", productService.findAll(page));
+        model.addAttribute("products", productService.findAll(page, user.getId()));
         return "product/show_products";
     }
 
@@ -32,7 +32,7 @@ public class ProductController {
                                 @ModelAttribute("name") String name,
                                 Model model,
                                 @AuthenticationPrincipal User user) {
-        model.addAttribute("products", productService.findAllByName(page, name));
+        model.addAttribute("products", productService.findAllByName(page, name, user.getId()));
         return "product/show_products";
     }
 
@@ -43,25 +43,25 @@ public class ProductController {
 
     @GetMapping("/update/{id}")
     public String update(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal User user) {
-        model.addAttribute("product", productService.findById(id));
+        model.addAttribute("product", productService.findById(id, user.getId()));
         return "/product/form_product";
     }
 
     @PostMapping("/new")
     public String create(@ModelAttribute("product") Product product, @AuthenticationPrincipal User user) {
-        productService.create(product);
+        productService.create(product, user.getId());
         return "redirect:/products";
     }
 
     @PostMapping("/update")
     public String updateProduct(@ModelAttribute("product") Product product, @AuthenticationPrincipal User user) {
-        productService.update(product);
+        productService.update(product, user.getId());
         return "redirect:/products";
     }
 
     @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
-        productService.delete(id);
+        productService.delete(id, user.getId());
         return "redirect:/products";
     }
 }

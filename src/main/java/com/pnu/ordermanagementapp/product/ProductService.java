@@ -7,18 +7,18 @@ import java.util.List;
 
 public interface ProductService {
 
-    Page<Product> findAllByName(Integer pageNumber, String name);
+    Page<Product> findAllByName(Integer pageNumber, String name, Long userId);
 
-    List<Product> findAll();
+    List<Product> findAll(Long userId);
 
-    Page<Product> findAll(int pageNumber);
+    Page<Product> findAll(int pageNumber, Long userId);
 
-    Product findById(Long id);
+    Product findById(Long id, Long userId);
 
-    void create(Product obj);
+    void create(Product product, Long userId);
 
-    void update(Product obj);
+    void update(Product product, Long userId);
 
-    void delete(Long id);
+    void delete(Long id, Long userId);
 
 }

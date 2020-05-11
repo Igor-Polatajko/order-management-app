@@ -5,15 +5,13 @@ import org.springframework.data.domain.Page;
 
 public interface OrderService {
 
-    Page<Order> findByClientId(Long clintId, int pageNumber);
+    Page<Order> findByClientId(Long clintId, int pageNumber, Long userId);
 
-    Page<Order> findByProductId(Long productId, int pageNumber);
+    Page<Order> findByProductId(Long productId, int pageNumber, Long userId);
 
-    Page<Order> findAll(int pageNumber);
+    Page<Order> findAll(int pageNumber, Long userId);
 
-    void create(Order obj);
+    void create(Order order);
 
-    void update(Order obj);
-
-    void delete(Long id);
+    void delete(Long orderId, Long userId);
 }

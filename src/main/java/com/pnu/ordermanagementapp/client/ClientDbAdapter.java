@@ -22,9 +22,12 @@ public class ClientDbAdapter implements DbAdapter<Client> {
 
     @Override
     public List<Client> findAll() {
-        return ((List<Client>) repository.findAll()).stream().filter(i -> i.isActive()).collect(Collectors.toList());
+        return repository.findAll().stream()
+                .filter(Client::isActive)
+                .collect(Collectors.toList());
     }
 
+    // ToDo implement
     @Override
     public Page<Client> findAll(int pageNumber) {
         throw new NotImplementedException();

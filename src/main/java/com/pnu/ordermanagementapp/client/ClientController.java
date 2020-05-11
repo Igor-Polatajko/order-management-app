@@ -2,14 +2,12 @@ package com.pnu.ordermanagementapp.client;
 
 import com.pnu.ordermanagementapp.adapter.DbAdapter;
 import com.pnu.ordermanagementapp.model.Client;
+import com.pnu.ordermanagementapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/clients")
@@ -22,7 +20,7 @@ public class ClientController {
     }
 
     @GetMapping
-    public String getAll(Model model) {
+    public String getAll(Model model, @AuthenticationPrincipal User user) {
         model.addAttribute("clients", adapter.findAll());
         return "client/show_clients";
     }
@@ -33,25 +31,25 @@ public class ClientController {
     }
 
     @GetMapping("/update/{id}")
-    public String update(@PathVariable Long id, Model model) {
+    public String update(@PathVariable Long id, Model model, @AuthenticationPrincipal User user) {
         model.addAttribute("client", adapter.findById(id));
         return "client/update_form";
     }
 
     @PostMapping("/new")
-    public String createClient(@ModelAttribute Client client ) {
+    public String createClient(@ModelAttribute Client client, @AuthenticationPrincipal User user) {
         adapter.create(client);
         return "redirect:/clients";
     }
 
     @PostMapping("/update")
-    public String updateClient(@ModelAttribute Client client) {
+    public String updateClient(@ModelAttribute Client client, @AuthenticationPrincipal User user) {
         adapter.update(client);
         return "redirect:/clients";
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteClient(@PathVariable Long id) {
+    public String deleteClient(@PathVariable Long id, @AuthenticationPrincipal User user) {
         adapter.delete(id);
         return "redirect:/clients";
     }

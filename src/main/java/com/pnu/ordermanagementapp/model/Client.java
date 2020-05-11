@@ -32,4 +32,6 @@ public class Client {
     @OneToMany(mappedBy = "client")
     private List<Order> orders;
 
+    private Long userId;
+
 }

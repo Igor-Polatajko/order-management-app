@@ -24,9 +24,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<Order> findAll(int pageNumber) {
+    public Page<Order> findAll(int pageNumber, Long userId) {
         Pageable pageable = createPageable(pageNumber);
-        return orderDao.findAll(pageable);
+        return orderDao.findAllByUserId(userId, pageable);
     }
 
     @Override
@@ -35,27 +35,22 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void update(Order order) {
-        orderDao.save(order);
+    public void delete(Long id, Long userId) {
+        Optional<Order> orderOptional = orderDao.findByIdAndUserId(id, userId);
+        Order order = orderOptional.orElseThrow(() -> new ServiceException("Order doesn't exist!"));
+        orderDao.delete(order);
     }
 
     @Override
-    public void delete(Long id) {
-        Optional<Order> orderOptional = orderDao.findById(id);
-
-        orderOptional.ifPresent(order -> orderDao.delete(order));
-    }
-
-    @Override
-    public Page<Order> findByClientId(Long id, int pageNumber) {
+    public Page<Order> findByClientId(Long id, int pageNumber, Long userId) {
         Pageable pageable = createPageable(pageNumber);
-        return orderDao.findByClientId(id, pageable);
+        return orderDao.findByClientIdAndUserId(id, userId, pageable);
     }
 
     @Override
-    public Page<Order> findByProductId(Long id, int pageNumber) {
+    public Page<Order> findByProductId(Long id, int pageNumber, Long userId) {
         Pageable pageable = createPageable(pageNumber);
-        return orderDao.findByProductId(id, pageable);
+        return orderDao.findByProductIdAndUserId(id, userId, pageable);
     }
 
     private Pageable createPageable(int pageNumber) {

@@ -4,10 +4,12 @@ import com.pnu.ordermanagementapp.adapter.DbAdapter;
 import com.pnu.ordermanagementapp.model.Client;
 import com.pnu.ordermanagementapp.model.Order;
 import com.pnu.ordermanagementapp.model.Product;
+import com.pnu.ordermanagementapp.model.User;
 import com.pnu.ordermanagementapp.order.dto.OrderFormSubmitDto;
 import com.pnu.ordermanagementapp.order.dto.OrdersFtlPageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -41,9 +43,10 @@ public class OrderController {
 
     @GetMapping
     public String getAll(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
-                         Model model) {
+                         Model model,
+                         @AuthenticationPrincipal User user) {
 
-        Page<Order> ordersPage = orderService.findAll(pageNumber);
+        Page<Order> ordersPage = orderService.findAll(pageNumber, user.getId());
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper.map(ordersPage);
 
         model.addAttribute("orders", orders);
@@ -54,9 +57,10 @@ public class OrderController {
 
     @GetMapping("/client/{clientId}")
     public String getAllForClient(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
-                                  @PathVariable("clientId") Long clientId, Model model) {
+                                  @PathVariable("clientId") Long clientId, Model model,
+                                  @AuthenticationPrincipal User user) {
 
-        Page<Order> ordersPage = orderService.findByClientId(clientId, pageNumber);
+        Page<Order> ordersPage = orderService.findByClientId(clientId, pageNumber, user.getId());
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper
                 .map(ordersPage);
 
@@ -72,9 +76,10 @@ public class OrderController {
 
     @GetMapping("/product/{productId}")
     public String getAllForProduct(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
-                                   @PathVariable("productId") Long productId, Model model) {
+                                   @PathVariable("productId") Long productId, Model model,
+                                   @AuthenticationPrincipal User user) {
 
-        Page<Order> ordersPage = orderService.findByProductId(productId, pageNumber);
+        Page<Order> ordersPage = orderService.findByProductId(productId, pageNumber, user.getId());
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper
                 .map(ordersPage);
 
@@ -101,7 +106,7 @@ public class OrderController {
     }
 
     @PostMapping("/new")
-    public String create(@ModelAttribute OrderFormSubmitDto orderDto) {
+    public String create(@ModelAttribute OrderFormSubmitDto orderDto, @AuthenticationPrincipal User user) {
 
         Client client = clientDbAdapter.findById(orderDto.getClientId());
         Product product = productDbAdapter.findById(orderDto.getProductId());
@@ -111,6 +116,7 @@ public class OrderController {
                 .client(client)
                 .amount(orderDto.getAmount())
                 .createdDate(LocalDateTime.now())
+                .userId(user.getId())
                 .build();
 
         orderService.create(order);
@@ -118,8 +124,9 @@ public class OrderController {
     }
 
     @PostMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id) {
-        orderService.delete(id);
+    public String delete(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
+
+        orderService.delete(id, user.getId());
         return "redirect:/orders";
     }
 

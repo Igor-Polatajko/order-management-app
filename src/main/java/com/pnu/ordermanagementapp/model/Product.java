@@ -32,4 +32,6 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<Order> orders;
 
+    private Long userId;
+
 }

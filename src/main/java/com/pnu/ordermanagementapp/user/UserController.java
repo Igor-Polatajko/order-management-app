@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 import static java.util.Objects.nonNull;
 
 // ToDo make better error messages
-// ToDo add userId attribute to models
 @Controller
 public class UserController {
 

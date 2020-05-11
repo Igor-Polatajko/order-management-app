@@ -29,6 +29,7 @@
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 
                 <button class="btn btn-primary float-right p-3" type="submit">Create account</button>
+                <h4 class="text-center"><a href="/login">Login page</a></h4>
             </div>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>

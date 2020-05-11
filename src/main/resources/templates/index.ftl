@@ -38,7 +38,7 @@
             display:inline-block;
             cursor:pointer;
             color:#505739;
-            font-size: 1.3em;
+            font-size: 1.0em;
             font-weight:bold;
             padding:12px 16px;
             text-decoration:none;

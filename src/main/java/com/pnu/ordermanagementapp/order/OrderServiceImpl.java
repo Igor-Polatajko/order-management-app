@@ -7,66 +7,50 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
-@Component
-public class OrderDbAdapterImpl implements OrderDbAdapter {
+@Service
+public class OrderServiceImpl implements OrderService {
 
     private static final int PAGE_SIZE = 10;
 
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Autowired
-    public OrderDbAdapterImpl(OrderDao orderDao) {
-        this.orderDao = orderDao;
+    public OrderServiceImpl(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
     }
 
     @Override
-    public List<Order> findAll() {
-        return orderDao.findAll();
-    }
-
-    @Override
-    public Page<Order> findAll(int pageNumber) {
+    public Page<Order> findAll(int pageNumber, Long userId) {
         Pageable pageable = createPageable(pageNumber);
-        return orderDao.findAll(pageable);
-    }
-
-    @Override
-    public Order findById(Long id) {
-        return orderDao.findById(id).orElse(null);
+        return orderRepository.findAllByUserId(userId, pageable);
     }
 
     @Override
     public void create(Order order) {
-        orderDao.save(order);
+        orderRepository.save(order);
     }
 
     @Override
-    public void update(Order order) {
-        orderDao.save(order);
+    public void delete(Long id, Long userId) {
+        Optional<Order> orderOptional = orderRepository.findByIdAndUserId(id, userId);
+        Order order = orderOptional.orElseThrow(() -> new ServiceException("Order doesn't exist!"));
+        orderRepository.delete(order);
     }
 
     @Override
-    public void delete(Long id) {
-        Optional<Order> orderOptional = orderDao.findById(id);
-
-        orderOptional.ifPresent(order -> orderDao.delete(order));
-    }
-
-    @Override
-    public Page<Order> findByClientId(Long id, int pageNumber) {
+    public Page<Order> findByClientId(Long id, int pageNumber, Long userId) {
         Pageable pageable = createPageable(pageNumber);
-        return orderDao.findByClientId(id, pageable);
+        return orderRepository.findByClientIdAndUserId(id, userId, pageable);
     }
 
     @Override
-    public Page<Order> findByProductId(Long id, int pageNumber) {
+    public Page<Order> findByProductId(Long id, int pageNumber, Long userId) {
         Pageable pageable = createPageable(pageNumber);
-        return orderDao.findByProductId(id, pageable);
+        return orderRepository.findByProductIdAndUserId(id, userId, pageable);
     }
 
     private Pageable createPageable(int pageNumber) {

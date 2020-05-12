@@ -1,29 +1,27 @@
 package com.pnu.ordermanagementapp.client;
 
-import com.pnu.ordermanagementapp.adapter.DbAdapter;
 import com.pnu.ordermanagementapp.model.Client;
+import com.pnu.ordermanagementapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/clients")
 public class ClientController {
-    private DbAdapter<Client> adapter;
+
+    private ClientService clientService;
 
     @Autowired
-    public ClientController(DbAdapter<Client> adapter) {
-        this.adapter = adapter;
+    public ClientController(ClientService clientService) {
+        this.clientService = clientService;
     }
 
     @GetMapping
-    public String getAll(Model model) {
-        model.addAttribute("clients", adapter.findAll());
+    public String getAll(Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("clients", clientService.findAll(user.getId()));
         return "client/show_clients";
     }
 
@@ -33,26 +31,26 @@ public class ClientController {
     }
 
     @GetMapping("/update/{id}")
-    public String update(@PathVariable Long id, Model model) {
-        model.addAttribute("client", adapter.findById(id));
+    public String update(@PathVariable Long id, Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("client", clientService.findById(id, user.getId()));
         return "client/update_form";
     }
 
     @PostMapping("/new")
-    public String createClient(@ModelAttribute Client client ) {
-        adapter.create(client);
+    public String createClient(@ModelAttribute Client client, @AuthenticationPrincipal User user) {
+        clientService.create(client, user.getId());
         return "redirect:/clients";
     }
 
     @PostMapping("/update")
-    public String updateClient(@ModelAttribute Client client) {
-        adapter.update(client);
+    public String updateClient(@ModelAttribute Client client, @AuthenticationPrincipal User user) {
+        clientService.update(client, user.getId());
         return "redirect:/clients";
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteClient(@PathVariable Long id) {
-        adapter.delete(id);
+    public String deleteClient(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        clientService.delete(id, user.getId());
         return "redirect:/clients";
     }
 

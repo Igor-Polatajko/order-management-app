@@ -175,6 +175,7 @@
         <#if product??>
             <input type="text" name="id" value="${product.id}" style="visibility: hidden">
         </#if>
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
 </div>
 </body>

@@ -108,6 +108,7 @@
         <#if client??>
             <input type="text" name="id" value="${client.id}" style="visibility: hidden">
         </#if>
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
 </div>
 </body>

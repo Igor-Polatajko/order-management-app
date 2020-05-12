@@ -1,13 +1,16 @@
 package com.pnu.ordermanagementapp.order;
 
-import com.pnu.ordermanagementapp.adapter.DbAdapter;
+import com.pnu.ordermanagementapp.client.ClientService;
 import com.pnu.ordermanagementapp.model.Client;
 import com.pnu.ordermanagementapp.model.Order;
 import com.pnu.ordermanagementapp.model.Product;
+import com.pnu.ordermanagementapp.model.User;
 import com.pnu.ordermanagementapp.order.dto.OrderFormSubmitDto;
 import com.pnu.ordermanagementapp.order.dto.OrdersFtlPageDto;
+import com.pnu.ordermanagementapp.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,34 +18,36 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+// ToDo move business logic to service
 @Controller
 @RequestMapping("/orders")
 public class OrderController {
 
-    private OrderDbAdapter orderDbAdapter;
+    private OrderService orderService;
 
-    private DbAdapter<Client> clientDbAdapter;
+    private ClientService clientService;
 
-    private DbAdapter<Product> productDbAdapter;
+    private ProductService productService;
 
     private OrdersPageToOrdersFtlPageDtoMapper ordersPageToOrdersFtlPageDtoMapper;
 
     @Autowired
-    public OrderController(OrderDbAdapter orderDbAdapter,
-                           DbAdapter<Client> clientDbAdapter,
-                           DbAdapter<Product> productDbAdapter,
+    public OrderController(OrderService orderService,
+                           ClientService clientService,
+                           ProductService productService,
                            OrdersPageToOrdersFtlPageDtoMapper ordersPageToOrdersFtlPageDtoMapper) {
-        this.orderDbAdapter = orderDbAdapter;
-        this.clientDbAdapter = clientDbAdapter;
-        this.productDbAdapter = productDbAdapter;
+        this.orderService = orderService;
+        this.clientService = clientService;
+        this.productService = productService;
         this.ordersPageToOrdersFtlPageDtoMapper = ordersPageToOrdersFtlPageDtoMapper;
     }
 
     @GetMapping
     public String getAll(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
-                         Model model) {
+                         Model model,
+                         @AuthenticationPrincipal User user) {
 
-        Page<Order> ordersPage = orderDbAdapter.findAll(pageNumber);
+        Page<Order> ordersPage = orderService.findAll(pageNumber, user.getId());
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper.map(ordersPage);
 
         model.addAttribute("orders", orders);
@@ -53,13 +58,14 @@ public class OrderController {
 
     @GetMapping("/client/{clientId}")
     public String getAllForClient(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
-                                  @PathVariable("clientId") Long clientId, Model model) {
+                                  @PathVariable("clientId") Long clientId, Model model,
+                                  @AuthenticationPrincipal User user) {
 
-        Page<Order> ordersPage = orderDbAdapter.findByClientId(clientId, pageNumber);
+        Page<Order> ordersPage = orderService.findByClientId(clientId, pageNumber, user.getId());
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper
                 .map(ordersPage);
 
-        Client client = clientDbAdapter.findById(clientId);
+        Client client = clientService.findById(clientId, user.getId());
 
         model.addAttribute("orders", orders);
         model.addAttribute("headline", String.format("Orders made by %s %s",
@@ -71,13 +77,14 @@ public class OrderController {
 
     @GetMapping("/product/{productId}")
     public String getAllForProduct(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
-                                   @PathVariable("productId") Long productId, Model model) {
+                                   @PathVariable("productId") Long productId, Model model,
+                                   @AuthenticationPrincipal User user) {
 
-        Page<Order> ordersPage = orderDbAdapter.findByProductId(productId, pageNumber);
+        Page<Order> ordersPage = orderService.findByProductId(productId, pageNumber, user.getId());
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper
                 .map(ordersPage);
 
-        Product product = productDbAdapter.findById(productId);
+        Product product = productService.findById(productId, user.getId());
 
         model.addAttribute("orders", orders);
         model.addAttribute("headline", String.format("Orders of %s (id: %s)",
@@ -88,10 +95,10 @@ public class OrderController {
     }
 
     @GetMapping("/new")
-    public String createNew(Model model) {
+    public String createNew(Model model, @AuthenticationPrincipal User user) {
 
-        List<Client> clients = clientDbAdapter.findAll();
-        List<Product> products = productDbAdapter.findAll();
+        List<Client> clients = clientService.findAll(user.getId());
+        List<Product> products = productService.findAll(user.getId());
 
         model.addAttribute("clients", clients);
         model.addAttribute("products", products);
@@ -100,25 +107,27 @@ public class OrderController {
     }
 
     @PostMapping("/new")
-    public String create(@ModelAttribute OrderFormSubmitDto orderDto) {
+    public String create(@ModelAttribute OrderFormSubmitDto orderDto, @AuthenticationPrincipal User user) {
 
-        Client client = clientDbAdapter.findById(orderDto.getClientId());
-        Product product = productDbAdapter.findById(orderDto.getProductId());
+        Client client = clientService.findById(orderDto.getClientId(), user.getId());
+        Product product = productService.findById(orderDto.getProductId(), user.getId());
 
         Order order = Order.builder()
                 .product(product)
                 .client(client)
                 .amount(orderDto.getAmount())
                 .createdDate(LocalDateTime.now())
+                .userId(user.getId())
                 .build();
 
-        orderDbAdapter.create(order);
+        orderService.create(order);
         return "redirect:/orders";
     }
 
     @PostMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id) {
-        orderDbAdapter.delete(id);
+    public String delete(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
+
+        orderService.delete(id, user.getId());
         return "redirect:/orders";
     }
 

@@ -13,7 +13,7 @@
 
         .activePicker {
             display: inline;
-            width: 120px;
+            width: 160px;
         }
 
         .search-form {
@@ -41,9 +41,15 @@
         }
 
 
-
         .pagination {
             margin-left: 5%;
+        }
+
+        .tableTitle {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            color: black;
         }
 
         body {
@@ -62,8 +68,8 @@
     <form action="/products/find" class="search-form">
         <select class="form-control selectpicker activePicker" name="active"
                 id="ch_c">
-            <option <#if active?? && active=true> selected</#if> value="true">Active</option>
-            <option <#if active?? && active=false> selected </#if> value="false">Archived</option>
+            <option <#if active?? && active=true> selected</#if> value="true">Show active</option>
+            <option <#if active?? && active=false> selected </#if> value="false">Show archived</option>
 
         </select>
         <input id="searchFieldInput" name="name" type="text" class="form-control search-field"
@@ -78,8 +84,15 @@
     </a>
 </div>
 
-<table border="2" <#if active?? && active=false> class="table table-dark" <#else>  class="table table-striped" </#if> style="width: 90%; margin: auto;">
+<table border="2" <#if active?? && active=false> class="table table-dark" <#else>  class="table table-striped" </#if>
+       style="width: 90%; margin: auto;">
+
     <thead>
+    <tr style="background-color: #eaeef1">
+        <th colspan="5">
+            <h2 class="tableTitle"> <#if active?? && active=false> Archived products <#else> Active products </#if></h2>
+        </th>
+    </tr>
     <tr>
         <th scope="col" style="width: 10%">ID</th>
         <th scope="col" style="width: 30%">Name</th>
@@ -105,11 +118,14 @@
                 </a>
                 <#if product.active==true>
                     <form style='display:inline; width: 50px' action="/products/delete/${product.id}" method="post">
-                        <button class="btn btn-dark" type="submit">Delete</button>
+                        <button class="btn btn-dark" type="submit">Archive</button>
                     </form>
                 <#else>
                     <form style='display:inline; width: 50px' action="/products/activate/${product.id}" method="post">
                         <button class="btn btn-primary" type="submit">Activate</button>
+                    </form>
+                    <form style='display:inline; width: 50px' action="/products/delete/${product.id}" method="post">
+                        <button class="btn btn-danger" type="submit">Delete</button>
                     </form>
                 </#if>
 

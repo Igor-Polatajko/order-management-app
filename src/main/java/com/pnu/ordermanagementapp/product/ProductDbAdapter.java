@@ -12,5 +12,4 @@ public interface ProductDbAdapter extends DbAdapter<Product> {
 
     void activate(Long id);
 
-
 }

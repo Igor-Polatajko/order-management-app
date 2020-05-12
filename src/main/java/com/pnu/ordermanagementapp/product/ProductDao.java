@@ -15,13 +15,6 @@ public interface ProductDao extends JpaRepository<Product, Long>, PagingAndSorti
     @Override
     Page<Product> findAll(Pageable pageable);
 
-    @Query(value = "Select * from products p where p.name LIKE %?1% ORDER BY name LIMIT ?2 OFFSET ?3",
-            nativeQuery = true)
-    List<Product> findAllByName(String name, int limit, long offset);
-
-    @Query("Select count(p) from Product p where p.name LIKE  %?1%")
-    int countByName(String name);
-
     @Query(value = "Select * from products p where p.active = ?1 ORDER BY name LIMIT ?2 OFFSET ?3",
             nativeQuery = true)
     List<Product> findAllByActivity(boolean isActive, int limit, long offset);
@@ -42,4 +35,6 @@ public interface ProductDao extends JpaRepository<Product, Long>, PagingAndSorti
     @Override
     Optional<Product> findById(Long aLong);
 
+    @Override
+    void delete(Product product);
 }

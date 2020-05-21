@@ -7,11 +7,13 @@ import java.util.List;
 
 public interface ProductService {
 
-    Page<Product> findAllByName(Integer pageNumber, String name, Long userId);
-
     List<Product> findAll(Long userId);
 
-    Page<Product> findAll(int pageNumber, Long userId);
+    Page<Product> findAllByActivity(Integer pageNumber, boolean isActive, Long userId);
+
+    Page<Product> findAllByNameAndActivity(Integer pageNumber, String name, boolean isActive, Long userId);
+
+    void activate(Long id, Long userId);
 
     Product findById(Long id, Long userId);
 

@@ -29,7 +29,7 @@ public class ProductController {
                           @RequestParam(name = "active", required = false, defaultValue = "true") boolean isActive,
                           Model model, @AuthenticationPrincipal User user) {
         model.addAttribute("active", isActive);
-        model.addAttribute("products", productService.findAllByActivity(page, isActive));
+        model.addAttribute("products", productService.findAllByActivity(page, isActive, user.getId()));
         return "product/show_products";
     }
 

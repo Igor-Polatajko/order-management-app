@@ -35,18 +35,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<Product> findAllByActivity(Integer pageNumber, boolean isActive, Long userId) {
         Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
-//        int total = productRepository.countByActivity(isActive);
-//        List<Product> products = productRepository.findAllByActivity(isActive, pageable.getPageSize(), pageable.getOffset());
-//        return new PageImpl<>(products, pageable, total);
         return productRepository.findByActiveAndUserId(isActive, userId, pageable);
     }
 
     @Override
     public Page<Product> findAllByNameAndActivity(Integer pageNumber, String name, boolean isActive, Long userId) {
         Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
-//        int total = productRepository.countByNameAndActivity(name, isActive);
-//        List<Product> products = productRepository.findAllByNameAndActivity(name, isActive, pageable.getPageSize(), pageable.getOffset());
-//        return new PageImpl<>(products, pageable, total);
         return productRepository.findByActiveAndUserIdAndNameContains(isActive, userId, name, pageable);
     }
 

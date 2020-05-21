@@ -1,7 +1,9 @@
 package com.pnu.ordermanagementapp.product;
 
 import com.pnu.ordermanagementapp.model.Product;
+import com.pnu.ordermanagementapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,28 +17,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/products")
 public class ProductController {
 
-    private ProductDbAdapter productDbAdapter;
+    private ProductService productService;
 
     @Autowired
-    public ProductController(ProductDbAdapter productDbAdapter) {
-        this.productDbAdapter = productDbAdapter;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
     @GetMapping
     public String findAll(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
                           @RequestParam(name = "active", required = false, defaultValue = "true") boolean isActive,
-                          Model model) {
+                          Model model, @AuthenticationPrincipal User user) {
         model.addAttribute("active", isActive);
-        model.addAttribute("products", productDbAdapter.findAllByActivity(page, isActive));
+        model.addAttribute("products", productService.findAllByActivity(page, isActive));
         return "product/show_products";
     }
 
     @GetMapping("/find")
     public String findAllByName(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
                                 @RequestParam(name = "active", required = false, defaultValue = "true") boolean isActive,
-                                @ModelAttribute("name") String name, Model model) {
+                                @ModelAttribute("name") String name, Model model, @AuthenticationPrincipal User user) {
         model.addAttribute("active", isActive);
-        model.addAttribute("products", productDbAdapter.findAllByNameAndActivity(page, name, isActive));
+        model.addAttribute("products", productService.findAllByNameAndActivity(page, name, isActive, user.getId()));
         return "product/show_products";
     }
 
@@ -46,32 +48,32 @@ public class ProductController {
     }
 
     @GetMapping("/update/{id}")
-    public String update(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("product", productDbAdapter.findById(id));
+    public String update(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("product", productService.findById(id, user.getId()));
         return "/product/form_product";
     }
 
     @PostMapping("/new")
-    public String create(@ModelAttribute("product") Product product) {
-        productDbAdapter.create(product);
+    public String create(@ModelAttribute("product") Product product, @AuthenticationPrincipal User user) {
+        productService.create(product, user.getId());
         return "redirect:/products";
     }
 
     @PostMapping("/update")
-    public String updateProduct(@ModelAttribute("product") Product product) {
-        productDbAdapter.update(product);
+    public String updateProduct(@ModelAttribute("product") Product product, @AuthenticationPrincipal User user) {
+        productService.update(product, user.getId());
         return "redirect:/products";
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable("id") Long id) {
-        productDbAdapter.delete(id);
+    public String deleteProduct(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
+        productService.delete(id, user.getId());
         return "redirect:/products";
     }
 
     @PostMapping("/activate/{id}")
-    public String activateProduct(@PathVariable("id") Long id) {
-        productDbAdapter.activate(id);
+    public String activateProduct(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
+        productService.activate(id, user.getId());
         return "redirect:/products";
     }
 }

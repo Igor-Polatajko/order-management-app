@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ErrorsController implements ErrorController {
 
     @RequestMapping("/error")
-    public String m(Model model) {
+    public String error(Model model) {
         model.addAttribute("message", "Internal service error!");
         return "error_page";
     }

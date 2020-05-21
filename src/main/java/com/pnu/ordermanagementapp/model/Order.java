@@ -30,4 +30,6 @@ public class Order {
 
     private LocalDateTime createdDate;
 
+    private Long userId;
+
 }

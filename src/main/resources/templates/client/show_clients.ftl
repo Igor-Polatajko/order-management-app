@@ -52,6 +52,7 @@
                 </a>
                 <form style='display:inline; width: 50px' action="/clients/delete/${client.id}" method="post">
                     <button class="btn btn-outline-danger" type="submit">Delete</button>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
             </span>
             </th>

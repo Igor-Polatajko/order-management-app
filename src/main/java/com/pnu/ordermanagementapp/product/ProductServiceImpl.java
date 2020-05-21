@@ -7,11 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+@Service
 public class ProductServiceImpl implements ProductService {
 
     private static final int PAGE_SIZE = 10;
@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void create(Product product, Long userId) {
-        product.setUserId(userId);
+        product = product.toBuilder().userId(userId).build();
         productRepository.save(product);
     }
 
@@ -66,33 +66,25 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void delete(Long id, Long userId) {
-        Product product = findProductByIdOrThrowException(id);
-        if (product.getUserId().equals(userId)) {
-            if (product.isActive()) {
-                product.setActive(false);
-                productRepository.save(product);
-            } else {
-                productRepository.delete(product);
-            }
-
+        Product product = findProductByIdOrThrowException(id, userId);
+        if (product.isActive()) {
+            product = product.toBuilder().active(false).build();
+            productRepository.save(product);
         } else {
-            throw new ServiceException("Not allowed! Product id fail");
+            productRepository.delete(product);
         }
+
     }
 
     @Override
     public void activate(Long id, Long userId) {
-        Product product = findProductByIdOrThrowException(id);
-        if (product.getUserId().equals(userId)) {
-            product.setActive(true);
-            productRepository.save(product);
-        } else {
-            throw new ServiceException("Not allowed! Product id fail");
-        }
+        Product product = findProductByIdOrThrowException(id, userId);
+        product = product.toBuilder().active(true).build();
+        productRepository.save(product);
     }
 
-    private Product findProductByIdOrThrowException(Long id) {
-        return productRepository.findById(id)
+    private Product findProductByIdOrThrowException(Long id, Long userId) {
+        return productRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ServiceException("Product not found!"));
     }
 }

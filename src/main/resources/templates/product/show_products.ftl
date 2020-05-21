@@ -69,8 +69,8 @@
     <select  onchange="window.document.location.href='/products<#if name??>/find?name=${name}&<#else>?</#if>active='
     + this.options[this.selectedIndex].value;"
             class="form-control selectpicker activePicker">
-        <option <#if active?? && active=true> selected</#if> value="true"><a href="/">Show active</a></option>
-        <option <#if active?? && active=false> selected </#if> value="false">Show archived</option>
+        <option <#if active?? && active> selected</#if> value="true">Show active</option>
+        <option <#if active?? && !active> selected </#if> value="false">Show archived</option>
     </select>
     <form action="/products/find" class="search-form">
         <input id="searchFieldInput" name="name" type="text" class="form-control search-field"
@@ -80,6 +80,7 @@
         </#if>
         <button id="searchBtn" type="submit" class="btn btn-light search-btn">Search</button>
         <a href="/products">Reset</a>
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
 
 
@@ -88,13 +89,13 @@
     </a>
 </div>
 
-<table border="2" <#if active?? && active=false> class="table table-dark" <#else>  class="table table-striped" </#if>
+<table border="2" <#if active?? && !active> class="table table-dark" <#else>  class="table table-striped" </#if>
        style="width: 90%; margin: auto;">
 
     <thead>
     <tr style="background-color: #eaeef1">
         <th colspan="5">
-            <h2 class="tableTitle"> <#if active?? && active=false> Archived products <#else> Active products </#if></h2>
+            <h2 class="tableTitle"> <#if active?? && !active> Archived products <#else> Active products </#if></h2>
         </th>
     </tr>
     <tr>
@@ -120,7 +121,7 @@
                 <a style='display:inline; width: 50px' href="/products/update/${product.id}">
                 <button class="btn btn-light" type="submit">Edit</button>
                 </a>
-                <#if product.active==true>
+                <#if product.active>
                     <form style='display:inline; width: 50px' action="/products/delete/${product.id}" method="post">
                         <button class="btn btn-dark" type="submit">Archive</button>
                     </form>

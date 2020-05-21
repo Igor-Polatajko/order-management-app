@@ -124,13 +124,16 @@
                 <#if product.active>
                     <form style='display:inline; width: 50px' action="/products/delete/${product.id}" method="post">
                         <button class="btn btn-dark" type="submit">Archive</button>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     </form>
                 <#else>
                     <form style='display:inline; width: 50px' action="/products/activate/${product.id}" method="post">
                         <button class="btn btn-primary" type="submit">Activate</button>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     </form>
                     <form style='display:inline; width: 50px' action="/products/delete/${product.id}" method="post">
                         <button class="btn btn-danger" type="submit">Delete</button>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     </form>
                 </#if>
 

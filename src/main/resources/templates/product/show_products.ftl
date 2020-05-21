@@ -14,6 +14,8 @@
         .activePicker {
             display: inline;
             width: 160px;
+            position: absolute;
+            left: 20%;
         }
 
         .search-form {
@@ -64,16 +66,18 @@
     <a href="/">
         <button class="backBtn btn btn-dark">Back</button>
     </a>
-
+    <select  onchange="window.document.location.href='/products<#if name??>/find?name=${name}&<#else>?</#if>active='
+    + this.options[this.selectedIndex].value;"
+            class="form-control selectpicker activePicker">
+        <option <#if active?? && active=true> selected</#if> value="true"><a href="/">Show active</a></option>
+        <option <#if active?? && active=false> selected </#if> value="false">Show archived</option>
+    </select>
     <form action="/products/find" class="search-form">
-        <select class="form-control selectpicker activePicker" name="active"
-                id="ch_c">
-            <option <#if active?? && active=true> selected</#if> value="true">Show active</option>
-            <option <#if active?? && active=false> selected </#if> value="false">Show archived</option>
-
-        </select>
         <input id="searchFieldInput" name="name" type="text" class="form-control search-field"
                <#if name??>value=${name}</#if>>
+        <#if active??>
+        <input type="hidden" name="active" value="${active?string("true", "false")}" />
+        </#if>
         <button id="searchBtn" type="submit" class="btn btn-light search-btn">Search</button>
         <a href="/products">Reset</a>
     </form>
@@ -139,9 +143,16 @@
 </table>
 <ul class="pagination">
     <#list 1..products.totalPages as pageNumber>
-        <li class="page-item"><a <#if pageNumber - 1 == products.number>style="background-color: gray" </#if>
-                                 class="page-link" href="<#if name??>/products/find?name=${name}&page=${pageNumber}
-                    <#else>/products?page=${pageNumber}</#if>">${pageNumber}</a></li>
+        <li class="page-item">
+            <a <#if pageNumber - 1 == products.number>style="background-color: gray" </#if>
+               class="page-link"
+               href="
+               /products
+<#if name??>/find?name=${name}&<#else>?</#if>
+page=${pageNumber}
+<#if active??>&active=${active?string("true", "false")}</#if>
+">${pageNumber}
+            </a></li>
     </#list>
 </ul>
 

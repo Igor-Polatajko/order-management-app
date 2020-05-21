@@ -3,7 +3,10 @@ package com.pnu.ordermanagementapp.product;
 import com.pnu.ordermanagementapp.exception.ServiceException;
 import com.pnu.ordermanagementapp.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,18 +14,18 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    private static final int PAGE_SIZE = 10;
+
+    private static final Sort SORT = Sort.by("active").descending().and(Sort.by("name").ascending());
+
     private ProductRepository productRepository;
 
-    private static int pageSize = 10;
-
-    private static String sortByName = "name";
-
-    private static Sort.Direction sortDirection = Sort.Direction.ASC;
 
     @Autowired
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
+
 
     @Override
     public List<Product> findAll(Long userId) {
@@ -30,49 +33,53 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> findAll(int pageNumber, Long userId) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sortDirection, sortByName);
-        int total = productRepository.countActiveByUserId(userId);
-        List<Product> products = productRepository
-                .findAllActiveByUserId(userId, pageable.getPageSize(), pageable.getOffset());
-
-        return new PageImpl<>(products, pageable, total);
+    public Page<Product> findAllByActivity(Integer pageNumber, boolean isActive, Long userId) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
+        return productRepository.findByActiveAndUserId(isActive, userId, pageable);
     }
 
     @Override
-    public Page<Product> findAllByName(Integer pageNumber, String name, Long userId) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sortDirection, sortByName);
-        int total = productRepository.countWithNameAndUserId(name, userId);
-        List<Product> products = productRepository
-                .findAllByNameAndUserId(name, userId, pageable.getPageSize(), pageable.getOffset());
-
-        return new PageImpl<>(products, pageable, total);
+    public Page<Product> findAllByNameAndActivity(Integer pageNumber, String name, boolean isActive, Long userId) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
+        return productRepository.findByActiveAndUserIdAndNameContains(isActive, userId, name, pageable);
     }
 
     @Override
     public void create(Product product, Long userId) {
-        Product productWithUserId = product.toBuilder()
-                .userId(userId)
-                .build();
-
-        productRepository.save(productWithUserId);
-    }
-
-    @Override
-    public void update(Product product, Long userId) {
-        findProductByIdOrThrowException(product.getId(), userId);
+        product = product.toBuilder().userId(userId).build();
         productRepository.save(product);
     }
 
     @Override
+    public void update(Product product, Long userId) {
+        if (product.getUserId().equals(userId)) {
+            productRepository.save(product);
+        } else {
+            throw new ServiceException("Not allowed! Product id fail");
+        }
+    }
+
+    @Override
     public Product findById(Long id, Long userId) {
-        return findProductByIdOrThrowException(id, userId);
+        return productRepository.findByIdAndUserId(id, userId).get();
     }
 
     @Override
     public void delete(Long id, Long userId) {
         Product product = findProductByIdOrThrowException(id, userId);
-        product.setActive(false);
+        if (product.isActive()) {
+            product = product.toBuilder().active(false).build();
+            productRepository.save(product);
+        } else {
+            productRepository.delete(product);
+        }
+
+    }
+
+    @Override
+    public void activate(Long id, Long userId) {
+        Product product = findProductByIdOrThrowException(id, userId);
+        product = product.toBuilder().active(true).build();
         productRepository.save(product);
     }
 

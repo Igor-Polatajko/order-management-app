@@ -6,7 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/products")
@@ -21,18 +26,19 @@ public class ProductController {
 
     @GetMapping
     public String findAll(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-                          Model model,
-                          @AuthenticationPrincipal User user) {
-        model.addAttribute("products", productService.findAll(page, user.getId()));
+                          @RequestParam(name = "active", required = false, defaultValue = "true") boolean isActive,
+                          Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("active", isActive);
+        model.addAttribute("products", productService.findAllByActivity(page, isActive, user.getId()));
         return "product/show_products";
     }
 
     @GetMapping("/find")
     public String findAllByName(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-                                @ModelAttribute("name") String name,
-                                Model model,
-                                @AuthenticationPrincipal User user) {
-        model.addAttribute("products", productService.findAllByName(page, name, user.getId()));
+                                @RequestParam(name = "active", required = false, defaultValue = "true") boolean isActive,
+                                @ModelAttribute("name") String name, Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("active", isActive);
+        model.addAttribute("products", productService.findAllByNameAndActivity(page, name, isActive, user.getId()));
         return "product/show_products";
     }
 
@@ -62,6 +68,12 @@ public class ProductController {
     @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
         productService.delete(id, user.getId());
+        return "redirect:/products";
+    }
+
+    @PostMapping("/activate/{id}")
+    public String activateProduct(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
+        productService.activate(id, user.getId());
         return "redirect:/products";
     }
 }

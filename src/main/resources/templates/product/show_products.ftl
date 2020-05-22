@@ -1,39 +1,10 @@
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <style type="text/css">
-        .backBtn {
-            position: relative;
-            left: 5%;
-            display: inline;
-            width: 100px;
-        }
-
-        .activePicker {
-            display: inline;
-            width: 160px;
-            position: absolute;
-            left: 20%;
-        }
-
-        .search-form {
-            display: inline;
-            position: absolute;
-            left: 35%;
-            right: 35%;
-        }
-
-        .search-btn {
-            display: inline;
-
-        }
-
-        .search-field {
-            width: 200px;
-            display: inline;
-        }
 
         .newBtn {
             display: inline;
@@ -62,42 +33,52 @@
     </style>
 </head>
 <body>
-<div style="width: 100%; margin-bottom: 15px">
-    <a href="/">
-        <button class="backBtn btn btn-dark">Back</button>
-    </a>
-    <select  onchange="window.document.location.href='/products<#if name??>/find?name=${name}&<#else>?</#if>active='
-    + this.options[this.selectedIndex].value;"
-            class="form-control selectpicker activePicker">
-        <option <#if active?? && active> selected</#if> value="true">Show active</option>
-        <option <#if active?? && !active> selected </#if> value="false">Show archived</option>
-    </select>
-    <form action="/products/find" class="search-form">
-        <input id="searchFieldInput" name="name" type="text" class="form-control search-field"
-               <#if name??>value=${name}</#if>>
-        <#if active??>
-        <input type="hidden" name="active" value="${active?string("true", "false")}" />
-        </#if>
-        <button id="searchBtn" type="submit" class="btn btn-light search-btn">Search</button>
-        <a href="/products">Reset</a>
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-    </form>
-
-
-    <a href="/products/new">
-        <button class="btn btn-info newBtn">Add new product</button>
-    </a>
+<div class="row">
+    <div class="col-sm">
+        <a href="/" class="btn btn-dark m-4 ">Main page</a>
+    </div>
+    <div class="col text-center">
+        <select onchange="window.document.location.href='/products<#if name??>/find?name=${name}&<#else>?</#if>active='
+                + this.options[this.selectedIndex].value;"
+                class="form-control m-4 mx-auto mw-10">
+            <option <#if active?? && active> selected</#if> value="true">Show active</option>
+            <option <#if active?? && !active> selected </#if> value="false">Show archived</option>
+        </select>
+    </div>
+    <div class="col">
+        <a class="btn btn-success m-4 float-right" href="/products/new">Add product</a>
+    </div>
+    <div class="w-100"></div>
 </div>
+<div class="row">
+    <div class="input-group col text-center">
 
+        <form action="/products/find" class="form-inline mx-auto">
+            <#if name??>
+                <a href="/products" class="btn btn-secondary m-1">Reset</a>
+            </#if>
+            <input name="name" type="text" class="form-control" placeholder="Product name"
+                   <#if name??>value="${name}"</#if>
+                   aria-label="Product name" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <button class="btn btn-info" type="submit">Search</button>
+            </div>
+            <#if active??>
+                <input type="hidden" name="active" value="${active?string("true", "false")}"/>
+            </#if>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        </form>
+    </div>
+</div>
+<div class="container text-center">
+    <h1 style="background-color: #eaeef1">
+        <#if active?? && !active> Archived products <#else> Active products </#if>
+    </h1>
+</div>
 <table border="2" <#if active?? && !active> class="table table-dark" <#else>  class="table table-striped" </#if>
        style="width: 90%; margin: auto;">
 
     <thead>
-    <tr style="background-color: #eaeef1">
-        <th colspan="5">
-            <h2 class="tableTitle"> <#if active?? && !active> Archived products <#else> Active products </#if></h2>
-        </th>
-    </tr>
     <tr>
         <th scope="col" style="width: 10%">ID</th>
         <th scope="col" style="width: 30%">Name</th>
@@ -145,20 +126,20 @@
     </tbody>
 
 </table>
-<ul class="pagination">
-    <#list 1..products.totalPages as pageNumber>
-        <li class="page-item">
-            <a <#if pageNumber - 1 == products.number>style="background-color: gray" </#if>
-               class="page-link"
-               href="
-               /products
-<#if name??>/find?name=${name}&<#else>?</#if>
-page=${pageNumber}
-<#if active??>&active=${active?string("true", "false")}</#if>
-">${pageNumber}
-            </a></li>
-    </#list>
-</ul>
+<#--<ul class="pagination">-->
+<#--    <#list 1..products.totalPages as pageNumber>-->
+<#--        <li class="page-item">-->
+<#--            <a <#if pageNumber - 1 == products.number>style="background-color: gray" </#if>-->
+<#--               class="page-link"-->
+<#--               href="-->
+<#--               /products-->
+<#--<#if name??>/find?name=${name}&<#else>?</#if>-->
+<#--page=${pageNumber}-->
+<#--<#if active??>&active=${active?string("true", "false")}</#if>-->
+<#--">${pageNumber}-->
+<#--            </a></li>-->
+<#--    </#list>-->
+<#--</ul>-->
 
 </body>
 </html>

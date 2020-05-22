@@ -6,29 +6,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <style type="text/css">
 
-        .newBtn {
-            display: inline;
-            position: absolute;
-            right: 5%;
-            display: inline;
-        }
-
-
-        .pagination {
-            margin-left: 5%;
-        }
-
-        .tableTitle {
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            color: black;
-        }
-
         body {
             background-image: linear-gradient(#c5c7cb, #f8f9fa);
-            align-items: center;
-            padding-top: 30px;
         }
     </style>
 </head>
@@ -70,55 +49,50 @@
         </form>
     </div>
 </div>
-<div class="container text-center">
+<div class="container text-center mb-0">
     <h1 style="background-color: #eaeef1">
         <#if active?? && !active> Archived products <#else> Active products </#if>
     </h1>
 </div>
-<table border="2" <#if active?? && !active> class="table table-dark" <#else>  class="table table-striped" </#if>
-       style="width: 90%; margin: auto;">
-
-    <thead>
-    <tr>
-        <th scope="col" style="width: 10%">ID</th>
-        <th scope="col" style="width: 30%">Name</th>
-        <th scope="col" style="width: 10%">Amount</th>
-        <th scope="col" style="width: 20%">Price</th>
-        <th style="width: 30%"></th>
+<table border="2" class="table <#if active?? && !active>table-dark <#else> table-striped </#if>">
+    <thead class="<#if active?? && !active>thead-light <#else> thead-dark </#if>">
+    <tr class="d-flex">
+        <th scope="col" class="col-1">ID</th>
+        <th scope="col" class="col-4">Name</th>
+        <th scope="col" class="col-1">Amount</th>
+        <th scope="col" class="col-1">Price</th>
+        <th class="col-5"></th>
     </tr>
     </thead>
     <tbody>
     <#list products.content as product>
-        <tr>
-            <th scope="row">${product.id}</th>
-            <td>${product.name}</td>
-            <td>${product.amount}</td>
-            <td>${product.price}</td>
-            <th scope="col">
-            <span style="margin-left: 27%;">
-                <a style='display:inline; width: 50px' href="/orders/product/${product.id}">
+        <tr class="d-flex">
+            <th scope="row" class="col-1">${product.id}</th>
+            <td class="col-4">${product.name}</td>
+            <td class="col-1">${product.amount}</td>
+            <td class="col-1">${product.price}</td>
+            <th class="col-5 text-center">
+                <a href="/orders/product/${product.id}">
                     <button class="btn btn-warning" type="submit">Orders</button>
                 </a>
-                <a style='display:inline; width: 50px' href="/products/update/${product.id}">
-                <button class="btn btn-light" type="submit">Edit</button>
+                <a href="/products/update/${product.id}">
+                    <button class="btn btn-light" type="submit">Edit</button>
                 </a>
                 <#if product.active>
-                    <form style='display:inline; width: 50px' action="/products/delete/${product.id}" method="post">
+                    <form class="form-inline d-inline" action="/products/delete/${product.id}" method="post">
                         <button class="btn btn-dark" type="submit">Archive</button>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     </form>
                 <#else>
-                    <form style='display:inline; width: 50px' action="/products/activate/${product.id}" method="post">
+                    <form class="form-inline d-inline" action="/products/activate/${product.id}" method="post">
                         <button class="btn btn-primary" type="submit">Activate</button>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     </form>
-                    <form style='display:inline; width: 50px' action="/products/delete/${product.id}" method="post">
+                    <form class="form-inline d-inline" action="/products/delete/${product.id}" method="post">
                         <button class="btn btn-danger" type="submit">Delete</button>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     </form>
                 </#if>
-
-            </span>
             </th>
         </tr>
     </#list>
@@ -126,20 +100,26 @@
     </tbody>
 
 </table>
-<#--<ul class="pagination">-->
-<#--    <#list 1..products.totalPages as pageNumber>-->
-<#--        <li class="page-item">-->
-<#--            <a <#if pageNumber - 1 == products.number>style="background-color: gray" </#if>-->
-<#--               class="page-link"-->
-<#--               href="-->
-<#--               /products-->
-<#--<#if name??>/find?name=${name}&<#else>?</#if>-->
-<#--page=${pageNumber}-->
-<#--<#if active??>&active=${active?string("true", "false")}</#if>-->
-<#--">${pageNumber}-->
-<#--            </a></li>-->
-<#--    </#list>-->
-<#--</ul>-->
-
+<div class="row">
+    <ul class="pagination mx-auto">
+        <#list 1..products.totalPages as pageNumber>
+            <form action="/products<#if name??>/find?name=${name}&<#else>?</#if>">
+                <li class="page-item">
+                    <button type="submit" <#if pageNumber - 1 == products.number>style="background-color: gray" </#if>
+                            class="page-link">${pageNumber}
+                    </button>
+                </li>
+                <#if name??>
+                    <input type="hidden" name="name" value="${name}">
+                </#if>
+                <#if active??>
+                    <input type="hidden" name="active" value="${active?string("true", "false")}">
+                </#if>
+                <input type="hidden" name="page" value="${pageNumber}">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </form>
+        </#list>
+    </ul>
+</div>
 </body>
 </html>

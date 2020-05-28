@@ -1,5 +1,6 @@
-package com.pnu.ordermanagementapp.client;
+package com.pnu.ordermanagementapp.controller;
 
+import com.pnu.ordermanagementapp.service.ClientService;
 import com.pnu.ordermanagementapp.model.Client;
 import com.pnu.ordermanagementapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;

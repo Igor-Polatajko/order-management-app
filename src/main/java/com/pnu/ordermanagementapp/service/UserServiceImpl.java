@@ -1,7 +1,8 @@
-package com.pnu.ordermanagementapp.user;
+package com.pnu.ordermanagementapp.service;
 
 import com.pnu.ordermanagementapp.model.Role;
 import com.pnu.ordermanagementapp.model.User;
+import com.pnu.ordermanagementapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

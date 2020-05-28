@@ -1,4 +1,4 @@
-package com.pnu.ordermanagementapp.user;
+package com.pnu.ordermanagementapp.repository;
 
 import com.pnu.ordermanagementapp.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;

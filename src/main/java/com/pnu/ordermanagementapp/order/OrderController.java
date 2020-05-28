@@ -1,13 +1,13 @@
 package com.pnu.ordermanagementapp.order;
 
-import com.pnu.ordermanagementapp.client.ClientService;
+import com.pnu.ordermanagementapp.service.ClientService;
 import com.pnu.ordermanagementapp.model.Client;
 import com.pnu.ordermanagementapp.model.Order;
 import com.pnu.ordermanagementapp.model.Product;
 import com.pnu.ordermanagementapp.model.User;
 import com.pnu.ordermanagementapp.order.dto.OrderFormSubmitDto;
 import com.pnu.ordermanagementapp.order.dto.OrdersFtlPageDto;
-import com.pnu.ordermanagementapp.product.ProductService;
+import com.pnu.ordermanagementapp.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

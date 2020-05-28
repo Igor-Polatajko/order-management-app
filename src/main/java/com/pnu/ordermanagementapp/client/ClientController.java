@@ -6,7 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/clients")
@@ -20,8 +25,20 @@ public class ClientController {
     }
 
     @GetMapping
-    public String getAll(Model model, @AuthenticationPrincipal User user) {
-        model.addAttribute("clients", clientService.findAll(user.getId()));
+    public String getAll(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+                         @RequestParam(name = "active", required = false, defaultValue = "true") boolean isActive,
+                         Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("active", isActive);
+        model.addAttribute("clients", clientService.findAllByActivity(page, isActive, user.getId()));
+        return "client/show_clients";
+    }
+
+    @GetMapping("/find")
+    public String getAllByName(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+                               @RequestParam(name = "active", required = false, defaultValue = "true") boolean isActive,
+                               @ModelAttribute("name") String name, Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("active", isActive);
+        model.addAttribute("clients", clientService.findAllByNameAndActivity(page, name, isActive, user.getId()));
         return "client/show_clients";
     }
 
@@ -51,6 +68,12 @@ public class ClientController {
     @PostMapping("/delete/{id}")
     public String deleteClient(@PathVariable Long id, @AuthenticationPrincipal User user) {
         clientService.delete(id, user.getId());
+        return "redirect:/clients";
+    }
+
+    @PostMapping("/activate/{id}")
+    public String activateClient(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
+        clientService.activate(id, user.getId());
         return "redirect:/clients";
     }
 

@@ -4,14 +4,19 @@ import com.pnu.ordermanagementapp.exception.ServiceException;
 import com.pnu.ordermanagementapp.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ClientServiceImpl implements ClientService {
+
+    private static final int PAGE_SIZE = 10;
+
+    private static final Sort SORT = Sort.by("active").descending().and(Sort.by("name").ascending());
 
     private ClientRepository repository;
 
@@ -22,15 +27,19 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public List<Client> findAll(Long userId) {
-        return repository.findAllByUserId(userId).stream()
-                .filter(Client::isActive)
-                .collect(Collectors.toList());
+        return repository.findAllByUserId(userId);
     }
 
-    // ToDo implement
     @Override
-    public Page<Client> findAll(int pageNumber, Long userId) {
-        throw new NotImplementedException();
+    public Page<Client> findAllByActivity(Integer pageNumber, boolean isActive, Long userId) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
+        return repository.findByActiveAndUserId(isActive, userId, pageable);
+    }
+
+    @Override
+    public Page<Client> findAllByNameAndActivity(Integer pageNumber, String name, boolean isActive, Long userId) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
+        return repository.findByActiveAndUserIdAndNameContains(isActive, userId, name, pageable);
     }
 
     @Override
@@ -51,13 +60,24 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void delete(Long id, Long userId) {
         Client client = findClientByIdOrThrowException(id, userId);
-        client.setActive(false);
-        repository.save(client);
+        if (client.isActive()) {
+            client = client.toBuilder().active(false).build();
+            repository.save(client);
+        } else {
+            repository.delete(client);
+        }
     }
 
     @Override
     public Client findById(Long id, Long userId) {
         return findClientByIdOrThrowException(id, userId);
+    }
+
+    @Override
+    public void activate(Long id, Long userId) {
+        Client client = findClientByIdOrThrowException(id, userId);
+        client = client.toBuilder().active(true).build();
+        repository.save(client);
     }
 
     private Client findClientByIdOrThrowException(Long id, Long userId) {

@@ -1,5 +1,6 @@
-package com.pnu.ordermanagementapp.client;
+package com.pnu.ordermanagementapp.service;
 
+import com.pnu.ordermanagementapp.repository.ClientRepository;
 import com.pnu.ordermanagementapp.exception.ServiceException;
 import com.pnu.ordermanagementapp.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;

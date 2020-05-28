@@ -1,4 +1,4 @@
-package com.pnu.ordermanagementapp.user;
+package com.pnu.ordermanagementapp.service;
 
 import com.pnu.ordermanagementapp.model.User;
 

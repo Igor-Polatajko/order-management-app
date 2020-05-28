@@ -1,7 +1,8 @@
-package com.pnu.ordermanagementapp.product;
+package com.pnu.ordermanagementapp.controller;
 
 import com.pnu.ordermanagementapp.model.Product;
 import com.pnu.ordermanagementapp.model.User;
+import com.pnu.ordermanagementapp.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;

@@ -1,13 +1,15 @@
-package com.pnu.ordermanagementapp.order;
+package com.pnu.ordermanagementapp.controller;
 
-import com.pnu.ordermanagementapp.service.ClientService;
+import com.pnu.ordermanagementapp.dto.order.OrderFormSubmitDto;
+import com.pnu.ordermanagementapp.dto.order.OrdersFtlPageDto;
 import com.pnu.ordermanagementapp.model.Client;
 import com.pnu.ordermanagementapp.model.Order;
 import com.pnu.ordermanagementapp.model.Product;
 import com.pnu.ordermanagementapp.model.User;
-import com.pnu.ordermanagementapp.order.dto.OrderFormSubmitDto;
-import com.pnu.ordermanagementapp.order.dto.OrdersFtlPageDto;
+import com.pnu.ordermanagementapp.service.ClientService;
+import com.pnu.ordermanagementapp.service.OrderService;
 import com.pnu.ordermanagementapp.service.ProductService;
+import com.pnu.ordermanagementapp.util.OrdersPageToOrdersFtlPageDtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-// ToDo move business logic to service
 @Controller
 @RequestMapping("/orders")
 public class OrderController {
@@ -43,9 +44,9 @@ public class OrderController {
     }
 
     @GetMapping
-    public String getAll(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
-                         Model model,
-                         @AuthenticationPrincipal User user) {
+    public String findAll(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
+                          Model model,
+                          @AuthenticationPrincipal User user) {
 
         Page<Order> ordersPage = orderService.findAll(pageNumber, user.getId());
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper.map(ordersPage);
@@ -57,13 +58,12 @@ public class OrderController {
     }
 
     @GetMapping("/client/{clientId}")
-    public String getAllForClient(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
-                                  @PathVariable("clientId") Long clientId, Model model,
-                                  @AuthenticationPrincipal User user) {
+    public String findAllForClient(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
+                                   @PathVariable("clientId") Long clientId, Model model,
+                                   @AuthenticationPrincipal User user) {
 
         Page<Order> ordersPage = orderService.findByClientId(clientId, pageNumber, user.getId());
-        OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper
-                .map(ordersPage);
+        OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper.map(ordersPage);
 
         Client client = clientService.findById(clientId, user.getId());
 
@@ -76,13 +76,12 @@ public class OrderController {
     }
 
     @GetMapping("/product/{productId}")
-    public String getAllForProduct(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
-                                   @PathVariable("productId") Long productId, Model model,
-                                   @AuthenticationPrincipal User user) {
+    public String findAllForProduct(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
+                                    @PathVariable("productId") Long productId, Model model,
+                                    @AuthenticationPrincipal User user) {
 
         Page<Order> ordersPage = orderService.findByProductId(productId, pageNumber, user.getId());
-        OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper
-                .map(ordersPage);
+        OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper.map(ordersPage);
 
         Product product = productService.findById(productId, user.getId());
 

@@ -1,8 +1,8 @@
-package com.pnu.ordermanagementapp.order;
+package com.pnu.ordermanagementapp.util;
 
 import com.pnu.ordermanagementapp.model.Order;
-import com.pnu.ordermanagementapp.order.dto.OrderFtlDto;
-import com.pnu.ordermanagementapp.order.dto.OrdersFtlPageDto;
+import com.pnu.ordermanagementapp.dto.order.OrderFtlDto;
+import com.pnu.ordermanagementapp.dto.order.OrdersFtlPageDto;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 

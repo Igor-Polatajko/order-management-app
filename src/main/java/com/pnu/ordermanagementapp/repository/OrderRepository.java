@@ -1,4 +1,4 @@
-package com.pnu.ordermanagementapp.order;
+package com.pnu.ordermanagementapp.repository;
 
 import com.pnu.ordermanagementapp.model.Order;
 import org.springframework.data.domain.Page;

@@ -36,9 +36,10 @@ public class ClientController {
     @GetMapping("/find")
     public String getAllByName(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
                                @RequestParam(name = "active", required = false, defaultValue = "true") boolean isActive,
-                               @ModelAttribute("name") String name, Model model, @AuthenticationPrincipal User user) {
+                               @RequestParam("q") String nameQuery, Model model, @AuthenticationPrincipal User user) {
         model.addAttribute("active", isActive);
-        model.addAttribute("clients", clientService.findAllByNameAndActivity(page, name, isActive, user.getId()));
+        model.addAttribute("nameQuery", nameQuery);
+        model.addAttribute("clients", clientService.findAllByNameAndActivity(page, nameQuery, isActive, user.getId()));
         return "client/show_clients";
     }
 

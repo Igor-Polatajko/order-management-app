@@ -33,11 +33,11 @@
     <div class="input-group col text-center">
 
         <form action="/clients/find" class="form-inline mx-auto">
-            <#if name??>
+            <#if nameQuery??>
                 <a href="/clients" class="btn btn-secondary m-1">Reset</a>
             </#if>
-            <input name="name" type="text" class="form-control" placeholder="Client name"
-                   <#if name??>value="${name}"</#if>
+            <input name="q" type="text" class="form-control" placeholder="Client name"
+                   <#if nameQuery??>value="${nameQuery}"</#if>
                    aria-label="Client name" aria-describedby="basic-addon2">
             <div class="input-group-append">
                 <button class="btn btn-info" type="submit">Search</button>
@@ -103,14 +103,14 @@
 <div class="row">
     <ul class="pagination mx-auto">
         <#list 1..clients.totalPages as pageNumber>
-            <form action="/clients<#if name??>/find?name=${name}&<#else>?</#if>">
+            <form action="/clients<#if nameQuery??>/find</#if>">
                 <li class="page-item">
                     <button type="submit" <#if pageNumber - 1 == clients.number>style="background-color: gray" </#if>
                             class="page-link">${pageNumber}
                     </button>
                 </li>
-                <#if name??>
-                    <input type="hidden" name="name" value="${name}">
+                <#if nameQuery??>
+                    <input type="hidden" name="q" value="${nameQuery}">
                 </#if>
                 <#if active??>
                     <input type="hidden" name="active" value="${active?string("true", "false")}">

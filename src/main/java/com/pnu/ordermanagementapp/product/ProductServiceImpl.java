@@ -28,8 +28,8 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public List<Product> findAll(Long userId) {
-        return productRepository.findAllByUserId(userId);
+    public List<Product> findAllActive(Long userId) {
+        return productRepository.findByActiveAndUserId(true, userId);
     }
 
     @Override

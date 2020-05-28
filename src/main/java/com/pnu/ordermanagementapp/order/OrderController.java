@@ -97,8 +97,8 @@ public class OrderController {
     @GetMapping("/new")
     public String createNew(Model model, @AuthenticationPrincipal User user) {
 
-        List<Client> clients = clientService.findAll(user.getId());
-        List<Product> products = productService.findAll(user.getId());
+        List<Client> clients = clientService.findAllActive(user.getId());
+        List<Product> products = productService.findAllActive(user.getId());
 
         model.addAttribute("clients", clients);
         model.addAttribute("products", products);

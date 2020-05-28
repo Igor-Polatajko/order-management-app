@@ -26,15 +26,14 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<Client> findAll(Long userId) {
-        return clientRepository.findAllByUserId(userId);
+    public List<Client> findAllActive(Long userId) {
+        return clientRepository.findAllByActiveAndUserId(true, userId);
     }
 
     @Override
     public Page<Client> findAllByActivity(Integer pageNumber, boolean isActive, Long userId) {
         Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
-        Page<Client> page1 = clientRepository.findByActiveAndUserId(isActive, userId, pageable);
-        return page1;
+        return clientRepository.findByActiveAndUserId(isActive, userId, pageable);
     }
 
     @Override

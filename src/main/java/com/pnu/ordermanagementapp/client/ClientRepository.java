@@ -13,13 +13,7 @@ public interface ClientRepository extends JpaRepository<Client, Long>, PagingAnd
 
     Optional<Client> findByIdAndUserId(Long id, Long userId);
 
-    List<Client> findAllByUserId(Long userId);
-
-    @Override
-    <S extends Client> S save(S s);
-
-    @Override
-    void delete(Client client);
+    List<Client> findAllByActiveAndUserId(boolean active, long userId);
 
     Page<Client> findByActiveAndUserId(boolean active, long userId, Pageable pageable);
 

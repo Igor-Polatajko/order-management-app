@@ -28,8 +28,8 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public List<Product> findAll(Long userId) {
-        return productRepository.findAllByUserId(userId);
+    public List<Product> findAllActive(Long userId) {
+        return productRepository.findByActiveAndUserId(true, userId);
     }
 
     @Override
@@ -52,11 +52,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void update(Product product, Long userId) {
-        if (product.getUserId().equals(userId)) {
-            productRepository.save(product);
-        } else {
-            throw new ServiceException("Not allowed! Product id fail");
-        }
+        findProductByIdOrThrowException(product.getId(), userId);
+        productRepository.save(product);
     }
 
     @Override

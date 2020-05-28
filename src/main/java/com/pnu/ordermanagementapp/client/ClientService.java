@@ -7,9 +7,11 @@ import java.util.List;
 
 public interface ClientService {
 
-    List<Client> findAll(Long userId);
+    List<Client> findAllActive(Long userId);
 
-    Page<Client> findAll(int pageNumber,Long userId);
+    Page<Client> findAllByActivity(Integer pageNumber, boolean isActive, Long userId);
+
+    Page<Client> findAllByNameAndActivity(Integer pageNumber, String name, boolean isActive, Long userId);
 
     Client findById(Long id, Long userId);
 
@@ -18,4 +20,7 @@ public interface ClientService {
     void update(Client client, Long userId);
 
     void delete(Long id, Long userId);
+
+    void activate(Long id, Long userId);
+
 }

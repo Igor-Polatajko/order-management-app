@@ -11,15 +11,9 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, PagingAndSortingRepository<Product, Long> {
 
-    @Override
-    <S extends Product> S save(S s);
-
     Optional<Product> findByIdAndUserId(Long id, Long userId);
 
-    @Override
-    void delete(Product product);
-
-    List<Product> findAllByUserId(Long userId);
+    List<Product> findByActiveAndUserId(boolean active, long userId);
 
     Page<Product> findByActiveAndUserId(boolean active, long userId, Pageable pageable);
 

@@ -4,33 +4,43 @@ import com.pnu.ordermanagementapp.exception.ServiceException;
 import com.pnu.ordermanagementapp.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ClientServiceImpl implements ClientService {
 
-    private ClientRepository repository;
+    private static final int PAGE_SIZE = 10;
+
+    private static final Sort SORT = Sort.by("active").descending().and(Sort.by("id").descending());
+
+    private ClientRepository clientRepository;
 
     @Autowired
-    public ClientServiceImpl(ClientRepository repository) {
-        this.repository = repository;
+    public ClientServiceImpl(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
     }
 
     @Override
-    public List<Client> findAll(Long userId) {
-        return repository.findAllByUserId(userId).stream()
-                .filter(Client::isActive)
-                .collect(Collectors.toList());
+    public List<Client> findAllActive(Long userId) {
+        return clientRepository.findAllByActiveAndUserId(true, userId);
     }
 
-    // ToDo implement
     @Override
-    public Page<Client> findAll(int pageNumber, Long userId) {
-        throw new NotImplementedException();
+    public Page<Client> findAllByActivity(Integer pageNumber, boolean isActive, Long userId) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
+        return clientRepository.findByActiveAndUserId(isActive, userId, pageable);
+    }
+
+    @Override
+    public Page<Client> findAllByNameAndActivity(Integer pageNumber, String name, boolean isActive, Long userId) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
+        return clientRepository.findByFirstNameContainsOrLastNameContainsAndActiveAndUserId(
+                name, name, isActive, userId, pageable);
     }
 
     @Override
@@ -39,20 +49,24 @@ public class ClientServiceImpl implements ClientService {
                 .userId(userId)
                 .build();
 
-        repository.save(clientWithUserId);
+        clientRepository.save(clientWithUserId);
     }
 
     @Override
     public void update(Client client, Long userId) {
         findClientByIdOrThrowException(client.getId(), userId);
-        repository.save(client);
+        clientRepository.save(client);
     }
 
     @Override
     public void delete(Long id, Long userId) {
         Client client = findClientByIdOrThrowException(id, userId);
-        client.setActive(false);
-        repository.save(client);
+        if (client.isActive()) {
+            client = client.toBuilder().active(false).build();
+            clientRepository.save(client);
+        } else {
+            clientRepository.delete(client);
+        }
     }
 
     @Override
@@ -60,8 +74,15 @@ public class ClientServiceImpl implements ClientService {
         return findClientByIdOrThrowException(id, userId);
     }
 
+    @Override
+    public void activate(Long id, Long userId) {
+        Client client = findClientByIdOrThrowException(id, userId);
+        client = client.toBuilder().active(true).build();
+        clientRepository.save(client);
+    }
+
     private Client findClientByIdOrThrowException(Long id, Long userId) {
-        return repository.findByIdAndUserId(id, userId)
+        return clientRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ServiceException("Client not found!"));
     }
 }

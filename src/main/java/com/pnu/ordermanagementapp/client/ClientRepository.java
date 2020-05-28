@@ -21,9 +21,10 @@ public interface ClientRepository extends JpaRepository<Client, Long>, PagingAnd
     @Override
     void delete(Client client);
 
-
     Page<Client> findByActiveAndUserId(boolean active, long userId, Pageable pageable);
 
-    Page<Client> findByActiveAndUserIdAndNameContains(boolean active, long userId, String name, Pageable pageable);
+    Page<Client> findByFirstNameContainsOrLastNameContainsAndActiveAndUserId(String firstName, String lastName,
+                                                                             boolean active, long userId,
+                                                                             Pageable pageable);
 
 }

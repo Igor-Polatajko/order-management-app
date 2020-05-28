@@ -16,30 +16,32 @@ public class ClientServiceImpl implements ClientService {
 
     private static final int PAGE_SIZE = 10;
 
-    private static final Sort SORT = Sort.by("active").descending().and(Sort.by("name").ascending());
+    private static final Sort SORT = Sort.by("active").descending().and(Sort.by("id").descending());
 
-    private ClientRepository repository;
+    private ClientRepository clientRepository;
 
     @Autowired
-    public ClientServiceImpl(ClientRepository repository) {
-        this.repository = repository;
+    public ClientServiceImpl(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
     }
 
     @Override
     public List<Client> findAll(Long userId) {
-        return repository.findAllByUserId(userId);
+        return clientRepository.findAllByUserId(userId);
     }
 
     @Override
     public Page<Client> findAllByActivity(Integer pageNumber, boolean isActive, Long userId) {
         Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
-        return repository.findByActiveAndUserId(isActive, userId, pageable);
+        Page<Client> page1 = clientRepository.findByActiveAndUserId(isActive, userId, pageable);
+        return page1;
     }
 
     @Override
     public Page<Client> findAllByNameAndActivity(Integer pageNumber, String name, boolean isActive, Long userId) {
         Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
-        return repository.findByActiveAndUserIdAndNameContains(isActive, userId, name, pageable);
+        return clientRepository.findByFirstNameContainsOrLastNameContainsAndActiveAndUserId(
+                name, name, isActive, userId, pageable);
     }
 
     @Override
@@ -48,13 +50,13 @@ public class ClientServiceImpl implements ClientService {
                 .userId(userId)
                 .build();
 
-        repository.save(clientWithUserId);
+        clientRepository.save(clientWithUserId);
     }
 
     @Override
     public void update(Client client, Long userId) {
         findClientByIdOrThrowException(client.getId(), userId);
-        repository.save(client);
+        clientRepository.save(client);
     }
 
     @Override
@@ -62,9 +64,9 @@ public class ClientServiceImpl implements ClientService {
         Client client = findClientByIdOrThrowException(id, userId);
         if (client.isActive()) {
             client = client.toBuilder().active(false).build();
-            repository.save(client);
+            clientRepository.save(client);
         } else {
-            repository.delete(client);
+            clientRepository.delete(client);
         }
     }
 
@@ -77,11 +79,11 @@ public class ClientServiceImpl implements ClientService {
     public void activate(Long id, Long userId) {
         Client client = findClientByIdOrThrowException(id, userId);
         client = client.toBuilder().active(true).build();
-        repository.save(client);
+        clientRepository.save(client);
     }
 
     private Client findClientByIdOrThrowException(Long id, Long userId) {
-        return repository.findByIdAndUserId(id, userId)
+        return clientRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ServiceException("Client not found!"));
     }
 }

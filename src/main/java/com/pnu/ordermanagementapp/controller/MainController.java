@@ -1,4 +1,4 @@
-package com.pnu.ordermanagementapp.main;
+package com.pnu.ordermanagementapp.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,7 +1,8 @@
-package com.pnu.ordermanagementapp.order;
+package com.pnu.ordermanagementapp.service;
 
 import com.pnu.ordermanagementapp.exception.ServiceException;
 import com.pnu.ordermanagementapp.model.Order;
+import com.pnu.ordermanagementapp.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

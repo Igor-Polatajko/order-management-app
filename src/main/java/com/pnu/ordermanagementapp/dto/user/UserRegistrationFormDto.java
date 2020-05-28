@@ -1,4 +1,4 @@
-package com.pnu.ordermanagementapp.user.dto;
+package com.pnu.ordermanagementapp.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

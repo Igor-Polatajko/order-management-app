@@ -1,4 +1,4 @@
-package com.pnu.ordermanagementapp.order.dto;
+package com.pnu.ordermanagementapp.dto.order;
 
 import lombok.Builder;
 import lombok.Data;

@@ -2,7 +2,7 @@ package com.pnu.ordermanagementapp.controller;
 
 import com.pnu.ordermanagementapp.model.User;
 import com.pnu.ordermanagementapp.service.UserService;
-import com.pnu.ordermanagementapp.user.dto.UserRegistrationFormDto;
+import com.pnu.ordermanagementapp.dto.user.UserRegistrationFormDto;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
         User userWithEncryptedPassword = user.toBuilder()
                 .password(bCryptPasswordEncoder.encode(user.getPassword()))
-                .role(Role.USER)
+                .role(Role.ROLE_USER)
                 .active(true)
                 .build();
 
@@ -60,15 +60,15 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public Page<User> findAllUsers(Integer pageNumber, boolean reverseSort) {
 
         Pageable pageable = createPageable(pageNumber, reverseSort);
-        return userRepository.findByRole(Role.USER, pageable);
+        return userRepository.findAll(pageable);
     }
 
     @Override
     public Page<User> findUsersByName(Integer pageNumber, String nameQuery, boolean reverseSort) {
         Pageable pageable = createPageable(pageNumber, reverseSort);
         return userRepository
-                .findByFirstNameContainsOrLastNameContainsOrUsernameContainsAndRole(nameQuery, nameQuery,
-                        nameQuery, Role.USER, pageable);
+                .findByFirstNameContainsOrLastNameContainsOrUsernameContains(nameQuery, nameQuery,
+                        nameQuery, pageable);
     }
 
     @Override
@@ -78,8 +78,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (user.isActive()) {
             user = user.toBuilder().active(false).build();
             userRepository.save(user);
-        } else {
-            userRepository.delete(user);
         }
     }
 
@@ -87,8 +85,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public void activate(Long userId) {
 
         User user = findUserByIdOrThrowException(userId);
-        user = user.toBuilder().active(true).build();
-        userRepository.save(user);
+        if (!user.isActive()) {
+            user = user.toBuilder().active(true).build();
+            userRepository.save(user);
+        }
     }
 
     private User findUserByIdOrThrowException(Long id) {

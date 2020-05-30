@@ -47,9 +47,9 @@
     <h1 class="display-3 ">Management</h1>
 </div>
 
-<#if userRole?? && userRole.name() = "ADMIN">
+<#if userRole?? && userRole.name() = "ROLE_ADMIN">
     <div class="container text-center my-4">
-        <a href="/admin/users/" class="butt btn-block btn-warning">Manage users</a>
+        <a href="/users/" class="butt btn-block btn-warning">Manage users</a>
     </div>
 </#if>
 

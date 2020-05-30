@@ -1,8 +1,8 @@
 package com.pnu.ordermanagementapp.controller;
 
-import com.pnu.ordermanagementapp.service.ClientService;
 import com.pnu.ordermanagementapp.model.Client;
 import com.pnu.ordermanagementapp.model.User;
+import com.pnu.ordermanagementapp.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/clients")
@@ -69,14 +70,22 @@ public class ClientController {
 
     @PostMapping("/delete/{id}")
     public String deleteClient(@PathVariable Long id, @AuthenticationPrincipal User user) {
+
         clientService.delete(id, user.getId());
         return "redirect:/clients";
     }
 
     @PostMapping("/activate/{id}")
     public String activateClient(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
+
         clientService.activate(id, user.getId());
         return "redirect:/clients";
+    }
+
+    @GetMapping("/export")
+    public String downloadClientsExcel(Model model, ModelAndView mav, @AuthenticationPrincipal User user) {
+        model.addAttribute("clients", clientService.findAllActive(user.getId()));
+        return "clientExcelView";
     }
 
 }

@@ -12,14 +12,20 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
-@Component("productExcelView")
-public class ProductExcelView extends AbstractXlsView {
+@Component("productsExcelView")
+public class ProductsExcelView extends AbstractXlsView {
+
+    private final static String FILE_NAME = "products.xls";
+
     @Override
     protected void buildExcelDocument(Map<String, Object> model, Workbook workbook, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
 
+        httpServletResponse.setContentType("application/vnd.ms-excel");
+        httpServletResponse.setHeader("Content-Disposition", "attachment; filename=" + FILE_NAME);
+
         List<Product> products = (List<Product>) model.get("products");
-        Sheet sheet;
-        sheet = workbook.createSheet("Products");
+
+        Sheet sheet = workbook.createSheet("Products");
 
         int rowCount = 0;
 

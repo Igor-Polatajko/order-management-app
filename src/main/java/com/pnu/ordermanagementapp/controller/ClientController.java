@@ -85,7 +85,7 @@ public class ClientController {
     @GetMapping("/export")
     public String downloadClientsExcel(Model model, ModelAndView mav, @AuthenticationPrincipal User user) {
         model.addAttribute("clients", clientService.findAllActive(user.getId()));
-        return "clientExcelView";
+        return "clientsExcelView";
     }
 
 }

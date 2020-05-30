@@ -34,13 +34,6 @@ public class ProductController {
         return "product/show_products";
     }
 
-    @GetMapping("/export")
-    public String downloadProductsExcel(Model model, @AuthenticationPrincipal User user) {
-
-        model.addAttribute("products", productService.findAllActive(user.getId()));
-        return "productExcelView";
-    }
-
     @GetMapping("/find")
     public String findAllByName(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
                                 @RequestParam(name = "active", required = false, defaultValue = "true") boolean isActive,
@@ -83,5 +76,12 @@ public class ProductController {
     public String activateProduct(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
         productService.activate(id, user.getId());
         return "redirect:/products";
+    }
+
+    @GetMapping("/export")
+    public String downloadProductsExcel(Model model, @AuthenticationPrincipal User user) {
+
+        model.addAttribute("products", productService.findAllActive(user.getId()));
+        return "productsExcelView";
     }
 }

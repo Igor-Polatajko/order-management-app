@@ -4,6 +4,7 @@ import com.pnu.ordermanagementapp.dto.order.OrderFtlDto;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.document.AbstractXlsView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,9 +12,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
-public class OrderExcelView extends AbstractXlsView {
+@Component("ordersExcelView")
+public class OrdersExcelView extends AbstractXlsView {
+
+    private final static String FILE_NAME = "orders.xls";
+
     @Override
     protected void buildExcelDocument(Map<String, Object> model, Workbook workbook, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+
+        httpServletResponse.setContentType("application/vnd.ms-excel");
+        httpServletResponse.setHeader("Content-Disposition", "attachment; filename=" + FILE_NAME);
+
 
         List<OrderFtlDto> orders = (List<OrderFtlDto>) model.get("orders");
         Sheet sheet = workbook.createSheet("Orders");

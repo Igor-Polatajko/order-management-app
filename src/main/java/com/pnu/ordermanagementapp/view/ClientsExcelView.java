@@ -13,10 +13,16 @@ import java.util.List;
 import java.util.Map;
 
 
-@Component("clientExcelView")
-public class ClientExcelView extends AbstractXlsView {
+@Component("clientsExcelView")
+public class ClientsExcelView extends AbstractXlsView {
+
+    private final static String FILE_NAME = "clients.xls";
+
     @Override
     protected void buildExcelDocument(Map<String, Object> model, Workbook workbook, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+
+        httpServletResponse.setContentType("application/vnd.ms-excel");
+        httpServletResponse.setHeader("Content-Disposition", "attachment; filename="+FILE_NAME);
 
         List<Client> clients = (List<Client>) model.get("clients");
         Sheet sheet = workbook.createSheet("Clients");

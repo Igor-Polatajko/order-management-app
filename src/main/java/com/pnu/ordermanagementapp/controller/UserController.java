@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 
-// ToDo make better error messages
 @Controller
 public class UserController {
 

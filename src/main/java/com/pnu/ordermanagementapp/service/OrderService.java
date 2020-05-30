@@ -1,5 +1,6 @@
 package com.pnu.ordermanagementapp.service;
 
+import com.pnu.ordermanagementapp.dto.order.OrderFormSubmitDto;
 import com.pnu.ordermanagementapp.model.Order;
 import org.springframework.data.domain.Page;
 
@@ -11,7 +12,13 @@ public interface OrderService {
 
     Page<Order> findAll(int pageNumber, Long userId);
 
-    void create(Order order);
+    void create(Long userId, OrderFormSubmitDto orderDto);
 
     void delete(Long orderId, Long userId);
+
+    void activate(Long orderId, Long userId);
+
+    void cancel(Long orderId, Long userId);
+
+    void resolve(Long orderId, Long userId);
 }

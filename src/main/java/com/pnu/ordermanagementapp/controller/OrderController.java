@@ -2,10 +2,7 @@ package com.pnu.ordermanagementapp.controller;
 
 import com.pnu.ordermanagementapp.dto.order.OrderFormSubmitDto;
 import com.pnu.ordermanagementapp.dto.order.OrdersFtlPageDto;
-import com.pnu.ordermanagementapp.model.Client;
-import com.pnu.ordermanagementapp.model.Order;
-import com.pnu.ordermanagementapp.model.Product;
-import com.pnu.ordermanagementapp.model.User;
+import com.pnu.ordermanagementapp.model.*;
 import com.pnu.ordermanagementapp.service.ClientService;
 import com.pnu.ordermanagementapp.service.OrderService;
 import com.pnu.ordermanagementapp.service.ProductService;
@@ -94,7 +91,7 @@ public class OrderController {
     }
 
     @GetMapping("/new")
-    public String createNew(Model model, @AuthenticationPrincipal User user) {
+    public String getCreateView(Model model, @AuthenticationPrincipal User user) {
 
         List<Client> clients = clientService.findAllActive(user.getId());
         List<Product> products = productService.findAllActive(user.getId());
@@ -108,18 +105,7 @@ public class OrderController {
     @PostMapping("/new")
     public String create(@ModelAttribute OrderFormSubmitDto orderDto, @AuthenticationPrincipal User user) {
 
-        Client client = clientService.findById(orderDto.getClientId(), user.getId());
-        Product product = productService.findById(orderDto.getProductId(), user.getId());
-
-        Order order = Order.builder()
-                .product(product)
-                .client(client)
-                .amount(orderDto.getAmount())
-                .createdDate(LocalDateTime.now())
-                .userId(user.getId())
-                .build();
-
-        orderService.create(order);
+        orderService.create(user.getId(), orderDto);
         return "redirect:/orders";
     }
 

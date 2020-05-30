@@ -47,10 +47,16 @@
     <h1 class="display-3 ">Management</h1>
 </div>
 
+<#if userRole?? && userRole.name() = "ADMIN">
+    <div class="container text-center my-4">
+        <a href="/admin/users/" class="butt btn-block btn-warning">Manage users</a>
+    </div>
+</#if>
+
 <div class="container text-center">
-        <a href="/products/" class="butt btn btn-light">Products</a>
-        <a href="/orders/" class="butt btn btn-light m-4">Orders</a>
-        <a href="/clients/" class=" butt btn btn-light">Clients</a>
+    <a href="/products/" class="butt btn btn-light">Products</a>
+    <a href="/orders/" class="butt btn btn-light m-4">Orders</a>
+    <a href="/clients/" class=" butt btn btn-light">Clients</a>
 </div>
 </body>
 </html>

@@ -4,7 +4,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-
+    <title>Orders</title>
     <style>
         .orders {
             font-size: large;
@@ -115,17 +115,20 @@
                             <form method="POST" action="/orders/resolve/${order.orderId}">
                                 <button class="btn btn-outline-success">Resolve</button>
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                <input type="hidden" name="redirect" value="${redirectBackUrl}"/>
                             </form>
                         <#else >
                             <form method="POST" action="/orders/delete/${order.orderId}">
                                 <button class="btn btn-danger">Delete</button>
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                <input type="hidden" name="redirect" value="${redirectBackUrl}"/>
                             </form>
                         </#if>
                         <#if order.state != 'CANCELLED' >
                             <form method="POST" action="/orders/cancel/${order.orderId}">
                                 <button class="btn btn-outline-danger">Cancel</button>
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                <input type="hidden" name="redirect" value="${redirectBackUrl}"/>
                             </form>
                         </#if>
                     </div>

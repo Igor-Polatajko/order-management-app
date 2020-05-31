@@ -50,6 +50,7 @@ public class OrderController {
         Page<Order> ordersPage = orderService.findAll(orderState, pageNumber, user.getId());
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper.map(ordersPage);
 
+        model.addAttribute("redirectBackUrl", String.format("/orders?page=%s&state=%s", pageNumber, state));
         model.addAttribute("currentState", orderState);
         model.addAttribute("orders", orders);
         model.addAttribute("headline", "The most recent orders");
@@ -70,6 +71,8 @@ public class OrderController {
 
         Client client = clientService.findById(clientId, user.getId());
 
+        model.addAttribute("redirectBackUrl",
+                String.format("/orders/client/%s?page=%s&state=%s", clientId, pageNumber, state));
         model.addAttribute("currentState", orderState);
         model.addAttribute("orders", orders);
         model.addAttribute("headline", String.format("Orders made by %s %s",
@@ -92,6 +95,8 @@ public class OrderController {
 
         Product product = productService.findById(productId, user.getId());
 
+        model.addAttribute("redirectBackUrl",
+                String.format("/orders/product/%s?page=%s&state=%s", productId, pageNumber, state));
         model.addAttribute("currentState", orderState);
         model.addAttribute("orders", orders);
         model.addAttribute("headline", String.format("Orders of %s (id: %s)",
@@ -121,24 +126,30 @@ public class OrderController {
     }
 
     @PostMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
+    public String delete(@PathVariable("id") Long id,
+                         @RequestParam(value = "redirect", required = false, defaultValue = "orders") String redirectUrl,
+                         @AuthenticationPrincipal User user) {
 
         orderService.delete(id, user.getId());
-        return "redirect:/orders";
+        return "redirect:" + redirectUrl;
     }
 
     @PostMapping("/cancel/{id}")
-    public String cancel(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
+    public String cancel(@PathVariable("id") Long id,
+                         @RequestParam(value = "redirect", required = false, defaultValue = "orders") String redirectUrl,
+                         @AuthenticationPrincipal User user) {
 
         orderService.cancel(id, user.getId());
-        return "redirect:/orders";
+        return "redirect:" + redirectUrl;
     }
 
     @PostMapping("/resolve/{id}")
-    public String resolve(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
+    public String resolve(@PathVariable("id") Long id,
+                          @RequestParam(value = "redirect", required = false, defaultValue = "orders") String redirectUrl,
+                          @AuthenticationPrincipal User user) {
 
         orderService.resolve(id, user.getId());
-        return "redirect:/orders";
+        return "redirect:" + redirectUrl;
     }
 
 }

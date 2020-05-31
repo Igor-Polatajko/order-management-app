@@ -47,7 +47,7 @@ public class OrderController {
 
         OrderState orderState = OrderState.fetch(state);
 
-        Page<Order> ordersPage = orderService.findAll(pageNumber, user.getId());
+        Page<Order> ordersPage = orderService.findAll(orderState, pageNumber, user.getId());
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper.map(ordersPage);
 
         model.addAttribute("currentState", orderState);
@@ -65,7 +65,7 @@ public class OrderController {
 
         OrderState orderState = OrderState.fetch(state);
 
-        Page<Order> ordersPage = orderService.findByClientId(clientId, pageNumber, user.getId());
+        Page<Order> ordersPage = orderService.findByClientId(clientId, orderState, pageNumber, user.getId());
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper.map(ordersPage);
 
         Client client = clientService.findById(clientId, user.getId());
@@ -87,7 +87,7 @@ public class OrderController {
 
         OrderState orderState = OrderState.fetch(state);
 
-        Page<Order> ordersPage = orderService.findByProductId(productId, pageNumber, user.getId());
+        Page<Order> ordersPage = orderService.findByProductId(productId, orderState, pageNumber, user.getId());
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper.map(ordersPage);
 
         Product product = productService.findById(productId, user.getId());

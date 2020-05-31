@@ -2,15 +2,16 @@ package com.pnu.ordermanagementapp.service;
 
 import com.pnu.ordermanagementapp.dto.order.OrderFormSubmitDto;
 import com.pnu.ordermanagementapp.model.Order;
+import com.pnu.ordermanagementapp.model.OrderState;
 import org.springframework.data.domain.Page;
 
 public interface OrderService {
 
-    Page<Order> findByClientId(Long clintId, int pageNumber, Long userId);
+    Page<Order> findByClientId(Long clintId, OrderState state, int pageNumber, Long userId);
 
-    Page<Order> findByProductId(Long productId, int pageNumber, Long userId);
+    Page<Order> findByProductId(Long productId, OrderState state, int pageNumber, Long userId);
 
-    Page<Order> findAll(int pageNumber, Long userId);
+    Page<Order> findAll(OrderState state, int pageNumber, Long userId);
 
     void create(Long userId, OrderFormSubmitDto orderDto);
 

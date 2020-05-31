@@ -42,14 +42,16 @@
 
 <div class="container orders mt-5">
 
+
+    <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link <#if currentState == 'PENDING'>active</#if>" href="?state=PENDING">Pending</a>
+        <a class="nav-item nav-link <#if currentState == 'RESOLVED'>active</#if>" href="?state=RESOLVED">Resolved</a>
+        <a class="nav-item nav-link <#if currentState == 'CANCELLED'>active</#if>" href="?state=CANCELLED">Cancelled</a>
+    </div>
+
+
     <#if orders.content?size == 0>
-        <h1>Orders list is empty!</h1>
-    <#else >
-        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link <#if currentState == 'PENDING'>active</#if>" href="?state=PENDING">Pending</a>
-            <a class="nav-item nav-link <#if currentState == 'RESOLVED'>active</#if>" href="?state=RESOLVED">Resolved</a>
-            <a class="nav-item nav-link <#if currentState == 'CANCELLED'>active</#if>" href="?state=CANCELLED">Cancelled</a>
-        </div>
+        <h1 class="text-center jumbotron">List is empty!</h1>
     </#if>
 
     <div class="orders">

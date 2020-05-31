@@ -40,21 +40,21 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<Order> findAll(int pageNumber, Long userId) {
+    public Page<Order> findAll(OrderState state, int pageNumber, Long userId) {
         Pageable pageable = createPageable(pageNumber);
-        return orderRepository.findAllByUserId(userId, pageable);
+        return orderRepository.findAllByStateAndUserId(state, userId, pageable);
     }
 
     @Override
-    public Page<Order> findByClientId(Long id, int pageNumber, Long userId) {
+    public Page<Order> findByClientId(Long id, OrderState state, int pageNumber, Long userId) {
         Pageable pageable = createPageable(pageNumber);
-        return orderRepository.findByClientIdAndUserId(id, userId, pageable);
+        return orderRepository.findByClientIdAndStateAndUserId(id, state, userId, pageable);
     }
 
     @Override
-    public Page<Order> findByProductId(Long id, int pageNumber, Long userId) {
+    public Page<Order> findByProductId(Long id, OrderState state, int pageNumber, Long userId) {
         Pageable pageable = createPageable(pageNumber);
-        return orderRepository.findByProductIdAndUserId(id, userId, pageable);
+        return orderRepository.findByProductIdAndStateAndUserId(id, state, userId, pageable);
     }
 
     @Override
@@ -66,7 +66,14 @@ public class OrderServiceImpl implements OrderService {
             throw new ServiceException("Cannot create order. Product amount is less the requested");
         }
 
+        if (!product.isActive()) {
+            throw new ServiceException("Cannot create order. Product is inactive");
+        }
+
         Client client = clientService.findById(orderDto.getClientId(), userId);
+        if (!client.isActive()) {
+            throw new ServiceException("Cannot create order. Client is inactive");
+        }
 
         Order order = Order.builder()
                 .product(product)

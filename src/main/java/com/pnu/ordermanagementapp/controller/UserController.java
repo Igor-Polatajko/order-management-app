@@ -7,7 +7,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -108,10 +107,10 @@ public class UserController {
         return "users/show_users";
     }
 
-    @PostMapping("/users/delete/{id}")
+    @PostMapping("/users/deactivate/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String deleteUser(@PathVariable("id") Long id) {
-        userService.delete(id);
+    public String deactivateUser(@PathVariable("id") Long id) {
+        userService.deactivate(id);
         return "redirect:/users";
     }
 

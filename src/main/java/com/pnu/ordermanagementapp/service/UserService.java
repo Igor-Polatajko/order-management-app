@@ -11,7 +11,7 @@ public interface UserService {
 
     Page<User> findUsersByName(Integer pageNumber, String nameQuery, boolean reverseSort);
 
-    void delete(Long userId);
+    void deactivate(Long userId);
 
     void activate(Long userId);
 

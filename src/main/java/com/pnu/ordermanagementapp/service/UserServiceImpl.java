@@ -72,23 +72,19 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public void delete(Long userId) {
+    public void deactivate(Long userId) {
 
         User user = findUserByIdOrThrowException(userId);
-        if (user.isActive()) {
-            user = user.toBuilder().active(false).build();
-            userRepository.save(user);
-        }
+        user = user.toBuilder().active(false).build();
+        userRepository.save(user);
     }
 
     @Override
     public void activate(Long userId) {
 
         User user = findUserByIdOrThrowException(userId);
-        if (!user.isActive()) {
-            user = user.toBuilder().active(true).build();
-            userRepository.save(user);
-        }
+        user = user.toBuilder().active(true).build();
+        userRepository.save(user);
     }
 
     private User findUserByIdOrThrowException(Long id) {

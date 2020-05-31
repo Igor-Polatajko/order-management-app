@@ -81,9 +81,9 @@
                     </button>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
-                <form class="form-inline d-inline" action="/users/delete/${user.id}" method="post">
+                <form class="form-inline d-inline" action="/users/deactivate/${user.id}" method="post">
                     <button <#if !user.active>disabled class="btn btn-secondary" <#else> class="btn btn-danger" </#if>
-                            type="submit">Disable
+                            type="submit">Deactivate
                     </button>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>

@@ -15,6 +15,7 @@
 <div class="row">
     <div class="col-sm">
         <a href="/" class="btn btn-dark m-4 ">Main page</a>
+        <a href="/products/export" class="btn btn-success m-4 ">Export to xls</a>
     </div>
     <div class="col text-center">
         <select onchange="window.document.location.href='/products<#if name??>/find?name=${name}&<#else>?</#if>active='

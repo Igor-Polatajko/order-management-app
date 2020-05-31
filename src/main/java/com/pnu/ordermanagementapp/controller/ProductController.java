@@ -77,4 +77,11 @@ public class ProductController {
         productService.activate(id, user.getId());
         return "redirect:/products";
     }
+
+    @GetMapping("/export")
+    public String downloadProductsExcel(Model model, @AuthenticationPrincipal User user) {
+
+        model.addAttribute("products", productService.findAllActive(user.getId()));
+        return "productsExcelView";
+    }
 }

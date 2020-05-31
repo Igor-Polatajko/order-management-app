@@ -25,7 +25,6 @@ public class OrdersPageToOrdersFtlPageDtoMapper {
     private List<OrderFtlDto> mapOrdersList(List<Order> orders) {
         return orders.stream()
                 .map(order -> OrderFtlDto.builder()
-                        .active(order.isActive())
                         .state(order.getState().name())
                         .orderId(order.getId())
                         .productName(order.getProduct().getName())

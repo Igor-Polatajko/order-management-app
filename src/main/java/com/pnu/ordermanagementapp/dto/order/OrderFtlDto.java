@@ -21,8 +21,6 @@ public class OrderFtlDto {
 
     private String state;
 
-    private boolean active;
-
     private int productOrderAmount;
 
     private double totalPrice;

@@ -73,7 +73,6 @@ public class OrderServiceImpl implements OrderService {
                 .client(client)
                 .amount(orderDto.getAmount())
                 .state(OrderState.PENDING)
-                .active(true)
                 .createdDate(LocalDateTime.now())
                 .userId(userId)
                 .build();
@@ -94,27 +93,7 @@ public class OrderServiceImpl implements OrderService {
             throw new ServiceException("Cannot delete pending order. Cancel or resolve it first");
         }
 
-        if (!order.isActive()) {
-            orderRepository.delete(order);
-            return;
-        }
-
-        Order updatedOrder = order.toBuilder()
-                .active(false)
-                .build();
-
-        orderRepository.save(updatedOrder);
-    }
-
-    @Override
-    public void activate(Long id, Long userId) {
-        Order order = getOrderOrThrowException(id, userId);
-
-        Order updatedOrder = order.toBuilder()
-                .active(true)
-                .build();
-
-        orderRepository.save(updatedOrder);
+        orderRepository.delete(order);
     }
 
     @Transactional

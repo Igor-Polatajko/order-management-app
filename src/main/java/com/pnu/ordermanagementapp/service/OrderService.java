@@ -16,8 +16,6 @@ public interface OrderService {
 
     void delete(Long orderId, Long userId);
 
-    void activate(Long orderId, Long userId);
-
     void cancel(Long orderId, Long userId);
 
     void resolve(Long orderId, Long userId);

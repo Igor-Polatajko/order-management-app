@@ -14,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -42,12 +41,16 @@ public class OrderController {
 
     @GetMapping
     public String findAll(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
+                          @RequestParam(name = "state", required = false) String state,
                           Model model,
                           @AuthenticationPrincipal User user) {
+
+        OrderState orderState = OrderState.fetch(state);
 
         Page<Order> ordersPage = orderService.findAll(pageNumber, user.getId());
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper.map(ordersPage);
 
+        model.addAttribute("currentState", orderState);
         model.addAttribute("orders", orders);
         model.addAttribute("headline", "The most recent orders");
 
@@ -56,14 +59,18 @@ public class OrderController {
 
     @GetMapping("/client/{clientId}")
     public String findAllForClient(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
+                                   @RequestParam(name = "state", required = false) String state,
                                    @PathVariable("clientId") Long clientId, Model model,
                                    @AuthenticationPrincipal User user) {
+
+        OrderState orderState = OrderState.fetch(state);
 
         Page<Order> ordersPage = orderService.findByClientId(clientId, pageNumber, user.getId());
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper.map(ordersPage);
 
         Client client = clientService.findById(clientId, user.getId());
 
+        model.addAttribute("currentState", orderState);
         model.addAttribute("orders", orders);
         model.addAttribute("headline", String.format("Orders made by %s %s",
                 client.getFirstName(), client.getLastName()
@@ -74,14 +81,18 @@ public class OrderController {
 
     @GetMapping("/product/{productId}")
     public String findAllForProduct(@RequestParam(name = "page", required = false, defaultValue = "1") int pageNumber,
+                                    @RequestParam(name = "state", required = false) String state,
                                     @PathVariable("productId") Long productId, Model model,
                                     @AuthenticationPrincipal User user) {
+
+        OrderState orderState = OrderState.fetch(state);
 
         Page<Order> ordersPage = orderService.findByProductId(productId, pageNumber, user.getId());
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper.map(ordersPage);
 
         Product product = productService.findById(productId, user.getId());
 
+        model.addAttribute("currentState", orderState);
         model.addAttribute("orders", orders);
         model.addAttribute("headline", String.format("Orders of %s (id: %s)",
                 product.getName(), product.getId()
@@ -113,6 +124,20 @@ public class OrderController {
     public String delete(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
 
         orderService.delete(id, user.getId());
+        return "redirect:/orders";
+    }
+
+    @PostMapping("/cancel/{id}")
+    public String cancel(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
+
+        orderService.cancel(id, user.getId());
+        return "redirect:/orders";
+    }
+
+    @PostMapping("/resolve/{id}")
+    public String resolve(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
+
+        orderService.resolve(id, user.getId());
         return "redirect:/orders";
     }
 

@@ -10,15 +10,27 @@
             font-size: large;
             overflow-x: hidden;
         }
+
+        .resolved {
+            color: green;
+        }
+
+        .cancelled {
+            color: red;
+        }
+
+        .pending {
+            color: steelblue;
+        }
     </style>
 </head>
 <body>
-<div class="row">
-    <div>
-        <a href="/" class="btn btn-outline-primary m-4">Main page</a>
+<div class="row bg-dark">
+    <div class="ml-4">
+        <a href="/" class="btn btn-primary m-4">Main page</a>
     </div>
-    <div>
-        <a href="/orders/new" class="btn btn-outline-success m-4">New + </a>
+    <div class="ml-auto mr-4">
+        <a href="/orders/new" class="btn btn-success m-4">New + </a>
     </div>
 </div>
 
@@ -32,6 +44,12 @@
 
     <#if orders.content?size == 0>
         <h1>Orders list is empty!</h1>
+    <#else >
+        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link <#if currentState == 'PENDING'>active</#if>" href="?state=PENDING">Pending</a>
+            <a class="nav-item nav-link <#if currentState == 'RESOLVED'>active</#if>" href="?state=RESOLVED">Resolved</a>
+            <a class="nav-item nav-link <#if currentState == 'CANCELLED'>active</#if>" href="?state=CANCELLED">Cancelled</a>
+        </div>
     </#if>
 
     <div class="orders">
@@ -45,17 +63,8 @@
                             </div>
                         </div>
                         <div class="mt-4 px-4 py-2 rounded bg-white">
-                            <div class="row">
-                                Active:
-                                <div class="rounded bg-white mx-3">
-                                    <strong>${order.active?c}</strong>
-                                </div>
-                            </div>
-                            <div class="row">
-                                State:
-                                <div class="px-2 rounded bg-white mx-3">
-                                    <strong>${order.state}</strong>
-                                </div>
+                            <div class="px-2 rounded bg-white mx-3 ${order.state} font-weight-bold text-center">
+                                ${order.state}
                             </div>
                         </div>
                     </div>
@@ -98,29 +107,22 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2 d-flex justify-content-center">
+                <div class="col-md-2 d-flex justify-content-center py-3">
                     <div class="align-self-center">
                         <#if order.state == 'PENDING' >
-                            <form method="POST" action="/orders/delete/${order.orderId}">
+                            <form method="POST" action="/orders/resolve/${order.orderId}">
                                 <button class="btn btn-outline-success">Resolve</button>
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             </form>
                         <#else >
                             <form method="POST" action="/orders/delete/${order.orderId}">
-                                <button class="btn btn-danger"> <#if order.active>Deactivate<#else > Delete </#if ></button>
+                                <button class="btn btn-danger">Delete</button>
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             </form>
                         </#if>
-                        <#if order.active>
-                            <#if order.state != 'CANCELLED' >
-                                <form method="POST" action="/orders/delete/${order.orderId}">
-                                    <button class="btn btn-danger">Cancel</button>
-                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                                </form>
-                            </#if>
-                        <#else >
-                            <form method="POST" action="/orders/delete/${order.orderId}">
-                                <button class="btn btn-outline-info">Activate</button>
+                        <#if order.state != 'CANCELLED' >
+                            <form method="POST" action="/orders/cancel/${order.orderId}">
+                                <button class="btn btn-outline-danger">Cancel</button>
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             </form>
                         </#if>
@@ -135,18 +137,18 @@
             <ul class="pagination">
                 <li class="page-item  <#if !orders.hasPreviousPage >disabled</#if>">
                     <a class="page-link"
-                       href="?page=${orders.currentPageNumber - 1}" tabindex="-1">
+                       href="?page=${orders.currentPageNumber - 1}&state=${currentState}" tabindex="-1">
                         Previous
                     </a>
                 </li>
                 <#list 1..orders.totalPageNumber as pageNumber>
                     <li class="page-item <#if orders.currentPageNumber == pageNumber>active</#if>">
-                        <a class="page-link" href="?page=${pageNumber}">${pageNumber}</a>
+                        <a class="page-link" href="?page=${pageNumber}&state=${currentState}">${pageNumber}</a>
                     </li>
                 </#list>
                 <li class="page-item <#if !orders.hasNextPage >disabled</#if>">
                     <a class="page-link"
-                       href="?page=${orders.currentPageNumber + 1}" tabindex="-1">
+                       href="?page=${orders.currentPageNumber + 1}&state=${currentState}" tabindex="-1">
                         Next
                     </a>
                 </li>

@@ -16,12 +16,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
     private static final int PAGE_SIZE = 10;
+
+    private static final Sort SORT =  Sort.by("createdDate").descending();
 
     private OrderRepository orderRepository;
 
@@ -40,19 +43,34 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<Order> findAll(OrderState state, int pageNumber, Long userId) {
+    public Page<Order> findAllByState(OrderState state, int pageNumber, Long userId) {
         Pageable pageable = createPageable(pageNumber);
         return orderRepository.findAllByStateAndUserId(state, userId, pageable);
     }
 
     @Override
-    public Page<Order> findByClientId(Long id, OrderState state, int pageNumber, Long userId) {
+    public List<Order> findByClientId(Long clintId, Long userId) {
+        return orderRepository.findByClientIdAndUserId(clintId, userId, SORT);
+    }
+
+    @Override
+    public List<Order> findByProductId(Long productId, Long userId) {
+        return orderRepository.findByProductIdAndUserId(productId, userId, SORT);
+    }
+
+    @Override
+    public List<Order> findAll(Long userId) {
+        return orderRepository.findAllByUserId(userId, SORT);
+    }
+
+    @Override
+    public Page<Order> findByClientIdAndState(Long id, OrderState state, int pageNumber, Long userId) {
         Pageable pageable = createPageable(pageNumber);
         return orderRepository.findByClientIdAndStateAndUserId(id, state, userId, pageable);
     }
 
     @Override
-    public Page<Order> findByProductId(Long id, OrderState state, int pageNumber, Long userId) {
+    public Page<Order> findByProductIdAndState(Long id, OrderState state, int pageNumber, Long userId) {
         Pageable pageable = createPageable(pageNumber);
         return orderRepository.findByProductIdAndStateAndUserId(id, state, userId, pageable);
     }
@@ -152,6 +170,6 @@ public class OrderServiceImpl implements OrderService {
             throw new ServiceException("Incorrect page number!");
         }
 
-        return PageRequest.of(pageNumber - 1, PAGE_SIZE, Sort.by("createdDate").descending());
+        return PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
     }
 }

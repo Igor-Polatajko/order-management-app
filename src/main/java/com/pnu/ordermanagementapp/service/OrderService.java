@@ -5,13 +5,21 @@ import com.pnu.ordermanagementapp.model.Order;
 import com.pnu.ordermanagementapp.model.OrderState;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 public interface OrderService {
 
-    Page<Order> findByClientId(Long clintId, OrderState state, int pageNumber, Long userId);
+    Page<Order> findByClientIdAndState(Long clintId, OrderState state, int pageNumber, Long userId);
 
-    Page<Order> findByProductId(Long productId, OrderState state, int pageNumber, Long userId);
+    Page<Order> findByProductIdAndState(Long productId, OrderState state, int pageNumber, Long userId);
 
-    Page<Order> findAll(OrderState state, int pageNumber, Long userId);
+    Page<Order> findAllByState(OrderState state, int pageNumber, Long userId);
+
+    List<Order> findByClientId(Long clintId, Long userId);
+
+    List<Order> findByProductId(Long productId, Long userId);
+
+    List<Order> findAll(Long userId);
 
     void create(Long userId, OrderFormSubmitDto orderDto);
 

@@ -29,6 +29,9 @@
     <div class="ml-4">
         <a href="/" class="btn btn-primary m-4">Main page</a>
     </div>
+    <div class="ml-4">
+        <a href="${exportUrl}" class="btn btn-success m-4">Export to excel</a>
+    </div>
     <div class="ml-auto mr-4">
         <a href="/orders/new" class="btn btn-success m-4">New + </a>
     </div>
@@ -42,13 +45,11 @@
 
 <div class="container orders mt-5">
 
-
     <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
         <a class="nav-item nav-link <#if currentState == 'PENDING'>active</#if>" href="?state=PENDING">Pending</a>
         <a class="nav-item nav-link <#if currentState == 'RESOLVED'>active</#if>" href="?state=RESOLVED">Resolved</a>
         <a class="nav-item nav-link <#if currentState == 'CANCELLED'>active</#if>" href="?state=CANCELLED">Cancelled</a>
     </div>
-
 
     <#if orders.content?size == 0>
         <h1 class="text-center jumbotron">List is empty!</h1>

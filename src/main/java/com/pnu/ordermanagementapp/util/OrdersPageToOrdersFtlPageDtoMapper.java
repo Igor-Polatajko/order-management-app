@@ -22,7 +22,7 @@ public class OrdersPageToOrdersFtlPageDtoMapper {
                 .build();
     }
 
-    private List<OrderFtlDto> mapOrdersList(List<Order> orders) {
+    public List<OrderFtlDto> mapOrdersList(List<Order> orders) {
         return orders.stream()
                 .map(order -> OrderFtlDto.builder()
                         .state(order.getState().name())

@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static java.util.Objects.nonNull;
+
 @Controller
 @RequestMapping("/orders")
 public class OrderController {
@@ -47,10 +49,11 @@ public class OrderController {
 
         OrderState orderState = OrderState.fetch(state);
 
-        Page<Order> ordersPage = orderService.findAll(orderState, pageNumber, user.getId());
+        Page<Order> ordersPage = orderService.findAllByState(orderState, pageNumber, user.getId());
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper.map(ordersPage);
 
         model.addAttribute("redirectBackUrl", String.format("/orders?page=%s&state=%s", pageNumber, state));
+        model.addAttribute("exportUrl", "/orders/export");
         model.addAttribute("currentState", orderState);
         model.addAttribute("orders", orders);
         model.addAttribute("headline", "The most recent orders");
@@ -66,13 +69,15 @@ public class OrderController {
 
         OrderState orderState = OrderState.fetch(state);
 
-        Page<Order> ordersPage = orderService.findByClientId(clientId, orderState, pageNumber, user.getId());
+        Page<Order> ordersPage = orderService.findByClientIdAndState(clientId, orderState, pageNumber, user.getId());
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper.map(ordersPage);
 
         Client client = clientService.findById(clientId, user.getId());
 
         model.addAttribute("redirectBackUrl",
-                String.format("/orders/client/%s?page=%s&state=%s", clientId, pageNumber, state));
+                String.format("/orders/client/%s?page=%s&state=%s", clientId, pageNumber, state)
+        );
+        model.addAttribute("exportUrl", String.format("/orders/export?clientId=%s", clientId));
         model.addAttribute("currentState", orderState);
         model.addAttribute("orders", orders);
         model.addAttribute("headline", String.format("Orders made by %s %s",
@@ -90,13 +95,15 @@ public class OrderController {
 
         OrderState orderState = OrderState.fetch(state);
 
-        Page<Order> ordersPage = orderService.findByProductId(productId, orderState, pageNumber, user.getId());
+        Page<Order> ordersPage = orderService.findByProductIdAndState(productId, orderState, pageNumber, user.getId());
         OrdersFtlPageDto orders = ordersPageToOrdersFtlPageDtoMapper.map(ordersPage);
 
         Product product = productService.findById(productId, user.getId());
 
         model.addAttribute("redirectBackUrl",
-                String.format("/orders/product/%s?page=%s&state=%s", productId, pageNumber, state));
+                String.format("/orders/product/%s?page=%s&state=%s", productId, pageNumber, state)
+        );
+        model.addAttribute("exportUrl", String.format("/orders/export?productId=%s", productId));
         model.addAttribute("currentState", orderState);
         model.addAttribute("orders", orders);
         model.addAttribute("headline", String.format("Orders of %s (id: %s)",
@@ -150,6 +157,25 @@ public class OrderController {
 
         orderService.resolve(id, user.getId());
         return "redirect:" + redirectUrl;
+    }
+
+    @GetMapping("/export")
+    public String download(
+            @RequestParam(name = "clientId", required = false) Long clientId,
+            @RequestParam(name = "productId", required = false) Long productId,
+            Model model, @AuthenticationPrincipal User user) {
+
+        List<Order> orders;
+        if (nonNull(clientId)) {
+            orders = orderService.findByClientId(clientId, user.getId());
+        } else if (nonNull(productId)) {
+            orders = orderService.findByProductId(productId, user.getId());
+        } else {
+            orders = orderService.findAll(user.getId());
+        }
+
+        model.addAttribute("orders", ordersPageToOrdersFtlPageDtoMapper.mapOrdersList(orders));
+        return "ordersExcelView";
     }
 
 }

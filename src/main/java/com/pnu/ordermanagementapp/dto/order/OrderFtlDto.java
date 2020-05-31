@@ -19,6 +19,8 @@ public class OrderFtlDto {
 
     private double itemPrice;
 
+    private String state;
+
     private int productOrderAmount;
 
     private double totalPrice;

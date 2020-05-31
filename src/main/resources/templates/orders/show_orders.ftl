@@ -1,24 +1,39 @@
 <html>
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-
+    <title>Orders</title>
     <style>
         .orders {
             font-size: large;
             overflow-x: hidden;
         }
+
+        .resolved {
+            color: green;
+        }
+
+        .cancelled {
+            color: red;
+        }
+
+        .pending {
+            color: steelblue;
+        }
     </style>
 </head>
 <body>
-<div class="row">
-    <div>
-        <a href="/" class="btn btn-outline-primary m-4">Main page</a>
+<div class="row bg-dark">
+    <div class="ml-4">
+        <a href="/" class="btn btn-primary m-4">Main page</a>
     </div>
-    <div>
-        <a href="/orders/new" class="btn btn-outline-success m-4">New + </a>
+    <div class="ml-4">
+        <a href="${exportUrl}" class="btn btn-success m-4">Export to excel</a>
+    </div>
+    <div class="ml-auto mr-4">
+        <a href="/orders/new" class="btn btn-success m-4">New + </a>
     </div>
 </div>
 
@@ -30,8 +45,14 @@
 
 <div class="container orders mt-5">
 
+    <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link <#if currentState == 'PENDING'>active</#if>" href="?state=PENDING">Pending</a>
+        <a class="nav-item nav-link <#if currentState == 'RESOLVED'>active</#if>" href="?state=RESOLVED">Resolved</a>
+        <a class="nav-item nav-link <#if currentState == 'CANCELLED'>active</#if>" href="?state=CANCELLED">Cancelled</a>
+    </div>
+
     <#if orders.content?size == 0>
-        <h1>Orders list is empty!</h1>
+        <h1 class="text-center jumbotron">List is empty!</h1>
     </#if>
 
     <div class="orders">
@@ -40,7 +61,14 @@
                 <div class="col-md-10 row">
                     <div class="col-md-4">
                         <div class="p-4 rounded bg-white">
-                            <strong>#${order.orderId} ${order.productName}</strong>
+                            <div class="row">
+                                <strong>#${order.orderId} ${order.productName}</strong>
+                            </div>
+                        </div>
+                        <div class="mt-4 px-4 py-2 rounded bg-white">
+                            <div class="px-2 rounded bg-white mx-3 ${order.state} font-weight-bold text-center">
+                                ${order.state}
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -82,12 +110,28 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2 d-flex justify-content-center">
+                <div class="col-md-2 d-flex justify-content-center py-3">
                     <div class="align-self-center">
-                        <form method="POST" action="/orders/delete/${order.orderId}">
-                            <button class="btn btn-danger">Delete</button>
-                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        </form>
+                        <#if order.state == 'PENDING' >
+                            <form method="POST" action="/orders/resolve/${order.orderId}">
+                                <button class="btn btn-outline-success">Resolve</button>
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                <input type="hidden" name="redirect" value="${redirectBackUrl}"/>
+                            </form>
+                        <#else >
+                            <form method="POST" action="/orders/delete/${order.orderId}">
+                                <button class="btn btn-danger">Delete</button>
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                <input type="hidden" name="redirect" value="${redirectBackUrl}"/>
+                            </form>
+                        </#if>
+                        <#if order.state != 'CANCELLED' >
+                            <form method="POST" action="/orders/cancel/${order.orderId}">
+                                <button class="btn btn-outline-danger">Cancel</button>
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                <input type="hidden" name="redirect" value="${redirectBackUrl}"/>
+                            </form>
+                        </#if>
                     </div>
                 </div>
             </div>
@@ -99,18 +143,18 @@
             <ul class="pagination">
                 <li class="page-item  <#if !orders.hasPreviousPage >disabled</#if>">
                     <a class="page-link"
-                       href="?page=${orders.currentPageNumber - 1}" tabindex="-1">
+                       href="?page=${orders.currentPageNumber - 1}&state=${currentState}" tabindex="-1">
                         Previous
                     </a>
                 </li>
                 <#list 1..orders.totalPageNumber as pageNumber>
                     <li class="page-item <#if orders.currentPageNumber == pageNumber>active</#if>">
-                        <a class="page-link" href="?page=${pageNumber}">${pageNumber}</a>
+                        <a class="page-link" href="?page=${pageNumber}&state=${currentState}">${pageNumber}</a>
                     </li>
                 </#list>
                 <li class="page-item <#if !orders.hasNextPage >disabled</#if>">
                     <a class="page-link"
-                       href="?page=${orders.currentPageNumber + 1}" tabindex="-1">
+                       href="?page=${orders.currentPageNumber + 1}&state=${currentState}" tabindex="-1">
                         Next
                     </a>
                 </li>

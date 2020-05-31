@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -27,6 +27,9 @@ public class Order {
     private Client client;
 
     private int amount;
+
+    @Enumerated(EnumType.STRING)
+    private OrderState state;
 
     private LocalDateTime createdDate;
 

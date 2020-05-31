@@ -103,7 +103,7 @@
 <div class="row">
     <ul class="pagination mx-auto">
         <#list 1..products.totalPages as pageNumber>
-            <form action="/products<#if name??>/find?name=${name}&<#else>?</#if>">
+            <form action="/products<#if name??>/find</#if>">
                 <li class="page-item">
                     <button type="submit" <#if pageNumber - 1 == products.number>style="background-color: gray" </#if>
                             class="page-link">${pageNumber}

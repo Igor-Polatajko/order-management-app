@@ -1,8 +1,8 @@
 package com.pnu.ordermanagementapp.service;
 
-import com.pnu.ordermanagementapp.repository.ClientRepository;
 import com.pnu.ordermanagementapp.exception.ServiceException;
 import com.pnu.ordermanagementapp.model.Client;
+import com.pnu.ordermanagementapp.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,13 +33,13 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Page<Client> findAllByActivity(Integer pageNumber, boolean isActive, Long userId) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
+        Pageable pageable = createPageable(pageNumber);
         return clientRepository.findByActiveAndUserId(isActive, userId, pageable);
     }
 
     @Override
     public Page<Client> findAllByNameAndActivity(Integer pageNumber, String name, boolean isActive, Long userId) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
+        Pageable pageable = createPageable(pageNumber);
         return clientRepository.findByFirstNameContainsOrLastNameContainsAndActiveAndUserId(
                 name, name, isActive, userId, pageable);
     }
@@ -85,5 +85,14 @@ public class ClientServiceImpl implements ClientService {
     private Client findClientByIdOrThrowException(Long id, Long userId) {
         return clientRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ServiceException("Client not found!"));
+    }
+
+    private Pageable createPageable(int pageNumber) {
+
+        if (pageNumber < 1) {
+            throw new ServiceException("Incorrect page number!");
+        }
+
+        return PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
     }
 }

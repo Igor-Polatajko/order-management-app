@@ -37,7 +37,7 @@ public class ProductController {
     @GetMapping("/find")
     public String findAllByName(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
                                 @RequestParam(name = "active", required = false, defaultValue = "true") boolean isActive,
-                                @ModelAttribute("q") String nameQuery, Model model, @AuthenticationPrincipal User user) {
+                                @ModelAttribute("name") String nameQuery, Model model, @AuthenticationPrincipal User user) {
         model.addAttribute("active", isActive);
         model.addAttribute("products", productService.findAllByNameAndActivity(page, nameQuery, isActive, user.getId()));
         return "product/show_products";

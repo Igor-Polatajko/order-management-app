@@ -1,8 +1,8 @@
 package com.pnu.ordermanagementapp.util;
 
-import com.pnu.ordermanagementapp.model.Order;
 import com.pnu.ordermanagementapp.dto.order.OrderFtlDto;
 import com.pnu.ordermanagementapp.dto.order.OrdersFtlPageDto;
+import com.pnu.ordermanagementapp.model.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +25,8 @@ public class OrdersPageToOrdersFtlPageDtoMapper {
     private List<OrderFtlDto> mapOrdersList(List<Order> orders) {
         return orders.stream()
                 .map(order -> OrderFtlDto.builder()
+                        .active(order.isActive())
+                        .state(order.getState().name())
                         .orderId(order.getId())
                         .productName(order.getProduct().getName())
                         .clientFirstName(order.getClient().getFirstName())

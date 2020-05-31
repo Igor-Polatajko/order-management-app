@@ -40,7 +40,23 @@
                 <div class="col-md-10 row">
                     <div class="col-md-4">
                         <div class="p-4 rounded bg-white">
-                            <strong>#${order.orderId} ${order.productName}</strong>
+                            <div class="row">
+                                <strong>#${order.orderId} ${order.productName}</strong>
+                            </div>
+                        </div>
+                        <div class="mt-4 px-4 py-2 rounded bg-white">
+                            <div class="row">
+                                Active:
+                                <div class="rounded bg-white mx-3">
+                                    <strong>${order.active?c}</strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                State:
+                                <div class="px-2 rounded bg-white mx-3">
+                                    <strong>${order.state}</strong>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -84,10 +100,30 @@
                 </div>
                 <div class="col-md-2 d-flex justify-content-center">
                     <div class="align-self-center">
-                        <form method="POST" action="/orders/delete/${order.orderId}">
-                            <button class="btn btn-danger">Delete</button>
-                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        </form>
+                        <#if order.state == 'PENDING' >
+                            <form method="POST" action="/orders/delete/${order.orderId}">
+                                <button class="btn btn-outline-success">Resolve</button>
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                            </form>
+                        <#else >
+                            <form method="POST" action="/orders/delete/${order.orderId}">
+                                <button class="btn btn-danger"> <#if order.active>Deactivate<#else > Delete </#if ></button>
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                            </form>
+                        </#if>
+                        <#if order.active>
+                            <#if order.state != 'CANCELLED' >
+                                <form method="POST" action="/orders/delete/${order.orderId}">
+                                    <button class="btn btn-danger">Cancel</button>
+                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                </form>
+                            </#if>
+                        <#else >
+                            <form method="POST" action="/orders/delete/${order.orderId}">
+                                <button class="btn btn-outline-info">Activate</button>
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                            </form>
+                        </#if>
                     </div>
                 </div>
             </div>

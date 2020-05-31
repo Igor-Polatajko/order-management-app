@@ -18,7 +18,7 @@
         <a href="/clients/export" class="btn btn-success m-4 ">Export to xls</a>
     </div>
     <div class="col text-center">
-        <select onchange="window.document.location.href='/clients<#if name??>/find?name=${name}&<#else>?</#if>active='
+        <select onchange="window.document.location.href='/clients<#if nameQuery??>/find?q=${nameQuery}&<#else>?</#if>active='
                 + this.options[this.selectedIndex].value;"
                 class="form-control m-4 mx-auto mw-10">
             <option <#if active?? && active> selected</#if> value="true">Show active</option>

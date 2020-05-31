@@ -35,13 +35,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<Product> findAllByActivity(Integer pageNumber, boolean isActive, Long userId) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
+        Pageable pageable = createPageable(pageNumber);
         return productRepository.findByActiveAndUserId(isActive, userId, pageable);
     }
 
     @Override
     public Page<Product> findAllByNameAndActivity(Integer pageNumber, String name, boolean isActive, Long userId) {
-        Pageable pageable = PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
+        Pageable pageable = createPageable(pageNumber);
         return productRepository.findByActiveAndUserIdAndNameContains(isActive, userId, name, pageable);
     }
 
@@ -84,5 +84,14 @@ public class ProductServiceImpl implements ProductService {
     private Product findProductByIdOrThrowException(Long id, Long userId) {
         return productRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ServiceException("Product not found!"));
+    }
+
+    private Pageable createPageable(int pageNumber) {
+
+        if (pageNumber < 1) {
+            throw new ServiceException("Incorrect page number!");
+        }
+
+        return PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
     }
 }

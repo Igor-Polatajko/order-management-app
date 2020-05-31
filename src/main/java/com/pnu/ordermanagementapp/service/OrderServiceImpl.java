@@ -24,7 +24,7 @@ public class OrderServiceImpl implements OrderService {
 
     private static final int PAGE_SIZE = 10;
 
-    private static final Sort SORT =  Sort.by("createdDate").descending();
+    private static final Sort SORT = Sort.by("createdDate").descending();
 
     private OrderRepository orderRepository;
 
@@ -80,10 +80,6 @@ public class OrderServiceImpl implements OrderService {
     public void create(Long userId, OrderFormSubmitDto orderDto) {
         Product product = productService.findById(orderDto.getProductId(), userId);
 
-        if (product.getAmount() < orderDto.getAmount()) {
-            throw new ServiceException("Cannot create order. Product amount is less the requested");
-        }
-
         if (!product.isActive()) {
             throw new ServiceException("Cannot create order. Product is inactive");
         }
@@ -91,6 +87,10 @@ public class OrderServiceImpl implements OrderService {
         Client client = clientService.findById(orderDto.getClientId(), userId);
         if (!client.isActive()) {
             throw new ServiceException("Cannot create order. Client is inactive");
+        }
+
+        if (product.getAmount() < orderDto.getAmount()) {
+            throw new ServiceException("Cannot create order. Product amount is less the requested");
         }
 
         Order order = Order.builder()

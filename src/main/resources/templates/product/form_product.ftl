@@ -172,7 +172,7 @@
         <fieldset>
             Price:
             <input name="price" placeholder="Price" value="<#if product??>${product.price?c}<#else></#if>" type="number"
-                   tabindex="3" required>
+                   tabindex="3" required  step="0.1">
         </fieldset>
         <fieldset>
             <button name="Submit" type="submit" class="btn btn-secondary submitBtn" data-submit="...Sending">Done!

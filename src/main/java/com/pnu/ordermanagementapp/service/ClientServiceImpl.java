@@ -52,16 +52,17 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void create(Client client, Long userId) {
-        Client clientWithUserId = client.toBuilder()
-                .userId(userId)
-                .build();
 
         if (clientRepository.existsClientByEmailAndUserId(client.getEmail(), userId)) {
-            throw new ServiceException(
-                    "Client with email '" + client.getEmail() + "' already exists (active?: " + client.isActive() +
-                            "\n You can UPDATE it"
-            );
+            throw new ServiceException(String.format(
+                    "Client with email '%s' already exists (active?: %s )", client.getEmail(), client.isActive()
+            ));
         }
+
+        Client clientWithUserId = client.toBuilder()
+                .userId(userId)
+                .active(true)
+                .build();
 
         clientRepository.save(clientWithUserId);
     }
@@ -69,21 +70,22 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void update(Client client, Long userId) {
 
-        Client updatedClient = findClientByIdOrThrowException(client.getId(), userId);
-        updatedClient = updatedClient.toBuilder()
+        if (clientRepository
+                .existsClientByEmailAndUserIdAndIdNot(client.getEmail(), userId, client.getId())) {
+            throw new ServiceException(String.format(
+                    "Client with email '%s' already exists (active?: %s )", client.getEmail(), client.isActive()
+            ));
+        }
+
+        Client clientFromDb = findClientByIdOrThrowException(client.getId(), userId);
+
+        clientFromDb = clientFromDb.toBuilder()
                 .firstName(client.getFirstName())
                 .lastName(client.getLastName())
                 .email(client.getLastName())
                 .build();
 
-        if (clientRepository
-                .existsClientByEmailAndUserIdAndIdNot(updatedClient.getEmail(), userId, updatedClient.getId())) {
-            throw new ServiceException("Client with email '" + updatedClient.getEmail() +
-                    "' already exists (active?: " + updatedClient.isActive() + ")"
-            );
-        }
-
-        clientRepository.save(updatedClient);
+        clientRepository.save(clientFromDb);
     }
 
     @Override

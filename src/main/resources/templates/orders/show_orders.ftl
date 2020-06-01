@@ -1,9 +1,12 @@
 <html>
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.standalone.min.css"
+          rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
     <title>Orders</title>
     <style>
         .orders {
@@ -23,14 +26,35 @@
             color: steelblue;
         }
     </style>
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                todayHighlight: true
+            });
+        })
+    </script>
 </head>
 <body>
 <div class="row bg-dark">
     <div class="ml-4">
         <a href="/" class="btn btn-primary m-4">Main page</a>
     </div>
-    <div class="ml-4">
-        <a href="${exportUrl}" class="btn btn-success m-4">Export to excel</a>
+
+    <div class="m-3 rounded bg-white mx-auto">
+        <form class="form-inline pt-3" method="GET" action="${exportUrl}">
+            <div class="input-group date mx-2">
+                <label for="start-date-picker" class="font-weight-bold mx-1">Start date:</label>
+                <input type="text" class="form-control datepicker" id="start-date-picker"
+                       name="startDate" value="${exportDates.startDate}">
+            </div>
+            <div class="input-group date mx-2">
+                <label for="end-date-picker" class="font-weight-bold mx-1">End date:</label>
+                <input type="text" class="form-control datepicker" id="end-date-picker"
+                       name="endDate" value="${exportDates.endDate}">
+            </div>
+            <button class="btn btn-success mx-2" type="submit">Export to excel</button>
+        </form>
     </div>
     <div class="ml-auto mr-4">
         <a href="/orders/new" class="btn btn-success m-4">New + </a>
@@ -103,11 +127,19 @@
                             </div>
                         </div>
                         <div class="row">
-                            Order time:
+                            Order created time:
                             <div class="px-2 rounded bg-white mx-3">
-                                <strong>${order.createdDate}</strong>
+                                <strong>${order.createdDateTime}</strong>
                             </div>
                         </div>
+                        <#if order.createdDateTime != order.updatedDateTime>
+                            <div class="row">
+                                Order state updated time:
+                                <div class="px-2 rounded bg-white mx-3">
+                                    <strong>${order.updatedDateTime}</strong>
+                                </div>
+                            </div>
+                        </#if>
                     </div>
                 </div>
                 <div class="col-md-2 d-flex justify-content-center py-3">

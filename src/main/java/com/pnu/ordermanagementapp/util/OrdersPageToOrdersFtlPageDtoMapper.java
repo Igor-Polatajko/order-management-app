@@ -34,7 +34,8 @@ public class OrdersPageToOrdersFtlPageDtoMapper {
                         .itemPrice(order.getProduct().getPrice())
                         .productOrderAmount(order.getAmount())
                         .totalPrice(calcTotalPrice(order))
-                        .createdDate(order.getCreatedDate().toString())
+                        .createdDateTime(order.getCreatedDateTime().toString())
+                        .updatedDateTime(order.getUpdatedDateTime().toString())
                         .build())
                 .collect(Collectors.toList());
     }

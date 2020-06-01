@@ -1,6 +1,7 @@
 package com.pnu.ordermanagementapp.view;
 
 import com.pnu.ordermanagementapp.dto.order.OrderFtlDto;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -18,7 +19,8 @@ public class OrdersExcelView extends AbstractXlsView {
     private final static String FILE_NAME = "orders.xls";
 
     @Override
-    protected void buildExcelDocument(Map<String, Object> model, Workbook workbook, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+    protected void buildExcelDocument(Map<String, Object> model, Workbook workbook,
+                                      HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         httpServletResponse.setContentType("application/vnd.ms-excel");
         httpServletResponse.setHeader("Content-Disposition", "attachment; filename=" + FILE_NAME);
@@ -27,33 +29,41 @@ public class OrdersExcelView extends AbstractXlsView {
         List<OrderFtlDto> orders = (List<OrderFtlDto>) model.get("orders");
         Sheet sheet = workbook.createSheet("Orders");
 
-        int rowCount = 0;
+        createHeader(sheet);
 
-        Row header = sheet.createRow(rowCount++);
-        header.createCell(0).setCellValue("ID");
-        header.createCell(1).setCellValue("State");
-        header.createCell(2).setCellValue("Date");
-        header.createCell(3).setCellValue("Client first name");
-        header.createCell(4).setCellValue("Client last name");
-        header.createCell(5).setCellValue("Client email");
-        header.createCell(6).setCellValue("Product name");
-        header.createCell(7).setCellValue("Item price");
-        header.createCell(8).setCellValue("Amount");
-        header.createCell(9).setCellValue("Total price");
-
+        int rowCount = 1;
         for (OrderFtlDto order : orders) {
             Row courseRow = sheet.createRow(rowCount++);
-            courseRow.createCell(0).setCellValue(order.getOrderId());
-            courseRow.createCell(1).setCellValue(order.getState());
-            courseRow.createCell(2).setCellValue(order.getCreatedDate());
-            courseRow.createCell(3).setCellValue(order.getClientFirstName());
-            courseRow.createCell(4).setCellValue(order.getClientLastName());
-            courseRow.createCell(5).setCellValue(order.getClientEmail());
-            courseRow.createCell(6).setCellValue(order.getProductName());
-            courseRow.createCell(7).setCellValue(order.getItemPrice());
-            courseRow.createCell(8).setCellValue(order.getProductOrderAmount());
-            courseRow.createCell(9).setCellValue(order.getTotalPrice());
 
+            int idx = 0;
+            courseRow.createCell(idx++).setCellValue(order.getOrderId());
+            courseRow.createCell(idx++).setCellValue(order.getState());
+            courseRow.createCell(idx++).setCellValue(order.getCreatedDateTime());
+            courseRow.createCell(idx++).setCellValue(order.getUpdatedDateTime());
+            courseRow.createCell(idx++).setCellValue(order.getClientFirstName());
+            courseRow.createCell(idx++).setCellValue(order.getClientLastName());
+            courseRow.createCell(idx++).setCellValue(order.getClientEmail());
+            courseRow.createCell(idx++).setCellValue(order.getProductName());
+            courseRow.createCell(idx++).setCellValue(order.getItemPrice());
+            courseRow.createCell(idx++).setCellValue(order.getProductOrderAmount());
+            courseRow.createCell(idx).setCellValue(order.getTotalPrice());
         }
+    }
+
+    private void createHeader(Sheet sheet) {
+        Row header = sheet.createRow(0);
+
+        int idx = 0;
+        header.createCell(idx++).setCellValue("ID");
+        header.createCell(idx++).setCellValue("State");
+        header.createCell(idx++).setCellValue("Created time");
+        header.createCell(idx++).setCellValue("Updated time");
+        header.createCell(idx++).setCellValue("Client first name");
+        header.createCell(idx++).setCellValue("Client last name");
+        header.createCell(idx++).setCellValue("Client email");
+        header.createCell(idx++).setCellValue("Product name");
+        header.createCell(idx++).setCellValue("Item price");
+        header.createCell(idx++).setCellValue("Amount");
+        header.createCell(idx).setCellValue("Total price");
     }
 }

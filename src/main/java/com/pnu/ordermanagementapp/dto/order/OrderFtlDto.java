@@ -25,6 +25,8 @@ public class OrderFtlDto {
 
     private double totalPrice;
 
-    private String createdDate;
+    private String createdDateTime;
+
+    private String updatedDateTime;
 
 }

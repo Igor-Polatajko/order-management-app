@@ -31,7 +31,9 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderState state;
 
-    private LocalDateTime createdDate;
+    private LocalDateTime createdDateTime;
+
+    private LocalDateTime updatedDateTime;
 
     private Long userId;
 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ExceptionsInterceptor {
 
     @ExceptionHandler(Exception.class)
-    public String generalError(Model model) {
+    public String generalError(Model model, Exception e) {
         model.addAttribute("message", "Internal service error!");
         return "error_page";
     }

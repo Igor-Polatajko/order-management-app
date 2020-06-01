@@ -53,6 +53,7 @@ public class ProductServiceImpl implements ProductService {
     public void create(Product product, Long userId) {
         product = product.toBuilder()
                 .userId(userId)
+                .active(true)
                 .build();
 
         if (productRepository.existsProductByNameAndUserId(product.getName(), userId)) {

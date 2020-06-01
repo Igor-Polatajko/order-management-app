@@ -151,8 +151,14 @@
     <button type="submit" style="width: 100px" class="backButton btn btn-dark">Back</button>
 </a>
 <div class="container">
-    <form id="product" action="<#if product??>/products/update<#else>/products/new</#if>" method="post">
+    <form id="product" autocomplete="off" action="<#if product?? && product.getId()??>/products/update<#else>/products/new</#if>" method="post">
         <h3>Product info</h3>
+        <#if error??>
+            <div>
+                <h5 class="text-danger">Errors: </h5>
+                <pre class="text-danger">${error}</pre>
+            </div>
+        </#if>
         <fieldset>
             Name:
             <input name="name" placeholder="Product name" value="<#if product??>${product.name}<#else></#if>"
@@ -172,7 +178,7 @@
             <button name="Submit" type="submit" class="btn btn-secondary submitBtn" data-submit="...Sending">Done!
             </button>
         </fieldset>
-        <#if product??>
+        <#if product?? && product.id??>
             <input type="text" name="id" value="${product.id}" style="visibility: hidden">
         </#if>
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

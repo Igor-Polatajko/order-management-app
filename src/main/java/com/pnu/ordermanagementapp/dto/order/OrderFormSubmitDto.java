@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OrderFormSubmitDto {
 
-    private long clientId;
+    private Long clientId;
 
-    private long productId;
+    private Long productId;
 
     private int amount;
 

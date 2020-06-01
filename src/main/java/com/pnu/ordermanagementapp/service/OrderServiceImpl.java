@@ -23,6 +23,7 @@ import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Service
@@ -108,8 +109,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void create(Long userId, OrderFormSubmitDto orderDto) {
-        Product product = productService.findById(orderDto.getProductId(), userId);
 
+        if (isNull(orderDto.getClientId()) || isNull(orderDto.getProductId())) {
+            throw new ServiceException("Cannot create order. Client and product should be selected");
+        }
+
+        if (orderDto.getAmount() <= 0) {
+            throw new ServiceException("Cannot create order. Amount should be greater than zero");
+        }
+
+        Product product = productService.findById(orderDto.getProductId(), userId);
         if (!product.isActive()) {
             throw new ServiceException("Cannot create order. Product is inactive");
         }

@@ -33,9 +33,9 @@
     <div class="m-3 rounded bg-white mx-auto">
         <form class="form-inline p-3" method="GET" action="${exportUrl}">
             <label for="from-date">From date: </label>
-            <input name="fromDate" class="form-control mx-sm-2" type="date" value="2011-08-19" id="from-date">
+            <input name="startDate" class="form-control mx-sm-2" type="date" value="${exportDates.startDate}" id="from-date">
             <label for="to-date">To date: </label>
-            <input name="toDate" class="form-control mx-sm-2" type="date" value="2011-08-19" id="to-date">
+            <input name="endDate" class="form-control mx-sm-2" type="date" value="${exportDates.endDate}" id="to-date">
             <button class="btn btn-success my-2 my-sm-0" type="submit">Export to excel</button>
         </form>
     </div>

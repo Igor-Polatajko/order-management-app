@@ -1,6 +1,7 @@
 package com.pnu.ordermanagementapp.service;
 
 import com.pnu.ordermanagementapp.dto.order.OrderFormSubmitDto;
+import com.pnu.ordermanagementapp.dto.order.OrdersExportQuery;
 import com.pnu.ordermanagementapp.exception.ServiceException;
 import com.pnu.ordermanagementapp.model.Client;
 import com.pnu.ordermanagementapp.model.Order;
@@ -16,15 +17,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Optional;
+
+import static java.util.Objects.nonNull;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+            .append(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+            .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+            .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+            .toFormatter();
+
     private static final int PAGE_SIZE = 10;
 
-    private static final Sort SORT = Sort.by("createdDateTime").descending();
+    private static final Sort SORT = Sort.by("updatedDateTime").descending();
 
     private OrderRepository orderRepository;
 
@@ -49,25 +62,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findByClientId(Long clintId, Long userId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
-        return orderRepository
-                .findByClientIdAndUserIdAndCreatedDateTimeBetween(clintId, userId, fromDateTime, toDateTime, SORT);
-    }
-
-    @Override
-    public List<Order> findByProductId(Long productId, Long userId,
-                                       LocalDateTime fromDateTime, LocalDateTime toDateTime) {
-
-        return orderRepository
-                .findByProductIdAndUserIdAndCreatedDateTimeBetween(productId, userId, fromDateTime, toDateTime, SORT);
-    }
-
-    @Override
-    public List<Order> findAll(Long userId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
-        return orderRepository.findAllByUserIdAndCreatedDateTimeBetween(userId, fromDateTime, toDateTime, SORT);
-    }
-
-    @Override
     public Page<Order> findByClientIdAndState(Long id, OrderState state, int pageNumber, Long userId) {
         Pageable pageable = createPageable(pageNumber);
         return orderRepository.findByClientIdAndStateAndUserId(id, state, userId, pageable);
@@ -77,6 +71,38 @@ public class OrderServiceImpl implements OrderService {
     public Page<Order> findByProductIdAndState(Long id, OrderState state, int pageNumber, Long userId) {
         Pageable pageable = createPageable(pageNumber);
         return orderRepository.findByProductIdAndStateAndUserId(id, state, userId, pageable);
+    }
+
+    @Override
+    public List<Order> findForExport(OrdersExportQuery ordersExportQuery) {
+
+        LocalDateTime fromDateTime = LocalDateTime
+                .parse(ordersExportQuery.getOrdersExportDatesRangeDto().getStartDate(), DATE_TIME_FORMATTER);
+        LocalDateTime toDateTime = LocalDateTime
+                .parse(ordersExportQuery.getOrdersExportDatesRangeDto().getEndDate(), DATE_TIME_FORMATTER);
+
+        if (nonNull(ordersExportQuery.getClientId())) {
+            return orderRepository.findByClientIdAndUserIdAndCreatedDateTimeBetween(
+                    ordersExportQuery.getClientId(),
+                    ordersExportQuery.getUserId(),
+                    fromDateTime,
+                    toDateTime, SORT);
+        }
+
+        if (nonNull(ordersExportQuery.getProductId())) {
+            return orderRepository.findByProductIdAndUserIdAndCreatedDateTimeBetween(
+                    ordersExportQuery.getProductId(),
+                    ordersExportQuery.getUserId(),
+                    fromDateTime,
+                    toDateTime,
+                    SORT);
+        }
+
+        return orderRepository.findAllByUserIdAndCreatedDateTimeBetween(
+                ordersExportQuery.getUserId(),
+                fromDateTime,
+                toDateTime,
+                SORT);
     }
 
     @Override

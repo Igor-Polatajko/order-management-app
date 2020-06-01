@@ -1,6 +1,8 @@
 package com.pnu.ordermanagementapp.controller;
 
 import com.pnu.ordermanagementapp.dto.order.OrderFormSubmitDto;
+import com.pnu.ordermanagementapp.dto.order.OrdersExportDatesRangeDto;
+import com.pnu.ordermanagementapp.dto.order.OrdersExportQuery;
 import com.pnu.ordermanagementapp.dto.order.OrdersFtlPageDto;
 import com.pnu.ordermanagementapp.model.*;
 import com.pnu.ordermanagementapp.service.ClientService;
@@ -14,24 +16,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.ChronoField;
+import java.time.LocalDate;
 import java.util.List;
-
-import static java.util.Objects.nonNull;
 
 @Controller
 @RequestMapping("/orders")
 public class OrderController {
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
-            .append(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-            .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
-            .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-            .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-            .toFormatter();
 
     private OrderService orderService;
 
@@ -65,6 +55,7 @@ public class OrderController {
 
         model.addAttribute("redirectBackUrl", String.format("/orders?page=%s&state=%s", pageNumber, state));
         model.addAttribute("exportUrl", "/orders/export");
+        model.addAttribute("exportDates", buildDefaultExportDatesRange(user));
         model.addAttribute("currentState", orderState);
         model.addAttribute("orders", orders);
         model.addAttribute("headline", "The most recent orders");
@@ -89,6 +80,7 @@ public class OrderController {
                 String.format("/orders/client/%s?page=%s&state=%s", clientId, pageNumber, state)
         );
         model.addAttribute("exportUrl", String.format("/orders/export?clientId=%s", clientId));
+        model.addAttribute("exportDates", buildDefaultExportDatesRange(user));
         model.addAttribute("currentState", orderState);
         model.addAttribute("orders", orders);
         model.addAttribute("headline", String.format("Orders made by %s %s",
@@ -115,6 +107,7 @@ public class OrderController {
                 String.format("/orders/product/%s?page=%s&state=%s", productId, pageNumber, state)
         );
         model.addAttribute("exportUrl", String.format("/orders/export?productId=%s", productId));
+        model.addAttribute("exportDates", buildDefaultExportDatesRange(user));
         model.addAttribute("currentState", orderState);
         model.addAttribute("orders", orders);
         model.addAttribute("headline", String.format("Orders of %s (id: %s)",
@@ -122,6 +115,29 @@ public class OrderController {
         ));
 
         return "orders/show_orders";
+    }
+
+    @GetMapping("/export")
+    public String download(
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate,
+            @RequestParam(name = "clientId", required = false) Long clientId,
+            @RequestParam(name = "productId", required = false) Long productId,
+            Model model, @AuthenticationPrincipal User user) {
+
+        OrdersExportQuery ordersExportQuery = OrdersExportQuery.builder()
+                .ordersExportDatesRangeDto(OrdersExportDatesRangeDto.builder()
+                        .startDate(startDate)
+                        .endDate(endDate)
+                        .build())
+                .clientId(clientId)
+                .productId(productId)
+                .userId(user.getId())
+                .build();
+
+        List<Order> orders = orderService.findForExport(ordersExportQuery);
+        model.addAttribute("orders", ordersPageToOrdersFtlPageDtoMapper.mapOrdersList(orders));
+        return "ordersExcelView";
     }
 
     @GetMapping("/new")
@@ -170,28 +186,11 @@ public class OrderController {
         return "redirect:" + redirectUrl;
     }
 
-    @GetMapping("/export")
-    public String download(
-            @RequestParam("fromDate") String fromDate,
-            @RequestParam("toDate") String toDate,
-            @RequestParam(name = "clientId", required = false) Long clientId,
-            @RequestParam(name = "productId", required = false) Long productId,
-            Model model, @AuthenticationPrincipal User user) {
-
-        LocalDateTime fromDateTime = LocalDateTime.parse(fromDate, DATE_TIME_FORMATTER);
-        LocalDateTime toDateTime = LocalDateTime.parse(toDate, DATE_TIME_FORMATTER);
-
-        List<Order> orders;
-        if (nonNull(clientId)) {
-            orders = orderService.findByClientId(clientId, user.getId(), fromDateTime, toDateTime);
-        } else if (nonNull(productId)) {
-            orders = orderService.findByProductId(productId, user.getId(), fromDateTime, toDateTime);
-        } else {
-            orders = orderService.findAll(user.getId(), fromDateTime, toDateTime);
-        }
-
-        model.addAttribute("orders", ordersPageToOrdersFtlPageDtoMapper.mapOrdersList(orders));
-        return "ordersExcelView";
+    private OrdersExportDatesRangeDto buildDefaultExportDatesRange(User user) {
+        return OrdersExportDatesRangeDto.builder()
+                .startDate(user.getCreatedDateTime().toLocalDate().toString())
+                .endDate(LocalDate.now().toString())
+                .build();
     }
 
 }

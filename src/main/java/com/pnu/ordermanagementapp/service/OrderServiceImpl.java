@@ -1,6 +1,7 @@
 package com.pnu.ordermanagementapp.service;
 
 import com.pnu.ordermanagementapp.dto.order.OrderFormSubmitDto;
+import com.pnu.ordermanagementapp.dto.order.OrdersExportQuery;
 import com.pnu.ordermanagementapp.exception.ServiceException;
 import com.pnu.ordermanagementapp.model.Client;
 import com.pnu.ordermanagementapp.model.Order;
@@ -16,15 +17,28 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Optional;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+            .append(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+            .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+            .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+            .toFormatter();
+
     private static final int PAGE_SIZE = 10;
 
-    private static final Sort SORT = Sort.by("createdDate").descending();
+    private static final Sort SORT = Sort.by("updatedDateTime").descending();
 
     private OrderRepository orderRepository;
 
@@ -49,21 +63,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findByClientId(Long clintId, Long userId) {
-        return orderRepository.findByClientIdAndUserId(clintId, userId, SORT);
-    }
-
-    @Override
-    public List<Order> findByProductId(Long productId, Long userId) {
-        return orderRepository.findByProductIdAndUserId(productId, userId, SORT);
-    }
-
-    @Override
-    public List<Order> findAll(Long userId) {
-        return orderRepository.findAllByUserId(userId, SORT);
-    }
-
-    @Override
     public Page<Order> findByClientIdAndState(Long id, OrderState state, int pageNumber, Long userId) {
         Pageable pageable = createPageable(pageNumber);
         return orderRepository.findByClientIdAndStateAndUserId(id, state, userId, pageable);
@@ -76,10 +75,50 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<Order> findForExport(OrdersExportQuery ordersExportQuery) {
+
+        LocalDateTime fromDateTime = LocalDateTime
+                .parse(ordersExportQuery.getOrdersExportDatesRangeDto().getStartDate(), DATE_TIME_FORMATTER);
+        LocalDateTime toDateTime = LocalDateTime
+                .parse(ordersExportQuery.getOrdersExportDatesRangeDto().getEndDate(), DATE_TIME_FORMATTER);
+
+        if (nonNull(ordersExportQuery.getClientId())) {
+            return orderRepository.findByClientIdAndUserIdAndCreatedDateTimeBetween(
+                    ordersExportQuery.getClientId(),
+                    ordersExportQuery.getUserId(),
+                    fromDateTime,
+                    toDateTime, SORT);
+        }
+
+        if (nonNull(ordersExportQuery.getProductId())) {
+            return orderRepository.findByProductIdAndUserIdAndCreatedDateTimeBetween(
+                    ordersExportQuery.getProductId(),
+                    ordersExportQuery.getUserId(),
+                    fromDateTime,
+                    toDateTime,
+                    SORT);
+        }
+
+        return orderRepository.findAllByUserIdAndCreatedDateTimeBetween(
+                ordersExportQuery.getUserId(),
+                fromDateTime,
+                toDateTime,
+                SORT);
+    }
+
+    @Override
     @Transactional
     public void create(Long userId, OrderFormSubmitDto orderDto) {
-        Product product = productService.findById(orderDto.getProductId(), userId);
 
+        if (isNull(orderDto.getClientId()) || isNull(orderDto.getProductId())) {
+            throw new ServiceException("Cannot create order. Client and product should be selected");
+        }
+
+        if (orderDto.getAmount() <= 0) {
+            throw new ServiceException("Cannot create order. Amount should be greater than zero");
+        }
+
+        Product product = productService.findById(orderDto.getProductId(), userId);
         if (!product.isActive()) {
             throw new ServiceException("Cannot create order. Product is inactive");
         }
@@ -93,20 +132,24 @@ public class OrderServiceImpl implements OrderService {
             throw new ServiceException("Cannot create order. Product amount is less the requested");
         }
 
+        LocalDateTime localDateTimeNow = LocalDateTime.now();
+
         Order order = Order.builder()
                 .product(product)
                 .client(client)
                 .amount(orderDto.getAmount())
                 .state(OrderState.PENDING)
-                .createdDate(LocalDateTime.now())
+                .createdDateTime(localDateTimeNow)
+                .updatedDateTime(localDateTimeNow)
                 .userId(userId)
                 .build();
+
+        orderRepository.save(order);
 
         Product updatedProduct = product.toBuilder()
                 .amount(product.getAmount() - orderDto.getAmount())
                 .build();
 
-        orderRepository.save(order);
         productService.update(updatedProduct, userId);
     }
 
@@ -132,7 +175,10 @@ public class OrderServiceImpl implements OrderService {
 
         Order updatedOrder = order.toBuilder()
                 .state(OrderState.CANCELLED)
+                .updatedDateTime(LocalDateTime.now())
                 .build();
+
+        orderRepository.save(updatedOrder);
 
         Product product = order.getProduct();
 
@@ -141,7 +187,6 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         productService.update(updatedProduct, userId);
-        orderRepository.save(updatedOrder);
     }
 
     @Override
@@ -154,6 +199,7 @@ public class OrderServiceImpl implements OrderService {
 
         Order updatedOrder = order.toBuilder()
                 .state(OrderState.RESOLVED)
+                .updatedDateTime(LocalDateTime.now())
                 .build();
 
         orderRepository.save(updatedOrder);

@@ -1,6 +1,7 @@
 package com.pnu.ordermanagementapp.service;
 
 import com.pnu.ordermanagementapp.dto.order.OrderFormSubmitDto;
+import com.pnu.ordermanagementapp.dto.order.OrdersExportQuery;
 import com.pnu.ordermanagementapp.model.Order;
 import com.pnu.ordermanagementapp.model.OrderState;
 import org.springframework.data.domain.Page;
@@ -15,12 +16,6 @@ public interface OrderService {
 
     Page<Order> findAllByState(OrderState state, int pageNumber, Long userId);
 
-    List<Order> findByClientId(Long clintId, Long userId);
-
-    List<Order> findByProductId(Long productId, Long userId);
-
-    List<Order> findAll(Long userId);
-
     void create(Long userId, OrderFormSubmitDto orderDto);
 
     void delete(Long orderId, Long userId);
@@ -28,4 +23,6 @@ public interface OrderService {
     void cancel(Long orderId, Long userId);
 
     void resolve(Long orderId, Long userId);
+
+    List<Order> findForExport(OrdersExportQuery ordersExportQuery);
 }

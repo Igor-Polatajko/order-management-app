@@ -11,6 +11,10 @@ import java.util.Optional;
 
 public interface ClientRepository extends JpaRepository<Client, Long>, PagingAndSortingRepository<Client, Long> {
 
+    boolean existsClientByEmailAndUserId(String email, Long userId);
+
+    boolean existsClientByEmailAndUserIdAndIdNot(String email, Long userId, Long id);
+
     Optional<Client> findByIdAndUserId(Long id, Long userId);
 
     List<Client> findAllByActiveAndUserId(boolean active, long userId);

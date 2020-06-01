@@ -11,6 +11,10 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, PagingAndSortingRepository<Product, Long> {
 
+    boolean existsProductByNameAndUserId(String name, Long userId);
+
+    boolean existsProductByNameAndUserIdAndIdNot(String name, Long userId, Long id);
+
     Optional<Product> findByIdAndUserId(Long id, Long userId);
 
     List<Product> findByActiveAndUserId(boolean active, long userId);

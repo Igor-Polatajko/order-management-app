@@ -47,14 +47,37 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void create(Product product, Long userId) {
-        product = product.toBuilder().userId(userId).build();
+        product = product.toBuilder()
+                .userId(userId)
+                .build();
+
+        if (productRepository.existsProductByNameAndUserId(product.getName(), userId)) {
+            throw new ServiceException(
+                    "Product with name '" + product.getName() + "' already exists (active?: " + product.isActive() + ")"
+            );
+        }
+
         productRepository.save(product);
     }
 
     @Override
     public void update(Product product, Long userId) {
-        findProductByIdOrThrowException(product.getId(), userId);
-        productRepository.save(product);
+
+        Product updatedProduct = findProductByIdOrThrowException(product.getId(), userId);
+        updatedProduct = updatedProduct.toBuilder()
+                .name(product.getName())
+                .amount(product.getAmount())
+                .price(product.getPrice())
+                .build();
+
+        if (productRepository.existsProductByNameAndUserIdAndIdNot(
+                updatedProduct.getName(), userId, updatedProduct.getId())) {
+            throw new ServiceException("Product with name '" + updatedProduct.getName() +
+                    "' already exists (active?: " + updatedProduct.isActive() + ")"
+            );
+
+        }
+        productRepository.save(updatedProduct);
     }
 
     @Override

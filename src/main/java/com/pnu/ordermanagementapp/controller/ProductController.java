@@ -73,7 +73,7 @@ public class ProductController {
     public String create(@ModelAttribute("productDto") ProductFormSubmitDto productFormDto, Model model,
                          @AuthenticationPrincipal User user) {
 
-        if (validateProduct(productFormDto, model)) return "/product/form_product";
+        if (validateProductFormDto(productFormDto, model)) return "/product/form_product";
 
         Product product = Product.builder()
                 .name(productFormDto.getName())
@@ -89,7 +89,7 @@ public class ProductController {
     public String updateProduct(@ModelAttribute("productDto") ProductFormSubmitDto productFormDto, Model model,
                                 @AuthenticationPrincipal User user) {
 
-        if (validateProduct(productFormDto, model)) return "/product/form_product";
+        if (validateProductFormDto(productFormDto, model)) return "/product/form_product";
 
         Product product = Product.builder()
                 .id(productFormDto.getId())
@@ -102,7 +102,7 @@ public class ProductController {
         return "redirect:/products";
     }
 
-    private boolean validateProduct(ProductFormSubmitDto productFormDto, Model model) {
+    private boolean validateProductFormDto(ProductFormSubmitDto productFormDto, Model model) {
         Set<ConstraintViolation<ProductFormSubmitDto>> constraintViolations = validator.validate(productFormDto);
 
         if (CollectionUtils.isNotEmpty(constraintViolations)) {

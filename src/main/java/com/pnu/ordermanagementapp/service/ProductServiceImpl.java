@@ -51,16 +51,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void create(Product product, Long userId) {
+
+        if (productRepository.existsProductByNameAndUserId(product.getName(), userId)) {
+            throw new ServiceException(String.format(
+                    "Product with name '%s' already exists (active?: %s)", product.getName(), product.isActive()
+            ));
+        }
+
         product = product.toBuilder()
                 .userId(userId)
                 .active(true)
                 .build();
-
-        if (productRepository.existsProductByNameAndUserId(product.getName(), userId)) {
-            throw new ServiceException(
-                    "Product with name '" + product.getName() + "' already exists (active?: " + product.isActive() + ")"
-            );
-        }
 
         productRepository.save(product);
     }
@@ -68,21 +69,22 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void update(Product product, Long userId) {
 
-        Product updatedProduct = findProductByIdOrThrowException(product.getId(), userId);
-        updatedProduct = updatedProduct.toBuilder()
+        if (productRepository.existsProductByNameAndUserIdAndIdNot(
+                product.getName(), userId, product.getId())) {
+            throw new ServiceException(String.format(
+                    "Product with name '%s' already exists (active?: %s)", product.getName(), product.isActive()
+            ));
+        }
+
+        Product productFromDb = findProductByIdOrThrowException(product.getId(), userId);
+
+        productFromDb = productFromDb.toBuilder()
                 .name(product.getName())
                 .amount(product.getAmount())
                 .price(product.getPrice())
                 .build();
 
-        if (productRepository.existsProductByNameAndUserIdAndIdNot(
-                updatedProduct.getName(), userId, updatedProduct.getId())) {
-            throw new ServiceException("Product with name '" + updatedProduct.getName() +
-                    "' already exists (active?: " + updatedProduct.isActive() + ")"
-            );
-
-        }
-        productRepository.save(updatedProduct);
+        productRepository.save(productFromDb);
     }
 
     @Override

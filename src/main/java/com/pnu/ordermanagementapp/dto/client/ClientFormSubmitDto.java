@@ -12,6 +12,8 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class ClientFormSubmitDto {
 
+    private Long id;
+
     @NotBlank(message = "First name cannot be empty")
     private String firstName;
 

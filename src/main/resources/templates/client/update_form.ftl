@@ -84,8 +84,14 @@
     <button type="submit" style="width: 100px" class="btn btn-primary">Back</button>
 </a>
 <div class="container">
-    <form id="client" action="/clients/new" method="post">
+    <form id="client" action="/clients/new" method="post" autocomplete="off">
         <h3>Create client</h3>
+        <#if error??>
+            <div>
+                <h5 class="text-danger">Errors: </h5>
+                <pre class="text-danger">${error}</pre>
+            </div>
+        </#if>
         <fieldset>
             First Name:
             <input name="firstName" placeholder="First Name" value="<#if client??>${client.firstName}<#else></#if>"

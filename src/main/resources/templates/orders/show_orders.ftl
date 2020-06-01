@@ -1,9 +1,12 @@
 <html>
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.standalone.min.css"
+          rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
     <title>Orders</title>
     <style>
         .orders {
@@ -23,6 +26,14 @@
             color: steelblue;
         }
     </style>
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                todayHighlight: true
+            });
+        })
+    </script>
 </head>
 <body>
 <div class="row bg-dark">
@@ -31,12 +42,18 @@
     </div>
 
     <div class="m-3 rounded bg-white mx-auto">
-        <form class="form-inline p-3" method="GET" action="${exportUrl}">
-            <label for="from-date">From date: </label>
-            <input name="startDate" class="form-control mx-sm-2" type="date" value="${exportDates.startDate}" id="from-date">
-            <label for="to-date">To date: </label>
-            <input name="endDate" class="form-control mx-sm-2" type="date" value="${exportDates.endDate}" id="to-date">
-            <button class="btn btn-success my-2 my-sm-0" type="submit">Export to excel</button>
+        <form class="form-inline pt-3" method="GET" action="${exportUrl}">
+            <div class="input-group date mx-2">
+                <label for="start-date-picker" class="font-weight-bold mx-1">Start date:</label>
+                <input type="text" class="form-control datepicker" id="start-date-picker"
+                       name="startDate" value="${exportDates.startDate}">
+            </div>
+            <div class="input-group date mx-2">
+                <label for="end-date-picker" class="font-weight-bold mx-1">End date:</label>
+                <input type="text" class="form-control datepicker" id="end-date-picker"
+                       name="endDate" value="${exportDates.endDate}">
+            </div>
+            <button class="btn btn-success mx-2" type="submit">Export to excel</button>
         </form>
     </div>
     <div class="ml-auto mr-4">

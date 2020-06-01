@@ -27,6 +27,10 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository = productRepository;
     }
 
+    @Override
+    public List<Product> findAll(Long userId) {
+        return productRepository.findByUserId(userId);
+    }
 
     @Override
     public List<Product> findAllActive(Long userId) {

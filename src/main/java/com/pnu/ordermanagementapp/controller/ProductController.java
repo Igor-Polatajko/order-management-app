@@ -37,9 +37,11 @@ public class ProductController {
     @GetMapping("/find")
     public String findAllByName(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
                                 @RequestParam(name = "active", required = false, defaultValue = "true") boolean isActive,
-                                @ModelAttribute("name") String nameQuery, Model model, @AuthenticationPrincipal User user) {
+                                @ModelAttribute("name") String nameQuery, Model model,
+                                @AuthenticationPrincipal User user) {
         model.addAttribute("active", isActive);
-        model.addAttribute("products", productService.findAllByNameAndActivity(page, nameQuery, isActive, user.getId()));
+        model.addAttribute("products", productService
+                .findAllByNameAndActivity(page, nameQuery, isActive, user.getId()));
         return "product/show_products";
     }
 
@@ -81,7 +83,7 @@ public class ProductController {
     @GetMapping("/export")
     public String downloadProductsExcel(Model model, @AuthenticationPrincipal User user) {
 
-        model.addAttribute("products", productService.findAllActive(user.getId()));
+        model.addAttribute("products", productService.findAll(user.getId()));
         return "productsExcelView";
     }
 }

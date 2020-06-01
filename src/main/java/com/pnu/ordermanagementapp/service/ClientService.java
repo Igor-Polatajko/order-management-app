@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface ClientService {
 
+    List<Client> findAll(Long userId);
+
     List<Client> findAllActive(Long userId);
 
     Page<Client> findAllByActivity(Integer pageNumber, boolean isActive, Long userId);

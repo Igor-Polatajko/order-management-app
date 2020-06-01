@@ -26,21 +26,28 @@ public class ProductsExcelView extends AbstractXlsView {
         List<Product> products = (List<Product>) model.get("products");
 
         Sheet sheet = workbook.createSheet("Products");
+        createHeader(sheet);
+        int rowCount = 1;
 
-        int rowCount = 0;
-
-        Row header = sheet.createRow(rowCount++);
-        header.createCell(0).setCellValue("ID");
-        header.createCell(1).setCellValue("Name");
-        header.createCell(2).setCellValue("Amount");
-        header.createCell(3).setCellValue("Price");
 
         for (Product product : products) {
             Row courseRow = sheet.createRow(rowCount++);
-            courseRow.createCell(0).setCellValue(product.getId());
-            courseRow.createCell(1).setCellValue(product.getName());
-            courseRow.createCell(2).setCellValue(product.getAmount());
-            courseRow.createCell(3).setCellValue(product.getPrice());
+            int idx = 0;
+            courseRow.createCell(idx++).setCellValue(product.getId());
+            courseRow.createCell(idx++).setCellValue(product.getName());
+            courseRow.createCell(idx++).setCellValue(product.getAmount());
+            courseRow.createCell(idx++).setCellValue(product.getPrice());
+            courseRow.createCell(idx++).setCellValue(product.isActive());
         }
+    }
+
+    private void createHeader(Sheet sheet) {
+        Row header = sheet.createRow(0);
+        int idx = 0;
+        header.createCell(idx++).setCellValue("ID");
+        header.createCell(idx++).setCellValue("Name");
+        header.createCell(idx++).setCellValue("Amount");
+        header.createCell(idx++).setCellValue("Price");
+        header.createCell(idx++).setCellValue("Active");
     }
 }

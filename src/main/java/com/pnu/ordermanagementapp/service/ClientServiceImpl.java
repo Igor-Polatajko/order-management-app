@@ -26,9 +26,15 @@ public class ClientServiceImpl implements ClientService {
         this.clientRepository = clientRepository;
     }
 
+
+    @Override
+    public List<Client> findAll(Long userId) {
+        return clientRepository.findByUserId(userId);
+    }
+
     @Override
     public List<Client> findAllActive(Long userId) {
-        return clientRepository.findAllByActiveAndUserId(true, userId);
+        return clientRepository.findByActiveAndUserId(true, userId);
     }
 
     @Override

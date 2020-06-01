@@ -22,25 +22,33 @@ public class ClientsExcelView extends AbstractXlsView {
     protected void buildExcelDocument(Map<String, Object> model, Workbook workbook, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
 
         httpServletResponse.setContentType("application/vnd.ms-excel");
-        httpServletResponse.setHeader("Content-Disposition", "attachment; filename="+FILE_NAME);
+        httpServletResponse.setHeader("Content-Disposition", "attachment; filename=" + FILE_NAME);
 
         List<Client> clients = (List<Client>) model.get("clients");
         Sheet sheet = workbook.createSheet("Clients");
-
-        int rowCount = 0;
-
-        Row header = sheet.createRow(rowCount++);
-        header.createCell(0).setCellValue("ID");
-        header.createCell(1).setCellValue("First name");
-        header.createCell(2).setCellValue("Last name");
-        header.createCell(3).setCellValue("Email");
+        createHeader(sheet);
+        int rowCount = 1;
 
         for (Client client : clients) {
             Row courseRow = sheet.createRow(rowCount++);
-            courseRow.createCell(0).setCellValue(client.getId());
-            courseRow.createCell(1).setCellValue(client.getFirstName());
-            courseRow.createCell(2).setCellValue(client.getLastName());
-            courseRow.createCell(3).setCellValue(client.getEmail());
+
+            int idx = 0;
+            courseRow.createCell(idx++).setCellValue(client.getId());
+            courseRow.createCell(idx++).setCellValue(client.getFirstName());
+            courseRow.createCell(idx++).setCellValue(client.getLastName());
+            courseRow.createCell(idx++).setCellValue(client.getEmail());
+            courseRow.createCell(idx++).setCellValue(client.isActive());
         }
+    }
+
+    private void createHeader(Sheet sheet) {
+        Row header = sheet.createRow(0);
+        int idx = 0;
+        header.createCell(idx++).setCellValue("ID");
+        header.createCell(idx++).setCellValue("First name");
+        header.createCell(idx++).setCellValue("Last name");
+        header.createCell(idx++).setCellValue("Email");
+        header.createCell(idx++).setCellValue("Active");
+
     }
 }

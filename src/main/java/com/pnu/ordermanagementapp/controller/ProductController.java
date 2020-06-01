@@ -1,8 +1,11 @@
 package com.pnu.ordermanagementapp.controller;
 
+import com.pnu.ordermanagementapp.dto.product.ProductFormSubmitDto;
 import com.pnu.ordermanagementapp.model.Product;
 import com.pnu.ordermanagementapp.model.User;
 import com.pnu.ordermanagementapp.service.ProductService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -14,15 +17,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Controller
 @RequestMapping("/products")
 public class ProductController {
 
     private ProductService productService;
 
+    private Validator validator;
+
     @Autowired
     public ProductController(ProductService productService) {
         this.productService = productService;
+        validator = Validation.buildDefaultValidatorFactory().getValidator();
     }
 
     @GetMapping
@@ -52,20 +64,56 @@ public class ProductController {
 
     @GetMapping("/update/{id}")
     public String update(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal User user) {
-        model.addAttribute("product", productService.findById(id, user.getId()));
+        Product product = productService.findById(id, user.getId());
+        model.addAttribute("product", product);
         return "/product/form_product";
     }
 
     @PostMapping("/new")
-    public String create(@ModelAttribute("product") Product product, @AuthenticationPrincipal User user) {
+    public String create(@ModelAttribute("productDto") ProductFormSubmitDto productFormDto, Model model,
+                         @AuthenticationPrincipal User user) {
+
+        if (validateProduct(productFormDto, model)) return "/product/form_product";
+
+        Product product = Product.builder()
+                .name(productFormDto.getName())
+                .price(productFormDto.getPrice())
+                .amount(productFormDto.getAmount())
+                .build();
+
         productService.create(product, user.getId());
         return "redirect:/products";
     }
 
     @PostMapping("/update")
-    public String updateProduct(@ModelAttribute("product") Product product, @AuthenticationPrincipal User user) {
+    public String updateProduct(@ModelAttribute("productDto") ProductFormSubmitDto productFormDto, Model model,
+                                @AuthenticationPrincipal User user) {
+
+        if (validateProduct(productFormDto, model)) return "/product/form_product";
+
+        Product product = Product.builder()
+                .id(productFormDto.getId())
+                .name(productFormDto.getName())
+                .price(productFormDto.getPrice())
+                .amount(productFormDto.getAmount())
+                .build();
+
         productService.update(product, user.getId());
         return "redirect:/products";
+    }
+
+    private boolean validateProduct(ProductFormSubmitDto productFormDto, Model model) {
+        Set<ConstraintViolation<ProductFormSubmitDto>> constraintViolations = validator.validate(productFormDto);
+
+        if (CollectionUtils.isNotEmpty(constraintViolations)) {
+            String errorMessage = constraintViolations.stream()
+                    .map(ConstraintViolation::getMessage)
+                    .collect(Collectors.joining(StringUtils.LF));
+            model.addAttribute("error", errorMessage);
+            model.addAttribute("product", productFormDto);
+            return true;
+        }
+        return false;
     }
 
     @PostMapping("/delete/{id}")

@@ -45,7 +45,7 @@ public class OrdersExcelView extends AbstractXlsView {
             Row courseRow = sheet.createRow(rowCount++);
             courseRow.createCell(0).setCellValue(order.getOrderId());
             courseRow.createCell(1).setCellValue(order.getState());
-            courseRow.createCell(2).setCellValue(order.getCreatedDate());
+            courseRow.createCell(2).setCellValue(order.getCreatedDateTime());
             courseRow.createCell(3).setCellValue(order.getClientFirstName());
             courseRow.createCell(4).setCellValue(order.getClientLastName());
             courseRow.createCell(5).setCellValue(order.getClientEmail());

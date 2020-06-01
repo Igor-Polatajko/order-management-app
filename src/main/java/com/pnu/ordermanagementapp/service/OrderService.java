@@ -5,6 +5,8 @@ import com.pnu.ordermanagementapp.model.Order;
 import com.pnu.ordermanagementapp.model.OrderState;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface OrderService {
@@ -15,11 +17,11 @@ public interface OrderService {
 
     Page<Order> findAllByState(OrderState state, int pageNumber, Long userId);
 
-    List<Order> findByClientId(Long clintId, Long userId);
+    List<Order> findByClientId(Long clintId, Long userId, LocalDateTime from, LocalDateTime to);
 
-    List<Order> findByProductId(Long productId, Long userId);
+    List<Order> findByProductId(Long productId, Long userId, LocalDateTime from, LocalDateTime to);
 
-    List<Order> findAll(Long userId);
+    List<Order> findAll(Long userId, LocalDateTime from, LocalDateTime to);
 
     void create(Long userId, OrderFormSubmitDto orderDto);
 

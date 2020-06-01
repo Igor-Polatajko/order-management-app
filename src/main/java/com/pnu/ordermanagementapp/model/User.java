@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -36,6 +37,8 @@ public class User implements UserDetails {
     private Role role;
 
     private boolean active;
+
+    private LocalDateTime createdDateTime;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

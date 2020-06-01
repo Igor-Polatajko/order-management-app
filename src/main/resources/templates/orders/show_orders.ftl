@@ -29,8 +29,15 @@
     <div class="ml-4">
         <a href="/" class="btn btn-primary m-4">Main page</a>
     </div>
-    <div class="ml-4">
-        <a href="${exportUrl}" class="btn btn-success m-4">Export to excel</a>
+
+    <div class="m-3 rounded bg-white mx-auto">
+        <form class="form-inline p-3" method="GET" action="${exportUrl}">
+            <label for="from-date">From date: </label>
+            <input name="fromDate" class="form-control mx-sm-2" type="date" value="2011-08-19" id="from-date">
+            <label for="to-date">To date: </label>
+            <input name="toDate" class="form-control mx-sm-2" type="date" value="2011-08-19" id="to-date">
+            <button class="btn btn-success my-2 my-sm-0" type="submit">Export to excel</button>
+        </form>
     </div>
     <div class="ml-auto mr-4">
         <a href="/orders/new" class="btn btn-success m-4">New + </a>
@@ -103,11 +110,19 @@
                             </div>
                         </div>
                         <div class="row">
-                            Order time:
+                            Order created time:
                             <div class="px-2 rounded bg-white mx-3">
-                                <strong>${order.createdDate}</strong>
+                                <strong>${order.createdDateTime}</strong>
                             </div>
                         </div>
+                        <#if order.createdDateTime != order.updatedDateTime>
+                            <div class="row">
+                                Order state updated time:
+                                <div class="px-2 rounded bg-white mx-3">
+                                    <strong>${order.updatedDateTime}</strong>
+                                </div>
+                            </div>
+                        </#if>
                     </div>
                 </div>
                 <div class="col-md-2 d-flex justify-content-center py-3">

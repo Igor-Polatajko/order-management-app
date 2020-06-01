@@ -24,7 +24,7 @@ public class OrderServiceImpl implements OrderService {
 
     private static final int PAGE_SIZE = 10;
 
-    private static final Sort SORT = Sort.by("createdDate").descending();
+    private static final Sort SORT = Sort.by("createdDateTime").descending();
 
     private OrderRepository orderRepository;
 
@@ -49,18 +49,22 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findByClientId(Long clintId, Long userId) {
-        return orderRepository.findByClientIdAndUserId(clintId, userId, SORT);
+    public List<Order> findByClientId(Long clintId, Long userId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
+        return orderRepository
+                .findByClientIdAndUserIdAndCreatedDateTimeBetween(clintId, userId, fromDateTime, toDateTime, SORT);
     }
 
     @Override
-    public List<Order> findByProductId(Long productId, Long userId) {
-        return orderRepository.findByProductIdAndUserId(productId, userId, SORT);
+    public List<Order> findByProductId(Long productId, Long userId,
+                                       LocalDateTime fromDateTime, LocalDateTime toDateTime) {
+
+        return orderRepository
+                .findByProductIdAndUserIdAndCreatedDateTimeBetween(productId, userId, fromDateTime, toDateTime, SORT);
     }
 
     @Override
-    public List<Order> findAll(Long userId) {
-        return orderRepository.findAllByUserId(userId, SORT);
+    public List<Order> findAll(Long userId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
+        return orderRepository.findAllByUserIdAndCreatedDateTimeBetween(userId, fromDateTime, toDateTime, SORT);
     }
 
     @Override
@@ -93,20 +97,24 @@ public class OrderServiceImpl implements OrderService {
             throw new ServiceException("Cannot create order. Product amount is less the requested");
         }
 
+        LocalDateTime localDateTimeNow = LocalDateTime.now();
+
         Order order = Order.builder()
                 .product(product)
                 .client(client)
                 .amount(orderDto.getAmount())
                 .state(OrderState.PENDING)
-                .createdDate(LocalDateTime.now())
+                .createdDateTime(localDateTimeNow)
+                .updatedDateTime(localDateTimeNow)
                 .userId(userId)
                 .build();
+
+        orderRepository.save(order);
 
         Product updatedProduct = product.toBuilder()
                 .amount(product.getAmount() - orderDto.getAmount())
                 .build();
 
-        orderRepository.save(order);
         productService.update(updatedProduct, userId);
     }
 
@@ -132,7 +140,10 @@ public class OrderServiceImpl implements OrderService {
 
         Order updatedOrder = order.toBuilder()
                 .state(OrderState.CANCELLED)
+                .updatedDateTime(LocalDateTime.now())
                 .build();
+
+        orderRepository.save(updatedOrder);
 
         Product product = order.getProduct();
 
@@ -141,7 +152,6 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         productService.update(updatedProduct, userId);
-        orderRepository.save(updatedOrder);
     }
 
     @Override
@@ -154,6 +164,7 @@ public class OrderServiceImpl implements OrderService {
 
         Order updatedOrder = order.toBuilder()
                 .state(OrderState.RESOLVED)
+                .updatedDateTime(LocalDateTime.now())
                 .build();
 
         orderRepository.save(updatedOrder);

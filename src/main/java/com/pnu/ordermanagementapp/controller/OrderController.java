@@ -14,6 +14,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
@@ -21,6 +25,13 @@ import static java.util.Objects.nonNull;
 @Controller
 @RequestMapping("/orders")
 public class OrderController {
+
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+            .append(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+            .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+            .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+            .toFormatter();
 
     private OrderService orderService;
 
@@ -161,17 +172,22 @@ public class OrderController {
 
     @GetMapping("/export")
     public String download(
+            @RequestParam("fromDate") String fromDate,
+            @RequestParam("toDate") String toDate,
             @RequestParam(name = "clientId", required = false) Long clientId,
             @RequestParam(name = "productId", required = false) Long productId,
             Model model, @AuthenticationPrincipal User user) {
 
+        LocalDateTime fromDateTime = LocalDateTime.parse(fromDate, DATE_TIME_FORMATTER);
+        LocalDateTime toDateTime = LocalDateTime.parse(toDate, DATE_TIME_FORMATTER);
+
         List<Order> orders;
         if (nonNull(clientId)) {
-            orders = orderService.findByClientId(clientId, user.getId());
+            orders = orderService.findByClientId(clientId, user.getId(), fromDateTime, toDateTime);
         } else if (nonNull(productId)) {
-            orders = orderService.findByProductId(productId, user.getId());
+            orders = orderService.findByProductId(productId, user.getId(), fromDateTime, toDateTime);
         } else {
-            orders = orderService.findAll(user.getId());
+            orders = orderService.findAll(user.getId(), fromDateTime, toDateTime);
         }
 
         model.addAttribute("orders", ordersPageToOrdersFtlPageDtoMapper.mapOrdersList(orders));

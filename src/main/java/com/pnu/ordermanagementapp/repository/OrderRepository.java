@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,10 +21,13 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Optional<Order> findByIdAndUserId(Long id, Long userId);
 
-    List<Order> findByClientIdAndUserId(Long clintId, Long userId, Sort sort);
+    List<Order> findByClientIdAndUserIdAndCreatedDateTimeBetween(
+            Long clintId, Long userId, LocalDateTime from, LocalDateTime to, Sort sort);
 
-    List<Order> findByProductIdAndUserId(Long productId, Long userId, Sort sort);
+    List<Order> findByProductIdAndUserIdAndCreatedDateTimeBetween(
+            Long productId, Long userId, LocalDateTime from, LocalDateTime to, Sort sort);
 
-    List<Order> findAllByUserId(Long userId, Sort sort);
+    List<Order> findAllByUserIdAndCreatedDateTimeBetween(
+            Long userId, LocalDateTime from, LocalDateTime to, Sort sort);
 
 }

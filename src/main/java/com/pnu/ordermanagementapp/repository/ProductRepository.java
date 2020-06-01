@@ -17,6 +17,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>, PagingA
 
     Optional<Product> findByIdAndUserId(Long id, Long userId);
 
+    List<Product> findByUserId(long userId);
+
     List<Product> findByActiveAndUserId(boolean active, long userId);
 
     Page<Product> findByActiveAndUserId(boolean active, long userId, Pageable pageable);

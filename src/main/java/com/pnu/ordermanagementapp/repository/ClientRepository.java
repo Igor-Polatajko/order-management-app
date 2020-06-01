@@ -17,7 +17,9 @@ public interface ClientRepository extends JpaRepository<Client, Long>, PagingAnd
 
     Optional<Client> findByIdAndUserId(Long id, Long userId);
 
-    List<Client> findAllByActiveAndUserId(boolean active, long userId);
+    List<Client> findByUserId(long userId);
+
+    List<Client> findByActiveAndUserId(boolean active, long userId);
 
     Page<Client> findByActiveAndUserId(boolean active, long userId, Pageable pageable);
 

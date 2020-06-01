@@ -160,7 +160,7 @@
         </fieldset>
         <fieldset>
             Amount:
-            <input name="amount" placeholder="Amount" value="<#if product??>${product.amount}<#else></#if>"
+            <input name="amount" placeholder="Amount" value="<#if product??>${product.amount?c}<#else></#if>"
                    type="number" tabindex="2" required>
         </fieldset>
         <fieldset>

@@ -50,13 +50,34 @@ public class ClientServiceImpl implements ClientService {
                 .userId(userId)
                 .build();
 
+        if (clientRepository.existsClientByEmailAndUserId(client.getEmail(), userId)) {
+            throw new ServiceException(
+                    "Client with email '" + client.getEmail() + "' already exists (active?: " + client.isActive() +
+                            "\n You can UPDATE it"
+            );
+        }
+
         clientRepository.save(clientWithUserId);
     }
 
     @Override
     public void update(Client client, Long userId) {
-        findClientByIdOrThrowException(client.getId(), userId);
-        clientRepository.save(client);
+
+        Client updatedClient = findClientByIdOrThrowException(client.getId(), userId);
+        updatedClient = updatedClient.toBuilder()
+                .firstName(client.getFirstName())
+                .lastName(client.getLastName())
+                .email(client.getLastName())
+                .build();
+
+        if (clientRepository
+                .existsClientByEmailAndUserIdAndIdNot(updatedClient.getEmail(), userId, updatedClient.getId())) {
+            throw new ServiceException("Client with email '" + updatedClient.getEmail() +
+                    "' already exists (active?: " + updatedClient.isActive() + ")"
+            );
+        }
+
+        clientRepository.save(updatedClient);
     }
 
     @Override
@@ -95,4 +116,5 @@ public class ClientServiceImpl implements ClientService {
 
         return PageRequest.of(pageNumber - 1, PAGE_SIZE, SORT);
     }
+
 }

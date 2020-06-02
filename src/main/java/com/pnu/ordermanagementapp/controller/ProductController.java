@@ -73,36 +73,6 @@ public class ProductController {
     public String create(@ModelAttribute("productDto") ProductFormSubmitDto productFormDto, Model model,
                          @AuthenticationPrincipal User user) {
 
-        if (validateProductFormDto(productFormDto, model)) return "/product/form_product";
-
-        Product product = Product.builder()
-                .name(productFormDto.getName())
-                .price(productFormDto.getPrice())
-                .amount(productFormDto.getAmount())
-                .build();
-
-        productService.create(product, user.getId());
-        return "redirect:/products";
-    }
-
-    @PostMapping("/update")
-    public String updateProduct(@ModelAttribute("productDto") ProductFormSubmitDto productFormDto, Model model,
-                                @AuthenticationPrincipal User user) {
-
-        if (validateProductFormDto(productFormDto, model)) return "/product/form_product";
-
-        Product product = Product.builder()
-                .id(productFormDto.getId())
-                .name(productFormDto.getName())
-                .price(productFormDto.getPrice())
-                .amount(productFormDto.getAmount())
-                .build();
-
-        productService.update(product, user.getId());
-        return "redirect:/products";
-    }
-
-    private boolean validateProductFormDto(ProductFormSubmitDto productFormDto, Model model) {
         Set<ConstraintViolation<ProductFormSubmitDto>> constraintViolations = validator.validate(productFormDto);
 
         if (CollectionUtils.isNotEmpty(constraintViolations)) {
@@ -111,10 +81,32 @@ public class ProductController {
                     .collect(Collectors.joining(StringUtils.LF));
             model.addAttribute("error", errorMessage);
             model.addAttribute("product", productFormDto);
-            return true;
+            return "/product/form_product";
         }
-        return false;
+
+        productService.create(productFormDto, user.getId());
+        return "redirect:/products";
     }
+
+    @PostMapping("/update")
+    public String updateProduct(@ModelAttribute("productDto") ProductFormSubmitDto productFormDto, Model model,
+                                @AuthenticationPrincipal User user) {
+
+        Set<ConstraintViolation<ProductFormSubmitDto>> constraintViolations = validator.validate(productFormDto);
+
+        if (CollectionUtils.isNotEmpty(constraintViolations)) {
+            String errorMessage = constraintViolations.stream()
+                    .map(ConstraintViolation::getMessage)
+                    .collect(Collectors.joining(StringUtils.LF));
+            model.addAttribute("error", errorMessage);
+            model.addAttribute("product", productFormDto);
+            return "/product/form_product";
+        }
+
+        productService.update(productFormDto, user.getId());
+        return "redirect:/products";
+    }
+
 
     @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {

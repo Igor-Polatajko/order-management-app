@@ -1,5 +1,6 @@
 package com.pnu.ordermanagementapp.service;
 
+import com.pnu.ordermanagementapp.dto.product.ProductFormSubmitDto;
 import com.pnu.ordermanagementapp.model.Product;
 import org.springframework.data.domain.Page;
 
@@ -19,9 +20,9 @@ public interface ProductService {
 
     Product findById(Long id, Long userId);
 
-    void create(Product product, Long userId);
+    void create(ProductFormSubmitDto productFormDto, Long userId);
 
-    void update(Product product, Long userId);
+    void update(ProductFormSubmitDto productFormDto, Long userId);
 
     void delete(Long id, Long userId);
 

@@ -1,5 +1,6 @@
 package com.pnu.ordermanagementapp.service;
 
+import com.pnu.ordermanagementapp.dto.product.ProductFormSubmitDto;
 import com.pnu.ordermanagementapp.exception.ServiceException;
 import com.pnu.ordermanagementapp.model.Product;
 import com.pnu.ordermanagementapp.repository.ProductRepository;
@@ -50,7 +51,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void create(Product product, Long userId) {
+    public void create(ProductFormSubmitDto productFormDto, Long userId) {
+
+        Product product = Product.builder()
+                .name(productFormDto.getName())
+                .price(productFormDto.getPrice())
+                .amount(productFormDto.getAmount())
+                .build();
 
         if (productRepository.existsProductByNameAndUserId(product.getName(), userId)) {
             throw new ServiceException(String.format(
@@ -67,7 +74,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void update(Product product, Long userId) {
+    public void update(ProductFormSubmitDto productFormDto, Long userId) {
+
+        Product product = Product.builder()
+                .id(productFormDto.getId())
+                .name(productFormDto.getName())
+                .price(productFormDto.getPrice())
+                .amount(productFormDto.getAmount())
+                .build();
 
         if (productRepository.existsProductByNameAndUserIdAndIdNot(
                 product.getName(), userId, product.getId())) {

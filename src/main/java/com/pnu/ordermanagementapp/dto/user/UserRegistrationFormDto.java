@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -19,6 +20,7 @@ public class UserRegistrationFormDto {
     private String lastName;
 
     @NotBlank(message = "Username cannot be empty")
+    @Email
     private String username;
 
     @NotBlank(message = "Password cannot be empty")

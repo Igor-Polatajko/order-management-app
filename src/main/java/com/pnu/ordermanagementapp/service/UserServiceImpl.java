@@ -1,5 +1,6 @@
 package com.pnu.ordermanagementapp.service;
 
+import com.pnu.ordermanagementapp.dto.user.UserRegistrationFormDto;
 import com.pnu.ordermanagementapp.exception.ServiceException;
 import com.pnu.ordermanagementapp.model.Role;
 import com.pnu.ordermanagementapp.model.User;
@@ -45,10 +46,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public void create(User user) {
+    public void create(UserRegistrationFormDto userRegistrationFormDto) {
 
-        User userWithEncryptedPassword = user.toBuilder()
-                .password(bCryptPasswordEncoder.encode(user.getPassword()))
+        User userWithEncryptedPassword = User.builder()
+                .firstName(userRegistrationFormDto.getFirstName())
+                .lastName(userRegistrationFormDto.getLastName())
+                .username(userRegistrationFormDto.getUsername())
+                .password(bCryptPasswordEncoder.encode(userRegistrationFormDto.getPassword()))
                 .role(Role.ROLE_USER)
                 .active(true)
                 .build();

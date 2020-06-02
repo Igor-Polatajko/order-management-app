@@ -3,25 +3,14 @@ package com.pnu.ordermanagementapp.controller;
 import com.pnu.ordermanagementapp.dto.client.ClientFormSubmitDto;
 import com.pnu.ordermanagementapp.model.User;
 import com.pnu.ordermanagementapp.service.ClientService;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.pnu.ordermanagementapp.util.validation.DataValidator;
+import com.pnu.ordermanagementapp.util.validation.ValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/clients")
@@ -29,13 +18,13 @@ public class ClientController {
 
     private ClientService clientService;
 
-    private Validator validator;
+    private DataValidator dataValidator;
 
 
     @Autowired
-    public ClientController(ClientService clientService) {
+    public ClientController(ClientService clientService, DataValidator dataValidator) {
         this.clientService = clientService;
-        validator = Validation.buildDefaultValidatorFactory().getValidator();
+        this.dataValidator = dataValidator;
     }
 
     @GetMapping
@@ -72,15 +61,11 @@ public class ClientController {
     public String createClient(@ModelAttribute("client") ClientFormSubmitDto clientFormDto, Model model,
                                @AuthenticationPrincipal User user) {
 
-        Set<ConstraintViolation<ClientFormSubmitDto>> constraintViolations = validator.validate(clientFormDto);
+        ValidationResult validationResult = dataValidator.validate(clientFormDto);
 
-        if (CollectionUtils.isNotEmpty(constraintViolations)) {
-            String errorMessage = constraintViolations.stream()
-                    .map(ConstraintViolation::getMessage)
-                    .collect(Collectors.joining(StringUtils.LF));
-            model.addAttribute("error", errorMessage);
-            model.addAttribute("client", clientFormDto);
-            return "client/update_form";
+        if (validationResult.isError()) {
+            model.addAttribute("error", validationResult.getErrorMessage());
+            return "/client/update_form";
         }
 
         clientService.create(clientFormDto, user.getId());
@@ -90,16 +75,11 @@ public class ClientController {
     @PostMapping("/update")
     public String updateClient(@ModelAttribute("client") ClientFormSubmitDto clientFormDto, Model model,
                                @AuthenticationPrincipal User user) {
+        ValidationResult validationResult = dataValidator.validate(clientFormDto);
 
-        Set<ConstraintViolation<ClientFormSubmitDto>> constraintViolations = validator.validate(clientFormDto);
-
-        if (CollectionUtils.isNotEmpty(constraintViolations)) {
-            String errorMessage = constraintViolations.stream()
-                    .map(ConstraintViolation::getMessage)
-                    .collect(Collectors.joining(StringUtils.LF));
-            model.addAttribute("error", errorMessage);
-            model.addAttribute("client", clientFormDto);
-            return "client/update_form";
+        if (validationResult.isError()) {
+            model.addAttribute("error", validationResult.getErrorMessage());
+            return "/client/update_form";
         }
 
         clientService.update(clientFormDto, user.getId());

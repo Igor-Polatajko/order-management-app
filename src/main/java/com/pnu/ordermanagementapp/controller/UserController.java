@@ -1,25 +1,15 @@
 package com.pnu.ordermanagementapp.controller;
 
 import com.pnu.ordermanagementapp.dto.user.UserRegistrationFormDto;
-import com.pnu.ordermanagementapp.model.User;
 import com.pnu.ordermanagementapp.service.UserService;
-import org.apache.commons.collections4.CollectionUtils;
+import com.pnu.ordermanagementapp.util.validation.DataValidator;
+import com.pnu.ordermanagementapp.util.validation.ValidationResult;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import java.util.Set;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.*;
 
 import static java.util.Objects.nonNull;
 
@@ -28,12 +18,12 @@ public class UserController {
 
     private UserService userService;
 
-    private Validator validator;
+    private DataValidator dataValidator;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, DataValidator dataValidator) {
         this.userService = userService;
-        validator = Validation.buildDefaultValidatorFactory().getValidator();
+        this.dataValidator = dataValidator;
     }
 
     @GetMapping("/login")
@@ -56,13 +46,10 @@ public class UserController {
     @PostMapping("/registration")
     public String registerUser(Model model, @ModelAttribute UserRegistrationFormDto userFormDto) {
 
-        Set<ConstraintViolation<UserRegistrationFormDto>> constraintViolations = validator.validate(userFormDto);
+        ValidationResult validationResult = dataValidator.validate(userFormDto);
 
-        if (CollectionUtils.isNotEmpty(constraintViolations)) {
-            String errorMessage = constraintViolations.stream()
-                    .map(ConstraintViolation::getMessage)
-                    .collect(Collectors.joining(StringUtils.LF));
-            model.addAttribute("error", errorMessage);
+        if (validationResult.isError()) {
+            model.addAttribute("error", validationResult.getErrorMessage());
             return "users/registration";
         }
 
@@ -71,15 +58,7 @@ public class UserController {
             return "users/registration";
         }
 
-        User user = User.builder()
-                .firstName(userFormDto.getFirstName())
-                .lastName(userFormDto.getLastName())
-                .username(userFormDto.getUsername())
-                .password(userFormDto.getPassword())
-                .build();
-
-        userService.create(user);
-
+        userService.create(userFormDto);
         return "redirect:users/login";
     }
 

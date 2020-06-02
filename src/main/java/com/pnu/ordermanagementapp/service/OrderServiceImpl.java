@@ -7,7 +7,9 @@ import com.pnu.ordermanagementapp.model.Client;
 import com.pnu.ordermanagementapp.model.Order;
 import com.pnu.ordermanagementapp.model.OrderState;
 import com.pnu.ordermanagementapp.model.Product;
+import com.pnu.ordermanagementapp.repository.ClientRepository;
 import com.pnu.ordermanagementapp.repository.OrderRepository;
+import com.pnu.ordermanagementapp.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,18 +44,18 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderRepository orderRepository;
 
-    private ClientService clientService;
+    private ClientRepository clientRepository;
 
-    private ProductService productService;
+    private ProductRepository productRepository;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
-                            ClientService clientService,
-                            ProductService productService) {
+                            ClientRepository clientRepository,
+                            ProductRepository productRepository) {
 
         this.orderRepository = orderRepository;
-        this.clientService = clientService;
-        this.productService = productService;
+        this.clientRepository = clientRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
@@ -118,12 +120,16 @@ public class OrderServiceImpl implements OrderService {
             throw new ServiceException("Cannot create order. Amount should be greater than zero");
         }
 
-        Product product = productService.findById(orderDto.getProductId(), userId);
+        Product product = productRepository.findByIdAndUserId(orderDto.getProductId(), userId)
+                .orElseThrow(() -> new ServiceException("Cannot create order. Product not found!"));
+
         if (!product.isActive()) {
             throw new ServiceException("Cannot create order. Product is inactive");
         }
 
-        Client client = clientService.findById(orderDto.getClientId(), userId);
+        Client client = clientRepository.findByIdAndUserId(orderDto.getClientId(), userId)
+                .orElseThrow(() -> new ServiceException("Cannot create order. Client not found!"));
+
         if (!client.isActive()) {
             throw new ServiceException("Cannot create order. Client is inactive");
         }
@@ -150,7 +156,7 @@ public class OrderServiceImpl implements OrderService {
                 .amount(product.getAmount() - orderDto.getAmount())
                 .build();
 
-        productService.update(updatedProduct, userId);
+        productRepository.save(updatedProduct);
     }
 
     @Override
@@ -186,7 +192,7 @@ public class OrderServiceImpl implements OrderService {
                 .amount(product.getAmount() + order.getAmount())
                 .build();
 
-        productService.update(updatedProduct, userId);
+        productRepository.save(updatedProduct);
     }
 
     @Override

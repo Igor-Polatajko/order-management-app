@@ -91,7 +91,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product findById(Long id, Long userId) {
-        return productRepository.findByIdAndUserId(id, userId).get();
+        return findProductByIdOrThrowException(id, userId);
     }
 
     @Override

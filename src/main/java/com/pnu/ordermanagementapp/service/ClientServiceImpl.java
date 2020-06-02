@@ -1,5 +1,6 @@
 package com.pnu.ordermanagementapp.service;
 
+import com.pnu.ordermanagementapp.dto.client.ClientFormSubmitDto;
 import com.pnu.ordermanagementapp.exception.ServiceException;
 import com.pnu.ordermanagementapp.model.Client;
 import com.pnu.ordermanagementapp.repository.ClientRepository;
@@ -51,15 +52,18 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void create(Client client, Long userId) {
+    public void create(ClientFormSubmitDto clientFormDto, Long userId) {
 
-        if (clientRepository.existsClientByEmailAndUserId(client.getEmail(), userId)) {
+        if (clientRepository.existsClientByEmailAndUserId(clientFormDto.getEmail(), userId)) {
             throw new ServiceException(String.format(
-                    "Client with email '%s' already exists (active?: %s )", client.getEmail(), client.isActive()
+                    "Client with email '%s' already exists", clientFormDto.getEmail()
             ));
         }
 
-        Client clientWithUserId = client.toBuilder()
+        Client clientWithUserId = Client.builder()
+                .email(clientFormDto.getEmail())
+                .firstName(clientFormDto.getFirstName())
+                .lastName(clientFormDto.getLastName())
                 .userId(userId)
                 .active(true)
                 .build();
@@ -68,21 +72,20 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void update(Client client, Long userId) {
+    public void update(ClientFormSubmitDto clientFormDto, Long userId) {
 
         if (clientRepository
-                .existsClientByEmailAndUserIdAndIdNot(client.getEmail(), userId, client.getId())) {
+                .existsClientByEmailAndUserIdAndIdNot(clientFormDto.getEmail(), userId, clientFormDto.getId())) {
             throw new ServiceException(String.format(
-                    "Client with email '%s' already exists (active?: %s )", client.getEmail(), client.isActive()
-            ));
+                    "Client with email '%s' already exists", clientFormDto.getEmail()));
         }
 
-        Client clientFromDb = findClientByIdOrThrowException(client.getId(), userId);
+        Client clientFromDb = findClientByIdOrThrowException(clientFormDto.getId(), userId);
 
         clientFromDb = clientFromDb.toBuilder()
-                .firstName(client.getFirstName())
-                .lastName(client.getLastName())
-                .email(client.getLastName())
+                .firstName(clientFormDto.getFirstName())
+                .lastName(clientFormDto.getLastName())
+                .email(clientFormDto.getLastName())
                 .build();
 
         clientRepository.save(clientFromDb);

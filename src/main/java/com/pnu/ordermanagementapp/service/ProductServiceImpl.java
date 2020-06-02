@@ -53,19 +53,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void create(ProductFormSubmitDto productFormDto, Long userId) {
 
+        if (productRepository.existsProductByNameAndUserId(productFormDto.getName(), userId)) {
+            throw new ServiceException(String.format(
+                    "Product with name '%s' already exists", productFormDto.getName()));
+        }
+
         Product product = Product.builder()
                 .name(productFormDto.getName())
                 .price(productFormDto.getPrice())
                 .amount(productFormDto.getAmount())
-                .build();
-
-        if (productRepository.existsProductByNameAndUserId(product.getName(), userId)) {
-            throw new ServiceException(String.format(
-                    "Product with name '%s' already exists (active?: %s)", product.getName(), product.isActive()
-            ));
-        }
-
-        product = product.toBuilder()
                 .userId(userId)
                 .active(true)
                 .build();
@@ -76,26 +72,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void update(ProductFormSubmitDto productFormDto, Long userId) {
 
-        Product product = Product.builder()
-                .id(productFormDto.getId())
-                .name(productFormDto.getName())
-                .price(productFormDto.getPrice())
-                .amount(productFormDto.getAmount())
-                .build();
-
         if (productRepository.existsProductByNameAndUserIdAndIdNot(
-                product.getName(), userId, product.getId())) {
+                productFormDto.getName(), userId, productFormDto.getId())) {
             throw new ServiceException(String.format(
-                    "Product with name '%s' already exists (active?: %s)", product.getName(), product.isActive()
-            ));
+                    "Product with name '%s' already exists", productFormDto.getName()));
         }
 
-        Product productFromDb = findProductByIdOrThrowException(product.getId(), userId);
+        Product productFromDb = findProductByIdOrThrowException(productFormDto.getId(), userId);
 
         productFromDb = productFromDb.toBuilder()
-                .name(product.getName())
-                .amount(product.getAmount())
-                .price(product.getPrice())
+                .name(productFormDto.getName())
+                .amount(productFormDto.getAmount())
+                .price(productFormDto.getPrice())
                 .build();
 
         productRepository.save(productFromDb);

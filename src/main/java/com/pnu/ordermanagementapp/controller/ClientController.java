@@ -72,36 +72,7 @@ public class ClientController {
     @PostMapping("/new")
     public String createClient(@ModelAttribute("client") ClientFormSubmitDto clientFormDto, Model model,
                                @AuthenticationPrincipal User user) {
-        if (validateClientFormDto(clientFormDto, model)) return "client/create_form";
 
-        Client client = Client.builder()
-                .firstName(clientFormDto.getFirstName())
-                .lastName(clientFormDto.getLastName())
-                .email(clientFormDto.getEmail())
-                .build();
-
-        clientService.create(client, user.getId());
-        return "redirect:/clients";
-    }
-
-    @PostMapping("/update")
-    public String updateClient(@ModelAttribute("client") ClientFormSubmitDto clientFormDto, Model model,
-                               @AuthenticationPrincipal User user) {
-
-        if (validateClientFormDto(clientFormDto, model)) return "client/update_form";
-
-        Client client = Client.builder()
-                .id(clientFormDto.getId())
-                .firstName(clientFormDto.getFirstName())
-                .lastName(clientFormDto.getLastName())
-                .email(clientFormDto.getEmail())
-                .build();
-
-        clientService.update(client, user.getId());
-        return "redirect:/clients";
-    }
-
-    private boolean validateClientFormDto(@ModelAttribute("client") ClientFormSubmitDto clientFormDto, Model model) {
         Set<ConstraintViolation<ClientFormSubmitDto>> constraintViolations = validator.validate(clientFormDto);
 
         if (CollectionUtils.isNotEmpty(constraintViolations)) {
@@ -110,9 +81,30 @@ public class ClientController {
                     .collect(Collectors.joining(StringUtils.LF));
             model.addAttribute("error", errorMessage);
             model.addAttribute("client", clientFormDto);
-            return true;
+            return "client/update_form";
         }
-        return false;
+
+        clientService.create(clientFormDto, user.getId());
+        return "redirect:/clients";
+    }
+
+    @PostMapping("/update")
+    public String updateClient(@ModelAttribute("client") ClientFormSubmitDto clientFormDto, Model model,
+                               @AuthenticationPrincipal User user) {
+
+        Set<ConstraintViolation<ClientFormSubmitDto>> constraintViolations = validator.validate(clientFormDto);
+
+        if (CollectionUtils.isNotEmpty(constraintViolations)) {
+            String errorMessage = constraintViolations.stream()
+                    .map(ConstraintViolation::getMessage)
+                    .collect(Collectors.joining(StringUtils.LF));
+            model.addAttribute("error", errorMessage);
+            model.addAttribute("client", clientFormDto);
+            return "client/update_form";
+        }
+
+        clientService.update(clientFormDto, user.getId());
+        return "redirect:/clients";
     }
 
     @PostMapping("/delete/{id}")

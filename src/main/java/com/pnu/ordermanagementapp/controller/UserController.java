@@ -59,7 +59,7 @@ public class UserController {
         }
 
         userService.create(userFormDto);
-        return "redirect:users/login";
+        return "redirect:/login";
     }
 
     @GetMapping("/users")

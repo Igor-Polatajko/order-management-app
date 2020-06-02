@@ -66,6 +66,7 @@ public class ProductController {
 
         if (validationResult.isError()) {
             model.addAttribute("error", validationResult.getErrorMessage());
+            model.addAttribute("product", productFormDto);
             return "/product/form_product";
         }
 
@@ -81,6 +82,7 @@ public class ProductController {
 
         if (validationResult.isError()) {
             model.addAttribute("error", validationResult.getErrorMessage());
+            model.addAttribute("product", productFormDto);
             return "/product/form_product";
         }
 

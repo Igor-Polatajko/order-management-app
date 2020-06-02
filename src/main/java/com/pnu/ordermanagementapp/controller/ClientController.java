@@ -65,6 +65,7 @@ public class ClientController {
 
         if (validationResult.isError()) {
             model.addAttribute("error", validationResult.getErrorMessage());
+            model.addAttribute("client", clientFormDto);
             return "/client/update_form";
         }
 
@@ -79,6 +80,7 @@ public class ClientController {
 
         if (validationResult.isError()) {
             model.addAttribute("error", validationResult.getErrorMessage());
+            model.addAttribute("client", clientFormDto);
             return "/client/update_form";
         }
 

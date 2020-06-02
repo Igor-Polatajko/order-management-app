@@ -135,7 +135,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         if (product.getAmount() < orderDto.getAmount()) {
-            throw new ServiceException("Cannot create order. Product amount is less the requested");
+            throw new ServiceException("Cannot create order. Product amount is less then requested");
         }
 
         LocalDateTime localDateTimeNow = LocalDateTime.now();

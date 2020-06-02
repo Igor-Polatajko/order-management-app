@@ -1,7 +1,6 @@
 package com.pnu.ordermanagementapp.controller;
 
 import com.pnu.ordermanagementapp.dto.client.ClientFormSubmitDto;
-import com.pnu.ordermanagementapp.model.Client;
 import com.pnu.ordermanagementapp.model.User;
 import com.pnu.ordermanagementapp.service.ClientService;
 import org.apache.commons.collections4.CollectionUtils;

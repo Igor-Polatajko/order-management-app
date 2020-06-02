@@ -1,5 +1,6 @@
 package com.pnu.ordermanagementapp.service;
 
+import com.pnu.ordermanagementapp.dto.client.ClientFormSubmitDto;
 import com.pnu.ordermanagementapp.model.Client;
 import org.springframework.data.domain.Page;
 
@@ -17,9 +18,9 @@ public interface ClientService {
 
     Client findById(Long id, Long userId);
 
-    void create(Client client, Long userId);
+    void create(ClientFormSubmitDto clientFormDto, Long userId);
 
-    void update(Client client, Long userId);
+    void update(ClientFormSubmitDto clientFormDto, Long userId);
 
     void delete(Long id, Long userId);
 

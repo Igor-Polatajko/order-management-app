@@ -4,24 +4,13 @@ import com.pnu.ordermanagementapp.dto.product.ProductFormSubmitDto;
 import com.pnu.ordermanagementapp.model.Product;
 import com.pnu.ordermanagementapp.model.User;
 import com.pnu.ordermanagementapp.service.ProductService;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.pnu.ordermanagementapp.util.validation.DataValidator;
+import com.pnu.ordermanagementapp.util.validation.ValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import java.util.Set;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/products")
@@ -29,12 +18,12 @@ public class ProductController {
 
     private ProductService productService;
 
-    private Validator validator;
+    private DataValidator dataValidator;
 
     @Autowired
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, DataValidator dataValidator) {
         this.productService = productService;
-        validator = Validation.buildDefaultValidatorFactory().getValidator();
+        this.dataValidator = dataValidator;
     }
 
     @GetMapping
@@ -73,14 +62,10 @@ public class ProductController {
     public String create(@ModelAttribute("productDto") ProductFormSubmitDto productFormDto, Model model,
                          @AuthenticationPrincipal User user) {
 
-        Set<ConstraintViolation<ProductFormSubmitDto>> constraintViolations = validator.validate(productFormDto);
+        ValidationResult validationResult = dataValidator.validate(productFormDto);
 
-        if (CollectionUtils.isNotEmpty(constraintViolations)) {
-            String errorMessage = constraintViolations.stream()
-                    .map(ConstraintViolation::getMessage)
-                    .collect(Collectors.joining(StringUtils.LF));
-            model.addAttribute("error", errorMessage);
-            model.addAttribute("product", productFormDto);
+        if (validationResult.isError()) {
+            model.addAttribute("error", validationResult.getErrorMessage());
             return "/product/form_product";
         }
 
@@ -92,14 +77,10 @@ public class ProductController {
     public String updateProduct(@ModelAttribute("productDto") ProductFormSubmitDto productFormDto, Model model,
                                 @AuthenticationPrincipal User user) {
 
-        Set<ConstraintViolation<ProductFormSubmitDto>> constraintViolations = validator.validate(productFormDto);
+        ValidationResult validationResult = dataValidator.validate(productFormDto);
 
-        if (CollectionUtils.isNotEmpty(constraintViolations)) {
-            String errorMessage = constraintViolations.stream()
-                    .map(ConstraintViolation::getMessage)
-                    .collect(Collectors.joining(StringUtils.LF));
-            model.addAttribute("error", errorMessage);
-            model.addAttribute("product", productFormDto);
+        if (validationResult.isError()) {
+            model.addAttribute("error", validationResult.getErrorMessage());
             return "/product/form_product";
         }
 

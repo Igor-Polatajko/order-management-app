@@ -90,10 +90,6 @@
                         <button class="btn btn-primary" type="submit">Activate</button>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     </form>
-                    <form class="form-inline d-inline" action="/products/delete/${product.id}" method="post">
-                        <button class="btn btn-danger" type="submit">Delete</button>
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                    </form>
                 </#if>
             </th>
         </tr>

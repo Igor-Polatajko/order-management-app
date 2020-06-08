@@ -97,8 +97,6 @@ public class ClientServiceImpl implements ClientService {
         if (client.isActive()) {
             client = client.toBuilder().active(false).build();
             clientRepository.save(client);
-        } else {
-            clientRepository.delete(client);
         }
     }
 

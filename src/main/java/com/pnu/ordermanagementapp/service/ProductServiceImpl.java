@@ -100,8 +100,6 @@ public class ProductServiceImpl implements ProductService {
         if (product.isActive()) {
             product = product.toBuilder().active(false).build();
             productRepository.save(product);
-        } else {
-            productRepository.delete(product);
         }
 
     }

@@ -37,7 +37,7 @@ public class ProductsExcelView extends AbstractXlsView {
             courseRow.createCell(idx++).setCellValue(product.getName());
             courseRow.createCell(idx++).setCellValue(product.getAmount());
             courseRow.createCell(idx++).setCellValue(product.getPrice());
-            courseRow.createCell(idx++).setCellValue(product.isActive());
+            courseRow.createCell(idx++).setCellValue(String.valueOf(product.isActive()));
         }
     }
 

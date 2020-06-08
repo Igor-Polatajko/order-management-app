@@ -37,7 +37,7 @@ public class ClientsExcelView extends AbstractXlsView {
             courseRow.createCell(idx++).setCellValue(client.getFirstName());
             courseRow.createCell(idx++).setCellValue(client.getLastName());
             courseRow.createCell(idx++).setCellValue(client.getEmail());
-            courseRow.createCell(idx++).setCellValue(client.isActive());
+            courseRow.createCell(idx++).setCellValue(String.valueOf(client.isActive()));
         }
     }
 

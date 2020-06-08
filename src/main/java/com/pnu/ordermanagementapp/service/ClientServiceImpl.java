@@ -94,10 +94,8 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void delete(Long id, Long userId) {
         Client client = findClientByIdOrThrowException(id, userId);
-        if (client.isActive()) {
-            client = client.toBuilder().active(false).build();
-            clientRepository.save(client);
-        }
+        client = client.toBuilder().active(false).build();
+        clientRepository.save(client);
     }
 
     @Override

@@ -86,7 +86,7 @@
 </a>
 <div class="container">
     <form id="client" action="/clients/new" method="post" autocomplete="off">
-        <h3>Create client</h3>
+        <h3>Update client</h3>
         <#if error??>
             <div>
                 <h5 class="text-danger">Errors: </h5>

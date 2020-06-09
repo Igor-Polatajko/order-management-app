@@ -89,9 +89,9 @@ public class ClientController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteClient(@PathVariable Long id, @AuthenticationPrincipal User user) {
+    public String deactivateClient(@PathVariable Long id, @AuthenticationPrincipal User user) {
 
-        clientService.delete(id, user.getId());
+        clientService.deactivate(id, user.getId());
         return "redirect:/clients";
     }
 

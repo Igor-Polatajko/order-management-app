@@ -95,15 +95,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void delete(Long id, Long userId) {
+    public void deactivate(Long id, Long userId) {
         Product product = findProductByIdOrThrowException(id, userId);
-        if (product.isActive()) {
-            product = product.toBuilder().active(false).build();
-            productRepository.save(product);
-        } else {
-            productRepository.delete(product);
-        }
-
+        product = product.toBuilder().active(false).build();
+        productRepository.save(product);
     }
 
     @Override

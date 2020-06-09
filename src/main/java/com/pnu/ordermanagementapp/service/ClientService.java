@@ -22,7 +22,7 @@ public interface ClientService {
 
     void update(ClientFormSubmitDto clientFormDto, Long userId);
 
-    void delete(Long id, Long userId);
+    void deactivate(Long id, Long userId);
 
     void activate(Long id, Long userId);
 

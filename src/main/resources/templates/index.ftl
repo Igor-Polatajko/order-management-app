@@ -38,6 +38,7 @@
         }
 
     </style>
+    <title>Orders management</title>
 </head>
 <body>
 <form method="POST" action="/logout">

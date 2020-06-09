@@ -10,6 +10,7 @@
             background-image: linear-gradient(#c5c7cb, #f8f9fa);
         }
     </style>
+    <title>Orders management</title>
 </head>
 <body>
 <div class="row">

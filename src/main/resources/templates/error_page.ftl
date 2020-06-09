@@ -12,6 +12,7 @@
             padding: 0;
         }
     </style>
+    <title>Error page</title>
 </head>
 <body>
 <div class="container h-100 d-flex justify-content-center">

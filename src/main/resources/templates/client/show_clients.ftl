@@ -11,6 +11,7 @@
             background-image: linear-gradient(#c5c7cb, #f8f9fa);
         }
     </style>
+    <title>Clients</title>
 </head>
 <body>
 <div class="row">
@@ -81,7 +82,7 @@
                     <button class="btn btn-light" type="submit">Edit</button>
                 </a>
                 <#if client.active>
-                    <form class="form-inline d-inline" action="/clients/delete/${client.id}" method="post">
+                    <form class="form-inline d-inline" action="/clients/deactivate/${client.id}" method="post">
                         <button class="btn btn-dark" type="submit">Archive</button>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     </form>

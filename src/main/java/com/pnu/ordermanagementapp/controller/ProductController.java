@@ -91,9 +91,9 @@ public class ProductController {
     }
 
 
-    @PostMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
-        productService.delete(id, user.getId());
+    @PostMapping("/deactivate/{id}")
+    public String deactivateProduct(@PathVariable("id") Long id, @AuthenticationPrincipal User user) {
+        productService.deactivate(id, user.getId());
         return "redirect:/products";
     }
 
